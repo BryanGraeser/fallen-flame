@@ -207,19 +207,25 @@ public class LevelController {
         //TODO #8 End
         for(JsonValue wallJSON : levelFormat.get("walls")) {
             //TODO #5 INIT walls
-            walls.add(new WallModel());
+            WallModel wall = new WallModel();
+            wall.initialize(wallJSON);
+            walls.add(wall);
             // TODO #5 End
         }
         for(JsonValue enemyJSON : levelFormat.get("enemies")) {
             //TODO #6 INIT enemies
             EnemyModel enemy = new EnemyModel();
+            enemy.initialize(enemyJSON);
             enemies.add(enemy);
-            AIControllers.add(new AIController());
+            AIController controller = new AIController();
+            AIControllers.add(controller);
             //TODO #6
         }
         for(JsonValue flareJSON : levelFormat.get("flares")) {
             //TODO #7 INIT flares
-            flares.add(new FlareModel());
+            FlareModel flare = new FlareModel();
+            flare.intialize(flareJSON);
+            flares.add(flare);
             //TODO #7
         }
     }
