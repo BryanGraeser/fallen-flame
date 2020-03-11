@@ -1,0 +1,11 @@
+{
+  "enemies": [
+    {
+      "type": 1,
+      "speed": 2,
+      "startX": 10,
+      "startY": 10,
+      "texture": "assets/textures/..."
+    }
+  ]
+}
