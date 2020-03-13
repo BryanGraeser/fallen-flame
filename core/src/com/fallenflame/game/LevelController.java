@@ -341,12 +341,16 @@ public class LevelController {
         updateLights(player, flares, enemies);
     }
 
-    // TODO BITCH
+    // TODO
     public void updateEnemies(float dt) {
-        Iterator<EnemyModel> i = enemies.iterator();
-        while(i.hasNext()){
-            EnemyModel enemy = i.next();
-
+        Iterator<EnemyModel> enemyI = enemies.iterator();
+        Iterator<AIController> ctrlI = AIControllers.iterator();
+        while(enemyI.hasNext()){
+            EnemyModel enemy = enemyI.next();
+            AIController ctrl = ctrlI.next();
+            switch(ctrl.getAction()){
+                
+            }
         }
     }
 
