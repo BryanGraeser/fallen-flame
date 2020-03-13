@@ -2,16 +2,13 @@ package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
 
-public class GameEngine implements Screen, ContactListener {
+public class GameEngine implements Screen {
     /**Enum to determine if we are loading or not
      * @author: Professor Whie*/
     protected enum AssetState {
@@ -58,6 +55,10 @@ public class GameEngine implements Screen, ContactListener {
 
     /**Boolean to keep track if the screen is active*/
     private boolean isScreenActive;
+
+    /**Rectangle canvasBounds to keep track of the current canvas size for drawing purposes
+     * @author: Professor White in ShipDemo*/
+    private Rectangle canvasBounds;
     /**
      * Preloads the assets for this controller.
      *
@@ -108,7 +109,6 @@ public class GameEngine implements Screen, ContactListener {
      * This method erases the static variables.  It also deletes the associated textures
      * from the asset manager. If no assets are loaded, this method does nothing.
      *
-     * @param manager Reference to global asset manager.
      * @author: Professor White
      */
     public void unloadContent() {
@@ -234,17 +234,14 @@ public class GameEngine implements Screen, ContactListener {
             return true;
         }
 
-        // Toggle debug
         if (input.didDebug()) {
             level.setDebug(!level.getDebug());
         }
 
-        // Handle resets
         if (input.didReset()) {
             reset();
         }
 
-        // Now it is time to maybe switch screens.
         if (input.didExit()) {
             listener.exitScreen(this, EXIT_QUIT);
             return false;
@@ -252,8 +249,6 @@ public class GameEngine implements Screen, ContactListener {
 
         return true;
     }
-
-    private Vector2 angleCache = new Vector2();
     /**
      * The core gameplay loop of this world. This checks if the level has ended
      *
@@ -300,9 +295,11 @@ public class GameEngine implements Screen, ContactListener {
      * @param width  The new width in pixels
      * @param height The new height in pixels
      */
-    public void resize(int width, int height) {
-        // IGNORE FOR NOW
-    }
+    public void resize(int width, int height)
+        {
+            canvasBounds.set(0,0,width,height);
+        }
+
 
     /**
      * Called when the Screen should render itself.
@@ -337,7 +334,7 @@ public class GameEngine implements Screen, ContactListener {
      * This is usually when it regains focus.
      */
     public void resume() {
-        // TODO Auto-generated method stub
+        isPaused = false;
     }
 
     /**
@@ -367,23 +364,5 @@ public class GameEngine implements Screen, ContactListener {
         this.listener = listener;
     }
 
-    /**
-     * Callback method for the start of a collision
-     *
-     * This method is called when we first get a collision between two objects.  We use
-     * this method to test if it is the "right" kind of collision.  In particular, we
-     * use it to test if we made it to the win door.
-     *
-     * @param contact The two bodies that collided
-     */
-    public void beginContact(Contact contact) {
-    }
-
-    /** Unused ContactListener method */
-    public void endContact(Contact contact) {}
-    /** Unused ContactListener method */
-    public void postSolve(Contact contact, ContactImpulse impulse) {}
-    /** Unused ContactListener method */
-    public void preSolve(Contact contact, Manifold oldManifold) {}
 
 }
