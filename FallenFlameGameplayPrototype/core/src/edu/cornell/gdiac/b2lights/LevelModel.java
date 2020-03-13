@@ -523,7 +523,7 @@ public class LevelModel {
 	 * @param dt the time passed since the last frame
 	 */
 	public boolean update(float dt) {
-		if (fixedStep(dt)) {
+			if (fixedStep(dt)) {
 			if (rayhandler != null) {
 				rayhandler.update();
 			}

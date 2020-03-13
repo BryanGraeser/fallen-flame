@@ -3,6 +3,8 @@ package com.fallenflame.game;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
+import com.fallenflame.game.physics.obstacle.Obstacle;
+import com.fallenflame.game.physics.obstacle.ObstacleCanvas;
 
 import java.util.*;
 
@@ -24,6 +26,8 @@ public class LevelController {
     private List<WallModel> walls;
     /** Reference to all flares */
     private List<FlareModel> flares;
+    /** Flare JSONValue */
+    private JsonValue flareJSON;
 
     /** Whether or not the level is in debug more (showing off physics) */
     private boolean debug;
@@ -41,6 +45,17 @@ public class LevelController {
     private LightController lightController;
     /** AI Controllers */
     private List<AIController> AIControllers;
+
+    /** Enum to specify level state */
+    public enum LevelState {
+        /** Player has reached the exit */
+        WIN,
+        /** Player has died */
+        LOSS,
+        /** Player is still playing */
+        IN_PROGRESS
+    }
+    private LevelState levelState;
 
     // TODO #2: TO FIX THE TIMESTEP? May not need
     /** The maximum frames per second setting for this level */
@@ -174,6 +189,13 @@ public class LevelController {
     // TODO #2 End
 
     /**
+     * Gets the current state of the level.
+     *
+     * This value is used by GameEngine to know when player has lost or won.
+     */
+    public LevelState getLevelState() { return levelState; }
+
+    /**
      * Creates a new LevelModel
      *
      * The level is empty and there is no active physics world.  You must read
@@ -193,6 +215,7 @@ public class LevelController {
         enemies = new LinkedList<>();
         flares = new LinkedList<>();
         debug  = false;
+        levelState = LevelState.IN_PROGRESS;
     }
 
     /**
@@ -201,14 +224,30 @@ public class LevelController {
      * @param levelFormat	the JSON tree defining the level
      */
     public void populate(JsonValue levelFormat) {
+        float[] pSize = levelFormat.get("physicsSize").asFloatArray();
+        int[] gSize = levelFormat.get("graphicSize").asIntArray();
+
+        world = new World(Vector2.Zero,false);
+        bounds = new Rectangle(0,0,pSize[0],pSize[1]);
+        scale.x = gSize[0]/pSize[0];
+        scale.y = gSize[1]/pSize[1];
+
         //TODO #8 INIT Player and exit
-        player = new PlayerModel();
-        exit = new ExitModel();
+        // Create player
+        player = new PlayerModel(levelFormat.get("player"));
+        player.setDrawScale(scale);
+        player.activatePhysics(world);
+        // Create Exit
+        exit = new ExitModel(levelFormat.get("exit"));
+        exit.setDrawScale(scale);
+        exit.activatePhysics(world);
         //TODO #8 End
         for(JsonValue wallJSON : levelFormat.get("walls")) {
             //TODO #5 INIT walls
             WallModel wall = new WallModel();
             wall.initialize(wallJSON);
+            wall.setDrawScale(scale);
+            wall.activatePhysics(world);
             walls.add(wall);
             // TODO #5 End
         }
@@ -216,17 +255,146 @@ public class LevelController {
             //TODO #6 INIT enemies
             EnemyModel enemy = new EnemyModel();
             enemy.initialize(enemyJSON);
+            enemy.setDrawScale(scale);
+            enemy.activatePhysics(world);
             enemies.add(enemy);
             AIController controller = new AIController();
             AIControllers.add(controller);
             //TODO #6
         }
-        for(JsonValue flareJSON : levelFormat.get("flares")) {
-            //TODO #7 INIT flares
-            FlareModel flare = new FlareModel();
-            flare.intialize(flareJSON);
-            flares.add(flare);
-            //TODO #7
+        flareJSON = levelFormat.get("flares");
+
+        lightController.initializeLights(player, levelFormat.get("lighting"));
+    }
+
+    /**
+     * Disposes of all resources for this model.
+     *
+     * Because of all the heavy weight physics stuff, this method is absolutely
+     * necessary whenever we reset a level.
+     */
+    public void dispose() {
+        lightController.dispose();
+
+        for(WallModel wall : walls) {
+            wall.deactivatePhysics(world);
+            wall.dispose();
+            walls.clear();
+        }
+        for(EnemyModel enemy : enemies) {
+            enemy.deactivatePhysics(world);
+            enemy.dispose();
+            enemies.clear();
+        }
+        for(FlareModel flare : flares) {
+            flare.deactivatePhysics(world);
+            flare.dispose();
+            flares.clear();
+        }
+        exit.deactivatePhysics(world);
+        exit.dispose();
+        player.deactivatePhysics(world);
+        player.dispose();
+
+        if (world != null) {
+            world.dispose();
+            world = null;
+        }
+    }
+
+    /**
+     * Returns true if the object is in bounds.
+     *
+     * This assertion is useful for debugging the physics.
+     *
+     * @param obj The object to check.
+     *
+     * @return true if the object is in bounds.
+     */
+    private boolean inBounds(Obstacle obj) {
+        boolean horiz = (bounds.x <= obj.getX() && obj.getX() <= bounds.x+bounds.width);
+        boolean vert  = (bounds.y <= obj.getY() && obj.getY() <= bounds.y+bounds.height);
+        return horiz && vert;
+    }
+
+    /**
+     * Updates all of the models in the level.
+     *
+     * This is borderline controller functionality.  However, we have to do this because
+     * of how tightly coupled everything is.
+     *
+     * @param dt the time passed since the last frame
+     */
+    public void update(float dt) {
+        player.update(dt);
+        exit.update(dt);
+        updateEnemies(dt);
+        Iterator<FlareModel> i = flares.iterator();
+        while(i.hasNext()){
+            FlareModel flare = i.next();
+            if(!flare.isActive()){
+                flare.deactivatePhysics(world);
+                flare.dispose();
+                i.remove();
+            }
+        }
+        updateLights(player, flares, enemies);
+    }
+
+    // TODO BITCH
+    public void updateEnemies(float dt) {
+        Iterator<EnemyModel> i = enemies.iterator();
+        while(i.hasNext()){
+            EnemyModel enemy = i.next();
+
+        }
+    }
+
+    /**
+     * Launch a flare from the player towards the mouse position based on preset flareJSON data
+     *
+     * @param mousePosition Position of mouse when flare launched
+     */
+    public void createFlare(float[] mousePosition){
+        FlareModel flare = new FlareModel(player.getPosition(), mousePosition, flareJSON);
+        flares.add(flare);
+    }
+
+    /**
+     * Draws the level to the given game canvas
+     *
+     * If debug mode is true, it will outline all physics bodies as wireframes. Otherwise
+     * it will only draw the sprite representations.
+     *
+     * @param canvas	the drawing context
+     */
+    public void draw(GameCanvas canvas) {
+        canvas.clear();
+
+        // Draw all objects
+        canvas.begin();
+        player.draw(canvas);
+        exit.draw(canvas);
+        for(WallModel wall : walls) {
+            wall.draw(canvas);
+        }
+        for(EnemyModel enemy : enemies) {
+            enemy.draw(canvas);
+        }
+        for(FlareModel flare : flares) {
+            flare.draw(canvas);
+        }
+        canvas.end();
+
+        lightController.draw(canvas);
+
+        // Draw debugging on top of everything.
+        if (debug) {
+            canvas.beginDebug();
+            for(Obstacle obj : objects) {
+                obj.drawDebug(canvas);
+            }
+            canvas.endDebug();
         }
     }
 
@@ -238,7 +406,26 @@ public class LevelController {
      *
      * @param contact The two bodies that collided
      */
-    public void beginContact(Contact contact) {}
+    public void beginContact(Contact contact) {
+        Fixture fix1 = contact.getFixtureA();
+        Fixture fix2 = contact.getFixtureB();
+
+        Body body1 = fix1.getBody();
+        Body body2 = fix2.getBody();
+
+        Object fd1 = fix1.getUserData();
+        Object fd2 = fix2.getUserData();
+
+        try {
+            Obstacle bd1 = (Obstacle)body1.getUserData();
+            Obstacle bd2 = (Obstacle)body2.getUserData();
+
+            // Check for victory collision
+            if()
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /** Unused ContactListener method */
     public void endContact(Contact contact) {}
     /** Unused ContactListener method */
