@@ -1,9 +1,16 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.utils.JsonValue;
+import com.fallenflame.game.physics.obstacle.ObstacleCanvas;
 import com.fallenflame.game.physics.obstacle.WheelObstacle;
-import com.fallenflame.game.util.FilmStrip;
+import com.fallenflame.game.util.*;
+import com.badlogic.gdx.graphics.*;
+
+import java.lang.reflect.Field;
 
 public class FlareModel extends WheelObstacle {
     // Physics constants
@@ -113,13 +120,14 @@ public class FlareModel extends WheelObstacle {
     }
 
     /**
-     * Creates a new dude with degenerate settings
+     * Creates a new dude with input position and json settings
      *
      * The main purpose of this constructor is to set the initial capsule orientation.
      */
-    public FlareModel() {
-        super(0,0,1.0f);
+    public FlareModel(float[] pos, JsonValue json) {
+        super(pos[0],pos[1],1.0f);
         setFixedRotation(false);
+        initialize(json);
     }
 
     /**
@@ -132,31 +140,28 @@ public class FlareModel extends WheelObstacle {
      */
     public void initialize(JsonValue json) {
         setName(json.name());
-        float[] pos  = json.get("pos").asFloatArray();
         float radius = json.get("radius").asFloat();
-        setPosition(pos[0],pos[1]);
         setRadius(radius);
 
-        // Technically, we should do error checking here.
+        // TODO #2: Technically, we should do error checking here.
         // A JSON field might accidentally be missing
         setBodyType(json.get("bodytype").asString().equals("static") ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody);
         setDensity(json.get("density").asFloat());
         setFriction(json.get("friction").asFloat());
         setRestitution(json.get("restitution").asFloat());
-        setForce(json.get("force").asFloat());
+        setInitialForce(json.get("initialforce").asFloat());
         setDamping(json.get("damping").asFloat());
-        setMaxSpeed(json.get("maxspeed").asFloat());
         setStartFrame(json.get("startframe").asInt());
-        setWalkLimit(json.get("walklimit").asInt());
 
         // Create the collision filter (used for light penetration)
-        short collideBits = LevelModel.bitStringToShort(json.get("collideBits").asString());
-        short excludeBits = LevelModel.bitStringToComplement(json.get("excludeBits").asString());
+        short collideBits = JsonAssetManager.bitStringToShort(json.get("collideBits").asString());
+        short excludeBits = JsonAssetManager.bitStringToComplement(json.get("excludeBits").asString());
         Filter filter = new Filter();
         filter.categoryBits = collideBits;
         filter.maskBits = excludeBits;
         setFilterData(filter);
 
+        // Create debug color
         // Reflection is best way to convert name to color
         Color debugColor;
         try {
@@ -170,7 +175,7 @@ public class FlareModel extends WheelObstacle {
         debugColor.mul(opacity/255.0f);
         setDebugColor(debugColor);
 
-        // Now get the texture from the AssetManager singleton
+        // Get the texture from the AssetManager singleton
         String key = json.get("texture").asString();
         TextureRegion texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         try {
@@ -179,5 +184,58 @@ public class FlareModel extends WheelObstacle {
             filmstrip = null;
         }
         setTexture(texture);
+    }
+
+    /**
+     * Applies the force to the body of this dude
+     *
+     * This method should be called after the force attribute is set.
+     */
+    public void applyInitialForce() {
+        if (!isActive()) {
+            return;
+        }
+
+//        // Only walk or spin if we allow it
+//        setLinearVelocity(Vector2.Zero);
+//        setAngularVelocity(0.0f);
+
+        // Apply force for movement
+        body.applyForce(initialForce,getPosition(),true);
+        animate = true;
+    }
+
+    /**
+     * Updates the object's physics state (NOT GAME LOGIC).
+     *
+     * We use this method to reset cooldowns.
+     *
+     * @param dt Number of seconds since last animation frame
+     */
+    public void update(float dt) {
+        // Animate if necessary
+        if (animate) {
+            if (filmstrip != null) {
+                int next = (filmstrip.getFrame()+1) % filmstrip.getSize();
+                filmstrip.setFrame(next);
+            }
+        } else {
+            if (filmstrip != null) {
+                filmstrip.setFrame(startFrame);
+            }
+        }
+
+        super.update(dt);
+    }
+
+    /**
+     * Draws the physics object.
+     *
+     * @param canvas Drawing context
+     */
+    public void draw(ObstacleCanvas canvas) {
+        if (texture != null) {
+            canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),1.0f,1.0f);
+        }
     }
 }
