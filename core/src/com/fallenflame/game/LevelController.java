@@ -8,6 +8,7 @@ import com.fallenflame.game.physics.obstacle.ObstacleCanvas;
 
 import java.util.*;
 
+/** Credit to Walker White for some code reused from B2LightsDemo */
 public class LevelController {
     //  MAY NEED THESE:
 //    /** Number of velocity iterations for the constrain solvers */
@@ -26,6 +27,8 @@ public class LevelController {
     private List<WallModel> walls;
     /** Reference to all flares */
     private List<FlareModel> flares;
+    /** Level Model for AI Pathfinding */
+    private LevelModel levelModel;
     /** Flare JSONValue */
     private JsonValue flareJSON;
 
@@ -202,20 +205,20 @@ public class LevelController {
      * the JSON file to initialize the level
      */
     public LevelController() {
+        // World
         world  = null;
-        // TODO #4: Fix once light controller constructor is finished
-        lightController = new LightController();
-        // TODO #4 End
-        AIControllers = new LinkedList<>();
-        // TODO #3: Check correctness
         bounds = new Rectangle(0,0,1,1);
         scale = new Vector2(1,1);
-        // TODO #3 End
+        debug  = false;
+        levelState = LevelState.IN_PROGRESS;
+        // Controllers
+        lightController = new LightController();
+        AIControllers = new LinkedList<>();
+        // Models
         walls = new LinkedList<>();
         enemies = new LinkedList<>();
         flares = new LinkedList<>();
-        debug  = false;
-        levelState = LevelState.IN_PROGRESS;
+        levelModel = new LevelModel(player, walls, enemies); // TODO
     }
 
     /**
@@ -232,24 +235,24 @@ public class LevelController {
         scale.x = gSize[0]/pSize[0];
         scale.y = gSize[1]/pSize[1];
 
-        //TODO #8 INIT Player and exit
+        //TODO #8 INIT Player
         // Create player
-        player = new PlayerModel(levelFormat.get("player"));
+        player = new PlayerModel();
+        player.initialize(levelFormat.get("player"));
         player.setDrawScale(scale);
         player.activatePhysics(world);
+        //TODO #8 End
         // Create Exit
-        exit = new ExitModel(levelFormat.get("exit"));
+        exit = new ExitModel();
+        exit.initialize(levelFormat.get("exit"));
         exit.setDrawScale(scale);
         exit.activatePhysics(world);
-        //TODO #8 End
         for(JsonValue wallJSON : levelFormat.get("walls")) {
-            //TODO #5 INIT walls
             WallModel wall = new WallModel();
             wall.initialize(wallJSON);
             wall.setDrawScale(scale);
             wall.activatePhysics(world);
             walls.add(wall);
-            // TODO #5 End
         }
         for(JsonValue enemyJSON : levelFormat.get("enemies")) {
             //TODO #6 INIT enemies
@@ -258,13 +261,13 @@ public class LevelController {
             enemy.setDrawScale(scale);
             enemy.activatePhysics(world);
             enemies.add(enemy);
-            AIController controller = new AIController();
+            AIController controller = new AIController(levelModel);
             AIControllers.add(controller);
             //TODO #6
         }
         flareJSON = levelFormat.get("flares");
 
-        lightController.initializeLights(player, levelFormat.get("lighting"));
+        lightController.initialize(player, levelFormat.get("lighting"), world, bounds);
     }
 
     /**
@@ -326,9 +329,29 @@ public class LevelController {
      * @param dt the time passed since the last frame
      */
     public void update(float dt) {
+        // Update player and exit
         player.update(dt);
-        exit.update(dt);
-        updateEnemies(dt);
+        exit.update(dt); // TODO: Necessary?
+
+        // Update levelModel
+        updateLevelModel();
+
+        // Get Enemy Actions
+        Iterator<AIController> ctrlI = AIControllers.iterator();
+        LinkedList<EnemyModel.Action> actions = new LinkedList();
+        while(ctrlI.hasNext()){
+            AIController ctrl = ctrlI.next();
+            actions.add(ctrl.getAction());
+        }
+        // Execute Enemy Actions
+        Iterator<EnemyModel> enemyI = enemies.iterator();
+        Iterator<EnemyModel> actionI = enemies.iterator();
+        while(enemyI.hasNext()){
+            EnemyModel enemy = enemyI.next();
+            enemy.executeAction(actionI.next());
+        }
+
+        // Update flares
         Iterator<FlareModel> i = flares.iterator();
         while(i.hasNext()){
             FlareModel flare = i.next();
@@ -337,21 +360,20 @@ public class LevelController {
                 flare.dispose();
                 i.remove();
             }
-        }
-        updateLights(player, flares, enemies);
-    }
-
-    // TODO
-    public void updateEnemies(float dt) {
-        Iterator<EnemyModel> enemyI = enemies.iterator();
-        Iterator<AIController> ctrlI = AIControllers.iterator();
-        while(enemyI.hasNext()){
-            EnemyModel enemy = enemyI.next();
-            AIController ctrl = ctrlI.next();
-            switch(ctrl.getAction()){
-                
+            else {
+                flare.update();
             }
         }
+
+        // Update lights
+        lightController.updateLights(player, flares, enemies);
+    }
+
+    /**
+     * Updates level model to reflect available tiles
+     */
+    public void updateLevelModel() {
+        // TODO
     }
 
     /**
@@ -390,13 +412,21 @@ public class LevelController {
         }
         canvas.end();
 
-        lightController.draw(canvas);
+        lightController.draw();
 
         // Draw debugging on top of everything.
         if (debug) {
             canvas.beginDebug();
-            for(Obstacle obj : objects) {
-                obj.drawDebug(canvas);
+            player.drawDebug(canvas);
+            exit.drawDebug(canvas);
+            for(WallModel wall : walls) {
+                wall.drawDebug(canvas);
+            }
+            for(EnemyModel enemy : enemies) {
+                enemy.drawDebug(canvas);
+            }
+            for(FlareModel flare : flares) {
+                flare.drawDebug(canvas);
             }
             canvas.endDebug();
         }
