@@ -199,6 +199,15 @@ public class LevelController {
     public LevelState getLevelState() { return levelState; }
 
     /**
+     * Sets the current state of the level.
+     *
+     * This value is used by GameEngine to know when player has lost or won.
+     *
+     * @param state Desired levelState
+     */
+    public void setLevelState(LevelState state) { levelState = state; }
+
+    /**
      * Creates a new LevelModel
      *
      * The level is empty and there is no active physics world.  You must read
@@ -235,7 +244,13 @@ public class LevelController {
         scale.x = gSize[0]/pSize[0];
         scale.y = gSize[1]/pSize[1];
 
-        //TODO #8 INIT Player
+        // Compute the FPS
+        int[] fps = levelFormat.get("fpsRange").asIntArray();
+        maxFPS = fps[1]; minFPS = fps[0];
+        timeStep = 1.0f/maxFPS;
+        maxSteps = 1.0f + maxFPS/minFPS;
+        maxTimePerFrame = timeStep*maxSteps;
+
         // Create player
         player = new PlayerModel();
         player.initialize(levelFormat.get("player"));
@@ -261,7 +276,7 @@ public class LevelController {
             enemy.setDrawScale(scale);
             enemy.activatePhysics(world);
             enemies.add(enemy);
-            AIController controller = new AIController(levelModel);
+            AIController controller = new AIController(enemy, levelModel);
             AIControllers.add(controller);
             //TODO #6
         }
@@ -396,6 +411,7 @@ public class LevelController {
      */
     public void draw(GameCanvas canvas) {
         canvas.clear();
+        canvas.setCameraPosition(player.getPosition());
 
         // Draw all objects
         canvas.begin();
@@ -454,8 +470,27 @@ public class LevelController {
             Obstacle bd1 = (Obstacle)body1.getUserData();
             Obstacle bd2 = (Obstacle)body2.getUserData();
 
-            // Check for victory collision
-            if()
+            // Check for win condition
+            if ((bd1 == player && bd2 == exit  )
+                    || (bd1 == exit && bd2 == player)) {
+                setLevelState(levelState.WIN);
+                return;
+            }
+            // Check for loss condition (player runs into enemy)
+            if((bd1 == player && bd2 instanceof EnemyModel)
+                    || (bd1 instanceof  EnemyModel && bd2 == player)){
+                setLevelState(LevelState.LOSS);
+                return;
+            }
+            // Ensure flare does not collide with player or enemy
+            if ((bd1 == player && bd2 instanceof FlareModel)
+                    || (bd1 instanceof FlareModel && bd2 == player)
+                    || (bd1 instanceof EnemyModel && bd2 instanceof FlareModel)
+                    || (bd1 instanceof FlareModel && bd2 instanceof EnemyModel)) {
+                contact.setEnabled(false);
+                return;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
