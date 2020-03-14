@@ -1,11 +1,11 @@
 {
-  "enemies": [
-    {
-      "type": 1,
-      "speed": 2,
-      "startX": 10,
-      "startY": 10,
-      "texture": "assets/textures/..."
-    }
-  ]
+  "physicsSize":      [16.0,12.0],
+  "graphicSize":      [ 800, 600],
+  "fpsRange":         [  20,  60],
+  "player":           { },
+  "exit":             { },
+  "enemies":          [ ],
+  "walls" :           [ ],
+  "flare" :           { },
+  "lighting":         { }
 }

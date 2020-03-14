@@ -276,7 +276,7 @@ public class LevelController {
             AIControllers.add(controller);
             //TODO #6
         }
-        flareJSON = levelFormat.get("flares");
+        flareJSON = levelFormat.get("flare");
 
         // Initialize levelModel
         levelModel.initialize(bounds, player, walls, enemies)
