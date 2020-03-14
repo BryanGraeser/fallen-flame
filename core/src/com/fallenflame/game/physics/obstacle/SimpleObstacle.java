@@ -23,6 +23,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Base model class to support collisions.
  *
  * This is an instance of a Obstacle with just one body. It does not have any joints.

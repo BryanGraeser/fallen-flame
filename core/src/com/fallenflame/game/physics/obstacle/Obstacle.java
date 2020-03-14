@@ -24,6 +24,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Base model class to support collisions.
  *
  * Instances represents a body and/or a group of bodies.

@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ * 
  * Interface representing a single light source.
  * 
  * The light source is attached to a rayhandler on creation and cannot reassigned.  The

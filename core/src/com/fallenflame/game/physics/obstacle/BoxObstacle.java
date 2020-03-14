@@ -18,6 +18,8 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Box-shaped model to support collisions.
  *
  * Unless otherwise specified, the center of mass is as the center.

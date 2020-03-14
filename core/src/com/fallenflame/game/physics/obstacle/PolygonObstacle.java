@@ -25,6 +25,8 @@ import com.badlogic.gdx.physics.box2d.*;
 
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Arbitrary polygonal-shaped model to support collisions.
  *
  * The polygon coordinates are all in local space, relative to the object
