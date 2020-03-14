@@ -60,7 +60,7 @@ public class LevelController {
     }
     private LevelState levelState;
 
-    // TODO #2: TO FIX THE TIMESTEP? May not need
+    // TO FIX THE TIMESTEP
     /** The maximum frames per second setting for this level */
     protected int maxFPS;
     /** The minimum frames per second setting for this level */
@@ -73,7 +73,6 @@ public class LevelController {
     protected float maxTimePerFrame;
     /** The amount of time that has passed without updating the frame */
     protected float physicsTimeLeft;
-    // TODO #2 End
 
     /**
      * Returns the bounding rectangle for the physics world
@@ -153,7 +152,6 @@ public class LevelController {
      */
     public void setDebug(boolean value) { debug = value; }
 
-    // TODO #2
     /**
      * Returns the maximum FPS supported by this level
      *
@@ -189,7 +187,6 @@ public class LevelController {
      * @param value the minimum FPS supported by this level
      */
     public void setMinFPS(int value) { minFPS = value; }
-    // TODO #2 End
 
     /**
      * Gets the current state of the level.
@@ -227,7 +224,7 @@ public class LevelController {
         walls = new LinkedList<>();
         enemies = new LinkedList<>();
         flares = new LinkedList<>();
-        levelModel = new LevelModel(player, walls, enemies); // TODO
+        levelModel = new LevelModel();
     }
 
     /**
@@ -256,7 +253,6 @@ public class LevelController {
         player.initialize(levelFormat.get("player"));
         player.setDrawScale(scale);
         player.activatePhysics(world);
-        //TODO #8 End
         // Create Exit
         exit = new ExitModel();
         exit.initialize(levelFormat.get("exit"));
@@ -281,6 +277,9 @@ public class LevelController {
             //TODO #6
         }
         flareJSON = levelFormat.get("flares");
+
+        // Initialize levelModel
+        levelModel.initialize(bounds, player, walls, enemies)
 
         lightController.initialize(player, levelFormat.get("lighting"), world, bounds);
     }
@@ -344,8 +343,10 @@ public class LevelController {
      * @param dt the time passed since the last frame
      */
     public void update(float dt) {
-        // Update player and exit
+        // Update player (and update levelModel) and exit
+        levelModel.removePlayer(player);
         player.update(dt);
+        levelModel.placePlayer(player);
         exit.update(dt); // TODO: Necessary?
 
         // Update levelModel
@@ -358,12 +359,14 @@ public class LevelController {
             AIController ctrl = ctrlI.next();
             actions.add(ctrl.getAction());
         }
-        // Execute Enemy Actions
+        // Execute Enemy Actions (and update levelModel)
         Iterator<EnemyModel> enemyI = enemies.iterator();
         Iterator<EnemyModel> actionI = enemies.iterator();
         while(enemyI.hasNext()){
             EnemyModel enemy = enemyI.next();
-            enemy.executeAction(actionI.next());
+            levelModel.removeEnemy(enemy);
+            enemy.executeAction(actionI.next()); // TODO handle here or in enemyModel?
+            levelModel.placeEnemy(enemy);
         }
 
         // Update flares
@@ -382,13 +385,6 @@ public class LevelController {
 
         // Update lights
         lightController.updateLights(player, flares, enemies);
-    }
-
-    /**
-     * Updates level model to reflect available tiles
-     */
-    public void updateLevelModel() {
-        // TODO
     }
 
     /**
