@@ -1,54 +1,100 @@
 package com.fallenflame.game;
 
 import com.badlogic.gdx.math.*;
+import com.fallenflame.game.physics.obstacle.BoxObstacle;
+import com.fallenflame.game.physics.obstacle.WheelObstacle;
 
 import java.util.*;
+
+// TODO: ASSUMES OBSTACLE POSITION IS AT CENTER, NEED TO VERIFY IF TRUE
 
 public class LevelModel {
 
     /** 2D tile representation of board where TRUE indicates tile is available for movement*/
-    private ArrayList<ArrayList<Boolean>> tileGrid;
+    private boolean[][] tileGrid;
     /** Size of tiles (tiles are square so is x and y) */
     private int tileSize;
+    /** Width of screen */
+    private float width;
+    /** Height of screen */
+    private float height;
 
     public LevelModel(){ }
 
     public void initialize(Rectangle bounds, PlayerModel player, List<WallModel> walls, List<EnemyModel> enemies) {
-        // TODO
-        // also need to think about where the grid granularity constant is?
-        // can make it a factor of the player size?
+        tileSize = player.getRadius();
+        width = bounds.getWidth();
+        height = bounds.getHeight();
+
+        tileGrid = new boolean[(int) width / tileSize][(int) height / tileSize];
+        // Initialize grid to true
+        for(int x = 0; x < tileGrid.length; x++) {
+            for(int y = 0; y < tileGrid[x].length; y++) {
+                tileGrid[x][y] = true;
+            }
+        }
+        // Set grid to false where obstacle exists
+        setWheelObstacleInGrid(player, false);
+        for(EnemyModel e : enemies) {
+            setWheelObstacleInGrid(e, false);
+        }
+        for(WallModel w : walls) {
+            setBoxObstacleInGrid(w, false);
+        }
     }
 
     /**
      * Sets tiles previously covered by player as available
      * @param player
      */
-    public void removePlayer(PlayerModel player) {
-        // TODO
-    }
+    public void removePlayer(PlayerModel player) { setWheelObstacleInGrid(player, true); }
 
     /**
      * Sets tiles currently covered by player as unavailable
      * @param player
      */
-    public void placePlayer(PlayerModel player) {
-        // TODO
-    }
+    public void placePlayer(PlayerModel player) { setWheelObstacleInGrid(player, false); }
 
     /**
      * Sets tiles previously covered by enemy as available
      * @param enemy
      */
-    public void removeEnemy(EnemyModel enemy) {
-        // TODO
-    }
+    public void removeEnemy(EnemyModel enemy) { setWheelObstacleInGrid(enemy, true) }
 
     /**
      * Sets tiles currently covered by enemy as unavailable
      * @param enemy
      */
-    public void placeEnemy(EnemyModel enemy) {
-        // TODO
+    public void placeEnemy(EnemyModel enemy) { setWheelObstacleInGrid(enemy, false); }
+
+    /**
+     * Set tiles currently covered by WheelObstacle obs to boolean b
+     * @param obs Wheel obstacle
+     * @param b Boolean value
+     */
+    public void setWheelObstacleInGrid(WheelObstacle obs, boolean b) {
+        for(int x = screenToTile(obs.getX() - obs.getRadius());
+            x < screenToTile(obs.getX() + obs.getRadius()); x++) {
+            for(int y = screenToTile(obs.getY() - obs.getRadius());
+                y < screenToTile(obs.getY() + obs.getRadius()); y++) {
+                tileGrid[x][y] = b;
+            }
+        }
+    }
+
+    /**
+     * Set tiles currently covered by BoxObstacle obs to boolean b
+     * @param obs Wheel obstacle
+     * @param b Boolean value
+     */
+    public void setBoxObstacleInGrid(BoxObstacle obs, boolean b) {
+        for(int x = screenToTile(obs.getX() - obs.getWidth()/2);
+            x < screenToTile(obs.getX() + obs.getWidth()); x++) {
+            for(int y = screenToTile(obs.getY() - obs.getHeight());
+                y < screenToTile(obs.getY() + obs.getHeight()); y++) {
+                tileGrid[x][y] = b;
+            }
+        }
     }
 
     /**
@@ -91,6 +137,6 @@ public class LevelModel {
      * @return isSafe boolean
      */
     public boolean getSafe(int x, int y) {
-        return tileGrid.get(x).get(y);
+        return tileGrid[x][y];
     }
 }
