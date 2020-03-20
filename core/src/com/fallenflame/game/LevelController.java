@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
 import com.fallenflame.game.physics.obstacle.Obstacle;
-import com.fallenflame.game.physics.obstacle.ObstacleCanvas;
 
 import java.util.*;
 
@@ -82,6 +81,15 @@ public class LevelController {
      * @return the bounding rectangle for the physics world
      */
     public Rectangle getBounds() { return bounds; }
+
+    /**
+     * Sets the bounding rectangle for the physics world
+     *
+     * The size of the rectangle is in physics, coordinates, not screen coordinates
+     *
+     * @value the bounding rectangle for the physics world
+     */
+    public void setBounds(Rectangle value) { bounds = value; }
 
     /**
      * Returns the scaling factor to convert physics coordinates to screen coordinates
@@ -230,11 +238,11 @@ public class LevelController {
     /**
      * Lays out the game geography and enemies from the given JSON file
      *
-     * @param levelFormat	the JSON tree defining the level
+     * @param levelJson	the JSON tree defining the level
      */
-    public void populate(JsonValue levelFormat) {
-        float[] pSize = levelFormat.get("physicsSize").asFloatArray();
-        int[] gSize = levelFormat.get("graphicSize").asIntArray();
+    public void populate(JsonValue levelJson) {
+        float[] pSize = levelJson.get("physicsSize").asFloatArray();
+        int[] gSize = levelJson.get("graphicSize").asIntArray();
 
         world = new World(Vector2.Zero,false);
         bounds = new Rectangle(0,0,pSize[0],pSize[1]);
@@ -242,7 +250,7 @@ public class LevelController {
         scale.y = gSize[1]/pSize[1];
 
         // Compute the FPS
-        int[] fps = levelFormat.get("fpsRange").asIntArray();
+        int[] fps = levelJson.get("fpsRange").asIntArray();
         maxFPS = fps[1]; minFPS = fps[0];
         timeStep = 1.0f/maxFPS;
         maxSteps = 1.0f + maxFPS/minFPS;
@@ -250,22 +258,22 @@ public class LevelController {
 
         // Create player
         player = new PlayerModel();
-        player.initialize(levelFormat.get("player"));
+        player.initialize(levelJson.get("player"));
         player.setDrawScale(scale);
         player.activatePhysics(world);
         // Create Exit
         exit = new ExitModel();
-        exit.initialize(levelFormat.get("exit"));
+        exit.initialize(levelJson.get("exit"));
         exit.setDrawScale(scale);
         exit.activatePhysics(world);
-        for(JsonValue wallJSON : levelFormat.get("walls")) {
+        for(JsonValue wallJSON : levelJson.get("walls")) {
             WallModel wall = new WallModel();
             wall.initialize(wallJSON);
             wall.setDrawScale(scale);
             wall.activatePhysics(world);
             walls.add(wall);
         }
-        for(JsonValue enemyJSON : levelFormat.get("enemies")) {
+        for(JsonValue enemyJSON : levelJson.get("enemies")) {
             //TODO #6 INIT enemies
             EnemyModel enemy = new EnemyModel();
             enemy.initialize(enemyJSON);
@@ -276,12 +284,12 @@ public class LevelController {
             AIControllers.add(controller);
             //TODO #6
         }
-        flareJSON = levelFormat.get("flare");
+        flareJSON = levelJson.get("flare");
 
         // Initialize levelModel
         levelModel.initialize(bounds, player, walls, enemies)
 
-        lightController.initialize(player, levelFormat.get("lighting"), world, bounds);
+        lightController.initialize(player, levelJson.get("lighting"), world, bounds);
     }
 
     /**
@@ -347,7 +355,6 @@ public class LevelController {
         levelModel.removePlayer(player);
         player.update(dt);
         levelModel.placePlayer(player);
-        exit.update(dt); // TODO: Necessary?
 
         // Get Enemy Actions
         Iterator<AIController> ctrlI = AIControllers.iterator();
@@ -385,13 +392,34 @@ public class LevelController {
     }
 
     /**
-     * Launch a flare from the player towards the mouse position based on preset flareJSON data
+     * Launch a flare from the player towards the mouse position based on preset flareJSON data.
+     * (Called by GameEngine)
      *
      * @param mousePosition Position of mouse when flare launched
      */
     public void createFlare(float[] mousePosition){
         FlareModel flare = new FlareModel(player.getPosition(), mousePosition, flareJSON);
         flares.add(flare);
+    }
+
+    /**
+     * Moves the player. (Called by GameEngine)
+     * @param angle angle player is facing
+     * @param tempAngle movement angle of player (to be scaled by player force)
+     */
+    public void movePlayer(float angle, Vector2 tempAngle) {
+        tempAngle.scl(player.getForce());
+        player.setMovement(tempAngle.x, tempAngle.y);
+        player.setAngle(angle);
+        player.applyForce();
+    }
+
+    /**
+     * Change lightRadius generated from player. (Called by GameEngine)
+     * @param lightRadius radius of light around player
+     */
+    public void lightFromPlayer(float lightRadius) {
+        player.incrementLightRadius(lightRadius);
     }
 
     /**
