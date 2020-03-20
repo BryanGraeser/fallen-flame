@@ -20,6 +20,10 @@ public class GameEngine implements Screen {
         /** Assets are complete */
         COMPLETE
     }
+
+    /** Exit code for quitting the game */
+    public static final int EXIT_QUIT = 0;
+
  /**@author: Professor White */
     private JsonReader jsonReader;
     /**@author: Professor White */
