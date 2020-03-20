@@ -263,7 +263,7 @@ public class GameEngine implements Screen {
             level.createFlare(input.getMousePosition());
         }
         if(input.didLight()){
-            level.lightFromPlayer(levelJson);
+            level.lightFromPlayer(input.getLightRadius(), levelJson);
         }
         // Rotate the avatar to face the direction of movement
         tempAngle.set(input.getHorizontal(),input.getVertical());

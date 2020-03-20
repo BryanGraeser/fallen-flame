@@ -69,7 +69,7 @@ public class InputController {
     /** Did we increase or decrease the radius?
      * Can only be two values: -1 and 1
      */
-    private float lightRadius;
+    private int lightRadius;
 
     /** An X-Box controller (if it is connected) */
     XBox360Controller xbox;
@@ -94,6 +94,9 @@ public class InputController {
      */
     public float getVertical() {
         return vertical;
+    }
+    public int getLightRadius(){
+        return lightRadius;
     }
 
     public float[] getMousePosition(){
@@ -208,7 +211,7 @@ public class InputController {
         // Increase animation frame, but only if trying to move
         horizontal = xbox.getLeftX();
         vertical   = xbox.getLeftY();
-        lightRadius = xbox.getLeftTrigger();
+        lightRadius = xbox.getLeftTrigger() == 1.0f ? 1 : xbox.getRightTrigger() == 1.0f ? -1 : 0;
     }
 
     /**
@@ -237,12 +240,12 @@ public class InputController {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             horizontal -= 1.0f;
         }
-        lightRadius = (secondary ? lightRadius : 0.0f);
+        lightRadius = (secondary ? lightRadius : 0);
         if(Gdx.input.getInputProcessor().scrolled(1)){
-            lightRadius += 1.0f;
+            lightRadius += 1;
         }
         if(Gdx.input.getInputProcessor().scrolled(-1)){
-            lightRadius += 1.0f;
+            lightRadius += -1;
         }
         vertical = (secondary ? vertical : 0.0f);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
