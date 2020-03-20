@@ -349,9 +349,6 @@ public class LevelController {
         levelModel.placePlayer(player);
         exit.update(dt); // TODO: Necessary?
 
-        // Update levelModel
-        updateLevelModel();
-
         // Get Enemy Actions
         Iterator<AIController> ctrlI = AIControllers.iterator();
         LinkedList<EnemyModel.Action> actions = new LinkedList();
