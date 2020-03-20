@@ -397,7 +397,7 @@ public class LevelController {
      *
      * @param mousePosition Position of mouse when flare launched
      */
-    public void createFlare(float[] mousePosition){
+    public void createFlare(Vector2 mousePosition){
         FlareModel flare = new FlareModel(player.getPosition(), mousePosition, flareJSON);
         flares.add(flare);
     }
