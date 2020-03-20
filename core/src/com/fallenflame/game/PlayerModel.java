@@ -316,4 +316,12 @@ public class PlayerModel extends WheelObstacle {
     public void setLightRadius(float r) {
         lightRadius = r;
     }
+
+    /**
+     * Increments light radius by i (can be positive or negative) ensuring lightRadius is never less than 0.
+     * @param i value to increment radius by
+     */
+    public void incrementLightRadius(float i) {
+        lightRadius = Math.max(lightRadius + i, 0);
+    }
 }
