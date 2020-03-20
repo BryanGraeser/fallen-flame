@@ -56,12 +56,14 @@ public class InputController {
     /** Whether the exit button was pressed. */
     private boolean exitPressed;
     private boolean exitPrevious;
-    /** Whether the gasoline button was pressed. */
-    private boolean firePressed;
-    private boolean firePrevious;
+    /** Whether the flare button was pressed. */
+    private boolean flarePressed;
+    private boolean flarePrevious;
 
-    /** Are we pouring? */
-    private boolean pouring;
+    /** Whether the light button was pressed */
+    private boolean lightPressed;
+    private boolean lightPrevious;
+
     /** How much did we move horizontally? */
     private float horizontal;
     /** How much did we move vertically? */
@@ -143,9 +145,11 @@ public class InputController {
      *
      * @return true if the fire button was pressed.
      */
-    public boolean didFire() {
-        return firePressed && !firePrevious;
+    public boolean didFlare() {
+        return flarePressed && !flarePrevious;
     }
+
+    public boolean didLight() {return lightPressed;}
 
     /**
      * Creates a new input controller
@@ -169,7 +173,8 @@ public class InputController {
         exitPrevious = exitPressed;
         nextPrevious = nextPressed;
         prevPrevious = prevPressed;
-        firePrevious = firePressed;
+        flarePrevious = flarePressed;
+        lightPrevious  = lightPressed;
 
         // Check to see if a GamePad is connected
         if (xbox.isConnected()) {
@@ -194,6 +199,8 @@ public class InputController {
         nextPressed  = xbox.getRB();
         prevPressed  = xbox.getLB();
         debugPressed  = xbox.getY();
+        lightPressed = xbox.getA();
+        flarePressed = xbox.getB();
 
         // TODO: Light pulse for Xbox.
 
@@ -218,7 +225,8 @@ public class InputController {
         prevPressed = (secondary && prevPressed) || (Gdx.input.isKeyPressed(Input.Keys.P));
         nextPressed = (secondary && nextPressed) || (Gdx.input.isKeyPressed(Input.Keys.N));
         exitPressed  = (secondary && exitPressed) || (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
-        firePressed  = (secondary && firePressed) || (Gdx.input.isKeyPressed(Input.Keys.F));
+        flarePressed  = (secondary && flarePressed) || (Gdx.input.isKeyPressed(Input.Keys.F));
+        lightPressed = (secondary && lightPressed) || (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
 
         // Directional controls
         horizontal = (secondary ? horizontal : 0.0f);
@@ -227,11 +235,6 @@ public class InputController {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             horizontal -= 1.0f;
-        }
-
-        pouring = (secondary && pouring);
-        if (Gdx.input.isKeyPressed(Input.Keys.G)) {
-            pouring = true;
         }
 
         vertical = (secondary ? vertical : 0.0f);

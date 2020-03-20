@@ -3,6 +3,7 @@ package com.fallenflame.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.JsonAssetManager;
@@ -45,7 +46,7 @@ public class GameEngine implements Screen {
     protected LevelController level;
 
     /**Boolean to keep track if the player won the level*/
-    private boolean isComplete;
+    private boolean isSuccess;
 
     /**Boolean to keep track if the player died*/
     private boolean isFailed;
@@ -119,13 +120,13 @@ public class GameEngine implements Screen {
     /**Getters and setters*/
     /**Return true if the level is complete
      * @return: boolean that is true if the level is completed*/
-    public boolean isComplete(){return isComplete;}
+    public boolean isSuccess(){return isSuccess;}
 
     /**Set if the level has been completed
-     * @param: boolean isComplete that is true if the level is completed*/
+     * @param: boolean isSuccess that is true if the level is completed*/
 
-    public void setIsComplete(boolean isComplete){
-        this.isComplete = isComplete;
+    public void setIsSuccess(boolean isSuccess){
+        this.isSuccess = isSuccess;
     }
     /**Return true if the level has failed
      * @return: boolean that is true if the level is failed*/
@@ -181,7 +182,7 @@ public class GameEngine implements Screen {
     public GameEngine() {
         jsonReader = new JsonReader();
         level = new LevelController();
-        isComplete = false;
+        isSuccess = false;
         isFailed = false;
         isScreenActive = false;
         isPaused = false;
@@ -249,18 +250,34 @@ public class GameEngine implements Screen {
 
         return true;
     }
+
+    private Vector2 tempAngle = new Vector2();
     /**
      * The core gameplay loop of this world. This checks if the level has ended
-     *
      * @param delta Number of seconds since last animation frame
-     * @author: Professor White
      */
     public void update(float delta) {
-
         InputController input = InputController.getInstance();
-        isComplete = level.getLevelState() == level.WIN;
-        isFailed = level.getLevelState() == level.LOSS;
+
+        if (input.didFlare()) {
+            level.throwFlare(levelJson);
+        }
+        if(input.didLight()){
+            level.lightFromPlayer(levelJson);
+        }
+        // Rotate the avatar to face the direction of movement
+        tempAngle.set(input.getHorizontal(),input.getVertical());
+        float angle = 0;
+        if (tempAngle.len2() > 0.0f) {
+            angle = tempAngle.angle();
+            // Convert to radians with up as 0
+            angle = (float)Math.PI*(angle-90.0f)/180.0f;
+        }
+        tempAngle.scl(level.getPlayerForce());
+        level.movePlayer(angle, tempAngle);
         level.update(delta);
+        isSuccess = level.getLevelState() == level.LevelState.WIN;
+        isFailed = level.getLevelState() == level.LevelState.LOSS;
     }
 
     /**
@@ -279,7 +296,7 @@ public class GameEngine implements Screen {
         level.draw(canvas);
 
         // Final message
-        if (isComplete) {
+        if (isSuccess) {
             //TODO: Print some message here about winning
         } else if (isFailed) {
             //TODO: Print some message here about winning
