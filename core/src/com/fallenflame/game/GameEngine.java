@@ -260,7 +260,7 @@ public class GameEngine implements Screen {
         InputController input = InputController.getInstance();
 
         if (input.didFlare()) {
-            level.throwFlare(levelJson);
+            level.createFlare(input.getMousePosition());
         }
         if(input.didLight()){
             level.lightFromPlayer(levelJson);
@@ -273,7 +273,6 @@ public class GameEngine implements Screen {
             // Convert to radians with up as 0
             angle = (float)Math.PI*(angle-90.0f)/180.0f;
         }
-        tempAngle.scl(level.getPlayerForce());
         level.movePlayer(angle, tempAngle);
         level.update(delta);
         isSuccess = level.getLevelState() == level.LevelState.WIN;

@@ -60,14 +60,16 @@ public class InputController {
     private boolean flarePressed;
     private boolean flarePrevious;
 
-    /** Whether the light button was pressed */
-    private boolean lightPressed;
-    private boolean lightPrevious;
 
     /** How much did we move horizontally? */
     private float horizontal;
     /** How much did we move vertically? */
     private float vertical;
+
+    /** Did we increase or decrease the radius?
+     * Can only be two values: -1 and 1
+     */
+    private float lightRadius;
 
     /** An X-Box controller (if it is connected) */
     XBox360Controller xbox;
@@ -94,6 +96,10 @@ public class InputController {
         return vertical;
     }
 
+    public float[] getMousePosition(){
+        float[] newArr = {Gdx.input.getX(), Gdx.input.getY()};
+        return newArr;
+    }
 
     /**
      * Returns true if the reset button was pressed.
@@ -149,7 +155,7 @@ public class InputController {
         return flarePressed && !flarePrevious;
     }
 
-    public boolean didLight() {return lightPressed;}
+    public boolean didLight() {return lightRadius != 0.0f;}
 
     /**
      * Creates a new input controller
@@ -174,7 +180,6 @@ public class InputController {
         nextPrevious = nextPressed;
         prevPrevious = prevPressed;
         flarePrevious = flarePressed;
-        lightPrevious  = lightPressed;
 
         // Check to see if a GamePad is connected
         if (xbox.isConnected()) {
@@ -199,14 +204,11 @@ public class InputController {
         nextPressed  = xbox.getRB();
         prevPressed  = xbox.getLB();
         debugPressed  = xbox.getY();
-        lightPressed = xbox.getA();
         flarePressed = xbox.getB();
-
-        // TODO: Light pulse for Xbox.
-
         // Increase animation frame, but only if trying to move
         horizontal = xbox.getLeftX();
         vertical   = xbox.getLeftY();
+        lightRadius = xbox.getLeftTrigger();
     }
 
     /**
@@ -226,7 +228,6 @@ public class InputController {
         nextPressed = (secondary && nextPressed) || (Gdx.input.isKeyPressed(Input.Keys.N));
         exitPressed  = (secondary && exitPressed) || (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
         flarePressed  = (secondary && flarePressed) || (Gdx.input.isKeyPressed(Input.Keys.F));
-        lightPressed = (secondary && lightPressed) || (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
 
         // Directional controls
         horizontal = (secondary ? horizontal : 0.0f);
@@ -236,7 +237,13 @@ public class InputController {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             horizontal -= 1.0f;
         }
-
+        lightRadius = (secondary ? lightRadius : 0.0f);
+        if(Gdx.input.getInputProcessor().scrolled(1)){
+            lightRadius += 1.0f;
+        }
+        if(Gdx.input.getInputProcessor().scrolled(-1)){
+            lightRadius += 1.0f;
+        }
         vertical = (secondary ? vertical : 0.0f);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             vertical += 1.0f;
