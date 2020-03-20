@@ -14,6 +14,7 @@
 package com.fallenflame.game;
 import com.badlogic.gdx.*;
 
+import com.badlogic.gdx.math.Vector2;
 import com.fallenflame.game.util.XBox360Controller;
 
 /**
@@ -69,7 +70,7 @@ public class InputController {
     /** Did we increase or decrease the radius?
      * Can only be two values: -1 and 1
      */
-    private int lightRadius;
+    private float lightRadius;
 
     /** An X-Box controller (if it is connected) */
     XBox360Controller xbox;
@@ -95,13 +96,14 @@ public class InputController {
     public float getVertical() {
         return vertical;
     }
-    public int getLightRadius(){
+    public float getLightRadius(){
         return lightRadius;
     }
 
-    public float[] getMousePosition(){
-        float[] newArr = {Gdx.input.getX(), Gdx.input.getY()};
-        return newArr;
+    public Vector2 getMousePosition(){
+
+      return new Vector2(Gdx.input.getX(), Gdx.input.getY());
+
     }
 
     /**
@@ -211,7 +213,7 @@ public class InputController {
         // Increase animation frame, but only if trying to move
         horizontal = xbox.getLeftX();
         vertical   = xbox.getLeftY();
-        lightRadius = xbox.getLeftTrigger() == 1.0f ? 1 : xbox.getRightTrigger() == 1.0f ? -1 : 0;
+        lightRadius = xbox.getLeftTrigger() == 1.0f ? 1.0f : xbox.getRightTrigger() == 1.0f ? -1.0f : 0;
     }
 
     /**
@@ -242,10 +244,10 @@ public class InputController {
         }
         lightRadius = (secondary ? lightRadius : 0);
         if(Gdx.input.getInputProcessor().scrolled(1)){
-            lightRadius += 1;
+            lightRadius += 1.0f;
         }
         if(Gdx.input.getInputProcessor().scrolled(-1)){
-            lightRadius += -1;
+            lightRadius += -1.0f;
         }
         vertical = (secondary ? vertical : 0.0f);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
