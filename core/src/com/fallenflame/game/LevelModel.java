@@ -90,7 +90,7 @@ public class LevelModel {
     public void setBoxObstacleInGrid(BoxObstacle obs, boolean b) {
         for(int x = screenToTile(obs.getX() - obs.getWidth()/2);
             x < screenToTile(obs.getX() + obs.getWidth()); x++) {
-            for(int y = screenToTile(obs.getY() - obs.getHeight());
+            for(int y = screenToTile(obs.getY() - obs.getHeight()/2);
                 y < screenToTile(obs.getY() + obs.getHeight()); y++) {
                 tileGrid[x][y] = b;
             }
