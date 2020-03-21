@@ -153,14 +153,6 @@ public class FlareModel extends WheelObstacle {
         setDamping(json.get("damping").asFloat());
         setStartFrame(json.get("startframe").asInt());
 
-        // Create the collision filter (used for light penetration)
-        short collideBits = JsonAssetManager.bitStringToShort(json.get("collideBits").asString());
-        short excludeBits = JsonAssetManager.bitStringToComplement(json.get("excludeBits").asString());
-        Filter filter = new Filter();
-        filter.categoryBits = collideBits;
-        filter.maskBits = excludeBits;
-        setFilterData(filter);
-
         // Create debug color
         // Reflection is best way to convert name to color
 //        Color debugColor;
