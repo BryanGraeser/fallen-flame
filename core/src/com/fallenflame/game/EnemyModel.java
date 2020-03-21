@@ -8,10 +8,9 @@ import com.fallenflame.game.util.FilmStrip;
 import com.fallenflame.game.util.JsonAssetManager;
 
 public class EnemyModel extends CharacterModel {
-    protected boolean activated;
+    protected boolean activated = false;
 
-    protected Vector2 playerLastKnown = new Vector2();
-
+    protected Vector2 goal;
     /**
      * Initializes the player via the given JSON value
      *
@@ -42,6 +41,10 @@ public class EnemyModel extends CharacterModel {
         return "enemy-walking";
     }
 
+    /**
+     * Gets enemy's active status
+     * @return whether this enemy is activated
+     */
     public boolean getActivated() {
         return this.activated;
     }
@@ -55,43 +58,62 @@ public class EnemyModel extends CharacterModel {
     }
 
     /**
-     * Get player's last known position
-     * @return copy of player's last known position
+     * @return the Vector2 representing the enemy's goal sate
      */
-    public Vector2 getPlayerLastKnown() {
-        return playerLastKnown.cpy();
+    public Vector2 getGoal() {
+        return this.goal.cpy();
     }
 
     /**
-     * Get x-coor of player's last known position
-     * @return x-coordinate
+     * @return the y coordinate of the enemy's goal state
      */
-    public float getPlayerLastKnownX() {
-        return playerLastKnown.x;
+    public float getGoalY() {
+        return this.goal.y;
     }
 
     /**
-     * Get y-coor of player's last known position
-     * @return y-coordinate
+     * @return the x coordinate of the enemy's goal state
      */
-    public float getPlayerLastKnownY() {
-        return playerLastKnown.y;
+    public float getGoalX() {
+        return this.goal.x;
     }
 
     /**
-     * Set player's last known position
-     * @param v player's last known position
+     * Set enemy's goal position
+     * @param v Vector representing enemy's goal position
      */
-    public void setPlayerLastKnown(Vector2 v) {
-        playerLastKnown.set(v);
+    public void setGoal(Vector2 v) {
+        this.goal = v;
     }
 
     /**
-     * Set player's last known position
-     * @param x player's last known position x-coor
-     * @param y player's last known position y-coor
+     * Set enemy's goal position
+     * @param x x-coor of enemy's goal
+     * @param y y-coor of enemy's goal
      */
-    public void setPlayerLastKnown(float x, float y) {
-        this.setPlayerLastKnown(new Vector2(x, y));
+    public void setGoal(float x, float y) {
+        setGoal(new Vector2(x, y));
+    }
+
+    /**
+     * @param v is a vector with a x and y attributes
+     * @return whether given coordinate is equal to the enemy's current goal
+     */
+    public boolean isGoal(Vector2 v){
+        return this.goal.equals(v);
+    }
+
+    /**
+     * @param x x-coor of position to check
+     * @param y y-coor of position to check
+     * @return whether given coordinate is equal to the enemy's current goal
+     */
+    public boolean isGoal(float x, float y){
+        return isGoal(new Vector2(x, y));
+    }
+
+    /** Sets the goal of the enemy to be equal to its current position */
+    public void clearGoal() {
+        setGoal(new Vector2(getX(), getY()));
     }
 }
