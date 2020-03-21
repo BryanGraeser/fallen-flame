@@ -116,4 +116,12 @@ public class EnemyModel extends CharacterModel {
     public void clearGoal() {
         setGoal(new Vector2(getX(), getY()));
     }
+
+    /**
+     * Gets light radius for enemy
+     * @return light radius
+     */
+    public float getLightRadius() {
+        return getActivated() ? 1 : 0;
+    }
 }
