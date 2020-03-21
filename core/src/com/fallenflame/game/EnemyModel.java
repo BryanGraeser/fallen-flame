@@ -21,39 +21,10 @@ public class EnemyModel extends CharacterModel {
      * @param json	the JSON subtree defining the player
      */
     public void initialize(JsonValue json) {
-        setName(json.name());
-        float[] pos  = json.get("pos").asFloatArray();
-        float radius = 0.4f;//json.get("radius").asFloat();
-        setPosition(pos[0],pos[1]);
-        setRadius(radius);
-
-        // Technically, we should do error checking here.
-        // A JSON field might accidentally be missing
-        setBodyType(BodyDef.BodyType.DynamicBody);
-        setDensity(1);
-        setFriction(0);
-        setRestitution(0);
-        setForce(80);
-        setDamping(10);
-        setMaxSpeed(getDefaultMaxSpeed());
-        setStartFrame(0);
-        setWalkLimit(4);
-
-        // Reflection is best way to convert name to color
-//        Color debugColor;
-//        try {
-//            String cname = json.get("debugcolor").asString().toUpperCase();
-//            Field field = Class.forName("com.badlogic.gdx.graphics.Color").getField(cname);
-//            debugColor = new Color((Color)field.get(null));
-//        } catch (Exception e) {
-//            debugColor = null; // Not defined
-//        }
-//        int opacity = json.get("debugopacity").asInt();
-//        debugColor.mul(opacity/255.0f);
-//        setDebugColor(debugColor);
-
+        super.initialize(json);
+        // Enemy specific initialization
         // Now get the texture from the AssetManager singleton
-        String key = getDefaultTexture();
+        String key = getDefaultTexture(); // TODO: should get from JSON?
         TextureRegion texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         try {
             filmstrip = (FilmStrip)texture;
