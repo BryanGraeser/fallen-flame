@@ -22,9 +22,12 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
+import com.fallenflame.game.GameCanvas;
 
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Arbitrary polygonal-shaped model to support collisions.
  *
  * The polygon coordinates are all in local space, relative to the object
@@ -404,7 +407,7 @@ public class PolygonObstacle extends SimpleObstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void draw(ObstacleCanvas canvas) {
+	public void draw(GameCanvas canvas) {
 		if (region != null) {
 			canvas.draw(region,Color.WHITE,0,0,getX()*drawScale.x,getY()*drawScale.y,getAngle(),1,1);
 		}
@@ -417,7 +420,7 @@ public class PolygonObstacle extends SimpleObstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void drawDebug(ObstacleCanvas canvas) {
+	public void drawDebug(GameCanvas canvas) {
 		if (debugColor != null) {
 			for(PolygonShape tri : shapes) {
 				canvas.drawPhysics(tri,debugColor,getX(),getY(),getAngle(),drawScale.x,drawScale.y);

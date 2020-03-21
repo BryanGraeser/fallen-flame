@@ -17,8 +17,11 @@ package com.fallenflame.game.physics.obstacle;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.physics.box2d.*;
+import com.fallenflame.game.GameCanvas;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Box-shaped model to support collisions.
  *
  * Unless otherwise specified, the center of mass is as the center.
@@ -533,7 +536,7 @@ public class CapsuleObstacle extends SimpleObstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void drawDebug(ObstacleCanvas canvas) {
+	public void drawDebug(GameCanvas canvas) {
 		if (debugColor == null) {
 			return;
 		}

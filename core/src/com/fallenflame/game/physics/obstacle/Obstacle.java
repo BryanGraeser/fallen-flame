@@ -22,8 +22,11 @@ package com.fallenflame.game.physics.obstacle;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.fallenflame.game.GameCanvas;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Base model class to support collisions.
  *
  * Instances represents a body and/or a group of bodies.
@@ -996,7 +999,7 @@ public abstract class Obstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public abstract void draw(ObstacleCanvas canvas);
+	public abstract void draw(GameCanvas canvas);
 
 	/**
 	 * Draws the outline of the physics body.
@@ -1005,6 +1008,6 @@ public abstract class Obstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public abstract void drawDebug(ObstacleCanvas canvas);
+	public abstract void drawDebug(GameCanvas canvas);
 
 }

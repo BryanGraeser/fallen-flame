@@ -21,8 +21,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.fallenflame.game.GameCanvas;
 
 /**
+ * @author Walker White. This Code is credited to the Box2Dlights Demo
+ *
  * Base model class to support collisions.
  *
  * This is an instance of a Obstacle with just one body. It does not have any joints.
@@ -772,7 +775,7 @@ public abstract class SimpleObstacle extends Obstacle {
 	 *
 	 * @param canvas Drawing context
 	 */
-	public void draw(ObstacleCanvas canvas) {
+	public void draw(GameCanvas canvas) {
 		if (texture != null) {
 			canvas.draw(texture,Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.x,getAngle(),1,1);
 		}
