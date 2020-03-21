@@ -26,7 +26,7 @@ public abstract class CharacterModel extends WheelObstacle {
     private int walkLimit;
 
     /** FilmStrip pointer to the texture region */
-    private FilmStrip filmstrip;
+    protected FilmStrip filmstrip;
     /** The current animation frame of the avatar */
     private int startFrame;
 
@@ -163,6 +163,11 @@ public abstract class CharacterModel extends WheelObstacle {
      */
     public void setWalkLimit(int value) {
         walkLimit = value;
+    }
+
+    /** Return character default max speed */
+    protected float getDefaultMaxSpeed() {
+        return 4;
     }
 
     /**
