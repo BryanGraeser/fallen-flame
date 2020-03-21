@@ -10,8 +10,6 @@ import com.fallenflame.game.physics.obstacle.WheelObstacle;
 import com.fallenflame.game.util.*;
 import com.badlogic.gdx.graphics.*;
 
-import java.lang.reflect.Field;
-
 public class FlareModel extends WheelObstacle {
     // Physics constants
     /** The force with which flare is originally thrown */
@@ -21,15 +19,17 @@ public class FlareModel extends WheelObstacle {
 
     /** The current horizontal movement of the flare */
     private Vector2 movement = new Vector2();
-    // TODO #1: Required?
-    /** Whether or not to animate the current frame */
-    private boolean animate = false;
-    // TODO #1
 
     /** FilmStrip pointer to the texture region */
     private FilmStrip filmstrip;
     /** The current animation frame of the flare */
     private int startFrame;
+
+    /** How long a flare can last, in milliseconds. */
+    private static final int FLARE_DURATION = 6000;
+
+    /** Time when it was fired **/
+    private long startTime;
 
     /**
      * Returns the directional movement of this flare.
@@ -124,10 +124,10 @@ public class FlareModel extends WheelObstacle {
      *
      * The main purpose of this constructor is to set the initial capsule orientation.
      */
-    public FlareModel(float[] pos, JsonValue json) {
-        super(pos[0],pos[1],1.0f);
+    public FlareModel(Vector2 pos) {
+        super(pos.x,pos.y,1.0f);
         setFixedRotation(false);
-        initialize(json);
+        startTime = System.currentTimeMillis();
     }
 
     /**
@@ -163,17 +163,17 @@ public class FlareModel extends WheelObstacle {
 
         // Create debug color
         // Reflection is best way to convert name to color
-        Color debugColor;
-        try {
-            String cname = json.get("debugcolor").asString().toUpperCase();
-            Field field = Class.forName("com.badlogic.gdx.graphics.Color").getField(cname);
-            debugColor = new Color((Color)field.get(null));
-        } catch (Exception e) {
-            debugColor = null; // Not defined
-        }
-        int opacity = json.get("debugopacity").asInt();
-        debugColor.mul(opacity/255.0f);
-        setDebugColor(debugColor);
+//        Color debugColor;
+//        try {
+//            String cname = json.get("debugcolor").asString().toUpperCase();
+//            Field field = Class.forName("com.badlogic.gdx.graphics.Color").getField(cname);
+//            debugColor = new Color((Color)field.get(null));
+//        } catch (Exception e) {
+//            debugColor = null; // Not defined
+//        }
+//        int opacity = json.get("debugopacity").asInt();
+//        debugColor.mul(opacity/255.0f);
+//        setDebugColor(debugColor);
 
         // Get the texture from the AssetManager singleton
         String key = json.get("texture").asString();
@@ -191,18 +191,23 @@ public class FlareModel extends WheelObstacle {
      *
      * This method should be called after the force attribute is set.
      */
-    public void applyInitialForce() {
+    public void applyInitialForce(float angle, Vector2 tempAngle) {
         if (!isActive()) {
             return;
         }
 
-//        // Only walk or spin if we allow it
-//        setLinearVelocity(Vector2.Zero);
-//        setAngularVelocity(0.0f);
-
         // Apply force for movement
-        body.applyForce(initialForce,getPosition(),true);
-        animate = true;
+        tempAngle.scl(initialForce);
+        body.applyForce(tempAngle, getPosition(),true);
+        setAngle(angle);
+        filmstrip.setFrame(startFrame);
+    }
+
+    /**
+     * Stops flare's movement (called when collided with a wall)
+     */
+    public void stopMovement() {
+        body.setLinearVelocity(new Vector2(0,0));
     }
 
     /**
@@ -213,19 +218,21 @@ public class FlareModel extends WheelObstacle {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-        // Animate if necessary
-        if (animate) {
-            if (filmstrip != null) {
-                int next = (filmstrip.getFrame()+1) % filmstrip.getSize();
-                filmstrip.setFrame(next);
-            }
-        } else {
-            if (filmstrip != null) {
-                filmstrip.setFrame(startFrame);
-            }
+        if (filmstrip != null) {
+            int next = (filmstrip.getFrame()+1) % filmstrip.getSize();
+            filmstrip.setFrame(next);
         }
 
         super.update(dt);
+    }
+
+    /**
+     * How long until flare is deactived
+     * @return time left
+     */
+    public int timeToBurnout() {
+        int timeLeft = FLARE_DURATION - (int) (System.currentTimeMillis() - startTime);
+        return Math.max(timeLeft, 0);
     }
 
     /**
