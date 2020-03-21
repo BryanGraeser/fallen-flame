@@ -94,4 +94,12 @@ public class EnemyModel extends CharacterModel {
     public void setPlayerLastKnown(float x, float y) {
         this.setPlayerLastKnown(new Vector2(x, y));
     }
+
+    /**
+     * Gets light radius for enemy
+     * @return light radius
+     */
+    public float getLightRadius() {
+        return getActivated() ? 1 : 0;
+    }
 }

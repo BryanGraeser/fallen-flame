@@ -174,6 +174,12 @@ public abstract class CharacterModel extends WheelObstacle {
     }
 
     /**
+     * Gets light radius for character
+     * @return light radius
+     */
+    protected abstract float getLightRadius();
+
+    /**
      * Creates a new character with degenerate settings
      *
      * The main purpose of this constructor is to set the initial capsule orientation.
