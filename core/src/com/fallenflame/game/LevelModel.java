@@ -22,7 +22,7 @@ public class LevelModel {
     public LevelModel(){ }
 
     public void initialize(Rectangle bounds, PlayerModel player, List<WallModel> walls, List<EnemyModel> enemies) {
-        tileSize = (int)player.getRadius();
+        tileSize = Math.max((int)player.getRadius(),1);
         width = bounds.getWidth();
         height = bounds.getHeight();
 

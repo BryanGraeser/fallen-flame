@@ -1,5 +1,6 @@
 package com.fallenflame.game;
 
+import box2dLight.Light;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -27,16 +28,11 @@ public class LightController {
     protected OrthographicCamera raycamera;
     protected RayHandler rayhandler;
     public void initialize(PlayerModel player, JsonValue levelLighting, World world, Rectangle bound) {
-        this.player = player;
-        this.lightingConfig = levelLighting;
-        playerLight = createPointLight(player.getLightRadius());
-        attachLightTo(playerLight, player);
-        this.flareLights = new HashMap<>();
-        this.enemyLights = new HashMap<>();
+        //****** Moved because ray handler was used before it was created by createPointLight()
         raycamera = new OrthographicCamera(bound.x, bound.y);
         // TODO: This defo doesn't work. Need testing.
         float z = 0; // TODO Leo: determine if this is the correct value
-        raycamera.position.set(player.getPosition(), z);
+        raycamera.position.set(player.getPosition(), z); //** changed to reflect correct input
         raycamera.update();
         RayHandler.setGammaCorrection(true);
         RayHandler.useDiffuseLight(true);
@@ -45,6 +41,13 @@ public class LightController {
         rayhandler.setAmbientLight(0, 0, 0, 0);
         rayhandler.setBlur(true);
         rayhandler.setBlurNum(3);
+        //****** Moved because ray handler was used before it was created by createPointLight()
+        this.player = player;
+        this.lightingConfig = levelLighting;
+        playerLight = createPointLight(player.getLightRadius());
+        attachLightTo(playerLight, player);
+        this.flareLights = new HashMap<>();
+        this.enemyLights = new HashMap<>();
     }
     public void dispose() {
         this.player = null;

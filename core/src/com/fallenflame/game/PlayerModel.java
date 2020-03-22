@@ -31,7 +31,7 @@ public class PlayerModel extends CharacterModel {
         super.initialize(json);
         // Enemy specific initialization
         // Now get the texture from the AssetManager singleton
-        String key = getDefaultTexture(); // TODO: should get from JSON?
+        String key = getDefaultTexture(); // TODO: should get from JSON? --> json.get("texture").asString();
         TextureRegion texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         try {
             filmstrip = (FilmStrip)texture;
@@ -43,7 +43,7 @@ public class PlayerModel extends CharacterModel {
 
     /** Return player default texture */
     protected String getDefaultTexture() {
-        return "player-walking";
+        return "dude";
     }
 
     /**

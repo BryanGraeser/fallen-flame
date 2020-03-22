@@ -15,6 +15,9 @@ public class LevelController implements ContactListener {
 //    /** Number of position iterations for the constrain solvers */
 //    public static final int WORLD_POSIT = 2;
 
+    /** Whether or not the level has been populated */
+    private boolean populated;
+
     // Physics objects for the level
     /** Reference to the player character */
     private PlayerModel player;
@@ -233,6 +236,8 @@ public class LevelController implements ContactListener {
         enemies = new LinkedList<>();
         flares = new LinkedList<>();
         levelModel = new LevelModel();
+        // Not yet populated
+        populated = false;
     }
 
     /**
@@ -241,6 +246,8 @@ public class LevelController implements ContactListener {
      * @param levelJson	the JSON tree defining the level
      */
     public void populate(JsonValue levelJson) {
+        populated = true;
+
         float[] pSize = levelJson.get("physicsSize").asFloatArray();
         int[] gSize = levelJson.get("graphicSize").asIntArray();
 
@@ -299,6 +306,9 @@ public class LevelController implements ContactListener {
      * necessary whenever we reset a level.
      */
     public void dispose() {
+        if(!populated)
+            return;
+
         lightController.dispose();
 
         for(WallModel wall : walls) {
@@ -325,6 +335,7 @@ public class LevelController implements ContactListener {
             world.dispose();
             world = null;
         }
+        populated = false;
     }
 
     /**
