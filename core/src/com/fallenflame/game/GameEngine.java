@@ -191,6 +191,7 @@ public class GameEngine implements Screen {
         isFailed = false;
         isScreenActive = false;
         isPaused = false;
+        canvasBounds = new Rectangle();
     }
 
     /**
@@ -219,7 +220,7 @@ public class GameEngine implements Screen {
         String currentLevelPath = "jsons/" + saveJson.getString("current");
         levelJson = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
         level.populate(levelJson);
-        level.getWorld().setContactListener((ContactListener)this); //TODO Laura: I added typecast, not sure if valid, just wanted it to run
+        level.getWorld().setContactListener(level); //TODO Laura: I switched this to level
     }
 
     /**

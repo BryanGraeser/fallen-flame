@@ -8,7 +8,7 @@ import com.fallenflame.game.physics.obstacle.Obstacle;
 import java.util.*;
 
 /** Credit to Walker White for some code reused from B2LightsDemo */
-public class LevelController {
+public class LevelController implements ContactListener {
     //  MAY NEED THESE:
 //    /** Number of velocity iterations for the constrain solvers */
 //    public static final int WORLD_VELOC = 6;
