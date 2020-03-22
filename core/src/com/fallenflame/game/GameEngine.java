@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.JsonAssetManager;
@@ -210,15 +211,15 @@ public class GameEngine implements Screen {
     public void reset() {
         level.dispose();
 
-        setComplete(false);
-        setFailure(false);
-        countdown = -1;
+        setIsSuccess(false);
+        setIsFailed(false);
+        // countdown = -1; TODO Laura: what is this for?
 
         // Reload the json each time
         String currentLevelPath = "jsons/" + saveJson.getString("current");
         levelJson = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
         level.populate(levelJson);
-        level.getWorld().setContactListener(this);
+        level.getWorld().setContactListener((ContactListener)this); //TODO Laura: I added typecast, not sure if valid, just wanted it to run
     }
 
     /**
@@ -279,8 +280,8 @@ public class GameEngine implements Screen {
         }
         level.movePlayer(angle, tempAngle);
         level.update(delta);
-        isSuccess = level.getLevelState() == level.LevelState.WIN;
-        isFailed = level.getLevelState() == level.LevelState.LOSS;
+        isSuccess = level.getLevelState() == LevelController.LevelState.WIN;
+        isFailed = level.getLevelState() == LevelController.LevelState.LOSS;
     }
 
     /**

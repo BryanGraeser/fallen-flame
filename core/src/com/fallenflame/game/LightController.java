@@ -4,6 +4,7 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,7 +26,7 @@ public class LightController {
     protected Map<EnemyModel, PointSource> enemyLights;
     protected OrthographicCamera raycamera;
     protected RayHandler rayhandler;
-    public void initialize(PlayerModel player, JsonValue levelLighting, World world, Vector2 bound) {
+    public void initialize(PlayerModel player, JsonValue levelLighting, World world, Rectangle bound) {
         this.player = player;
         this.lightingConfig = levelLighting;
         playerLight = createPointLight(player.getLightRadius());
@@ -34,7 +35,8 @@ public class LightController {
         this.enemyLights = new HashMap<>();
         raycamera = new OrthographicCamera(bound.x, bound.y);
         // TODO: This defo doesn't work. Need testing.
-        raycamera.position.set(player.getX(), player.getY());
+        float z = 0; // TODO Leo: determine if this is the correct value
+        raycamera.position.set(player.getPosition(), z);
         raycamera.update();
         RayHandler.setGammaCorrection(true);
         RayHandler.useDiffuseLight(true);
@@ -80,7 +82,7 @@ public class LightController {
         });
         flares.stream().filter(i -> !flareLights.containsKey(i)).forEach(i -> {
             PointSource f = createPointLight(i.getLightRadius());
-            attachLightTo(f, i.getBody());
+            attachLightTo(f, i);
             flareLights.put(i, f);
         });
         enemyLights.keySet().stream().filter(i -> !enemies.contains(i) || !i.getActivated()).forEach(i -> {
@@ -91,7 +93,7 @@ public class LightController {
         });
         enemies.stream().filter(i -> !enemyLights.containsKey(i)).forEach(i -> {
             PointSource f = createPointLight(i.getLightRadius());
-            attachLightTo(f, i.getBody());
+            attachLightTo(f, i);
             enemyLights.put(i, f);
         });
     }

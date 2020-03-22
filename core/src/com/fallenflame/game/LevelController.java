@@ -274,20 +274,20 @@ public class LevelController {
             walls.add(wall);
         }
         for(JsonValue enemyJSON : levelJson.get("enemies")) {
-            //TODO #6 INIT enemies
+            //TODO #6 INIT enemies --> waiting for AIController to be finished
             EnemyModel enemy = new EnemyModel();
             enemy.initialize(enemyJSON);
             enemy.setDrawScale(scale);
             enemy.activatePhysics(world);
             enemies.add(enemy);
-            AIController controller = new AIController(enemy, levelModel);
-            AIControllers.add(controller);
+            // AIController controller = new AIController(enemy, levelModel);
+            // AIControllers.add(controller);
             //TODO #6
         }
         flareJSON = levelJson.get("flare");
 
         // Initialize levelModel
-        levelModel.initialize(bounds, player, walls, enemies)
+        levelModel.initialize(bounds, player, walls, enemies);
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
     }
@@ -356,22 +356,23 @@ public class LevelController {
         player.update(dt);
         levelModel.placePlayer(player);
 
-        // Get Enemy Actions
-        Iterator<AIController> ctrlI = AIControllers.iterator();
-        LinkedList<EnemyModel.Action> actions = new LinkedList();
-        while(ctrlI.hasNext()){
-            AIController ctrl = ctrlI.next();
-            actions.add(ctrl.getAction());
-        }
-        // Execute Enemy Actions (and update levelModel)
-        Iterator<EnemyModel> enemyI = enemies.iterator();
-        Iterator<EnemyModel> actionI = enemies.iterator();
-        while(enemyI.hasNext()){
-            EnemyModel enemy = enemyI.next();
-            levelModel.removeEnemy(enemy);
-            enemy.executeAction(actionI.next()); // TODO handle here or in enemyModel?
-            levelModel.placeEnemy(enemy);
-        }
+        // TODO: Waiting for AI Controller to be finished
+//        // Get Enemy Actions
+//        Iterator<AIController> ctrlI = AIControllers.iterator();
+//        LinkedList<EnemyModel.Action> actions = new LinkedList();
+//        while(ctrlI.hasNext()){
+//            AIController ctrl = ctrlI.next();
+//            actions.add(ctrl.getAction());
+//        }
+//        // Execute Enemy Actions (and update levelModel)
+//        Iterator<EnemyModel> enemyI = enemies.iterator();
+//        Iterator<EnemyModel> actionI = enemies.iterator();
+//        while(enemyI.hasNext()){
+//            EnemyModel enemy = enemyI.next();
+//            levelModel.removeEnemy(enemy);
+//            enemy.executeAction(actionI.next()); // TODO handle here or in enemyModel?
+//            levelModel.placeEnemy(enemy);
+//        }
 
         // Update flares
         Iterator<FlareModel> i = flares.iterator();
