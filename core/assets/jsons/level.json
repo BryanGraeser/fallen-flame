@@ -41,5 +41,10 @@
     "damping": 		 0.0,
     "startframe":       0
   },
-  "lighting":         { }
+  "lighting":         {
+    "color":	  	[0, 0, 0, 0],
+    "gamma":		true,
+    "diffuse":		true,
+    "blur":			1
+  }
 }
