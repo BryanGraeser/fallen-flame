@@ -1,13 +1,8 @@
 package com.fallenflame.game;
 
-import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.*;
-import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.physics.box2d.*;
-
 import com.fallenflame.game.util.*;
-import com.fallenflame.game.physics.obstacle.*;
 
 /**
  * Player avatar for the plaform game.
@@ -43,7 +38,7 @@ public class PlayerModel extends CharacterModel {
 
     /** Return player default texture */
     protected String getDefaultTexture() {
-        return "dude";
+        return "player";
     }
 
     /**
