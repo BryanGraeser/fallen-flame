@@ -14,7 +14,7 @@
     "maxspeed": 	  5.0,
     "startframe":       0,
     "walklimit":		4,
-    "texture":     	"dude",
+    "texture":     	"player",
     "debugcolor":  	"white",
     "debugopacity":	192
   },
