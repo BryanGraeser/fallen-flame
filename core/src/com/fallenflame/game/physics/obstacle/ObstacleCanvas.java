@@ -29,8 +29,6 @@ import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
- * THIS CODE IS CREDITED TO BOX2DLIGHTS DEMO
- *
  * Primary view class for the game, abstracting the basic graphics calls.
  * 
  * This version of GameCanvas only supports both rectangular and polygonal Sprite

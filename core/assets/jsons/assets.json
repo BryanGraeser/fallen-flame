@@ -1,0 +1,42 @@
+{
+    "textures": {
+    	"enemy": {
+    		"file":		"textures/enemy-walking.png",
+    		"wrap":		false,
+			"strip":	{
+				"size":		4,
+				"rows":		1,
+				"cols":		4,
+				"first":	0
+			}
+    	},
+    	"player": {
+    		"file": 	"textures/player-walking.png",
+    		"wrap":  	false,
+    		"strip":	{
+    			"size":		4,
+    			"rows":		1,
+    			"cols":		4,
+    			"first":	0
+    		}
+    	},
+        "goal": { 
+         	"file":		"textures/helicopter.png",
+         	"wrap":		false,
+         },
+		"fire":   {
+			"file": 	"textures/fire.png",
+			"wrap": 	true,
+		},
+		"earth": {
+			"file": 	"textures/earthtile.png",
+			"wrap": 	true,
+		}
+  	},
+  	"fonts": {
+  		"display": {
+  			"file": 	"fonts/MarkerFelt.ttf",
+  			"size": 	64
+  		},
+  	},
+}
