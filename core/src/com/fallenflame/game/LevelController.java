@@ -255,6 +255,7 @@ public class LevelController implements ContactListener {
         bounds = new Rectangle(0,0,pSize[0],pSize[1]);
         scale.x = gSize[0]/pSize[0];
         scale.y = gSize[1]/pSize[1];
+        System.out.println(scale.x + ", " + scale.y);
 
         // Compute the FPS
         int[] fps = levelJson.get("fpsRange").asIntArray();
@@ -474,7 +475,7 @@ public class LevelController implements ContactListener {
      */
     public void draw(GameCanvas canvas) {
         canvas.clear();
-        canvas.setCameraPosition(player.getPosition());
+        canvas.setCameraPosition(player.getPosition().x * scale.x, player.getPosition().y * scale.y);
 
         // Draw all objects
         canvas.begin();
