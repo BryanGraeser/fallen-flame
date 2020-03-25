@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.physics.obstacle.BoxObstacle;
 import com.fallenflame.game.util.JsonAssetManager;
@@ -156,6 +157,8 @@ public class WallModel extends BoxObstacle {
         float[] pos = json.get("pos").asFloatArray(),
                 size = json.get("size").asFloatArray(),
                 pad = json.get("pad").asFloatArray();
+
+        setBodyType(BodyDef.BodyType.StaticBody);
         setPosition(pos[0], pos[1]);
         setDimension(size[0], size[1]);
         setPadding(pad[0], pad[1]);
