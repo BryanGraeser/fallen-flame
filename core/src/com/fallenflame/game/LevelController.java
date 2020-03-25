@@ -262,12 +262,6 @@ public class LevelController implements ContactListener {
         timeStep = 1.0f/maxFPS;
         maxSteps = 1.0f + maxFPS/minFPS;
         maxTimePerFrame = timeStep*maxSteps;
-
-        // Create player
-        player = new PlayerModel();
-        player.initialize(levelJson.get("player"));
-        player.setDrawScale(scale);
-        player.activatePhysics(world);
         // Create Exit
         exit = new ExitModel();
         exit.initialize(levelJson.get("exit"));
@@ -280,6 +274,11 @@ public class LevelController implements ContactListener {
             wall.activatePhysics(world);
             walls.add(wall);
         }
+        // Create player
+        player = new PlayerModel();
+        player.initialize(levelJson.get("player"));
+        player.setDrawScale(scale);
+        player.activatePhysics(world);
         for(JsonValue enemyJSON : levelJson.get("enemies")) {
             //TODO #6 INIT enemies --> waiting for AIController to be finished
             EnemyModel enemy = new EnemyModel();
