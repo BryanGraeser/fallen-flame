@@ -41,11 +41,11 @@ public class WallModel extends BoxObstacle {
         if (texture == null) return;
         float[] scaled = new float[vertices.length];
         for (int i = 0, j = scaled.length; i < j; i++) {
-            scaled[i] = (vertices[i] + Math.signum(vertices[i]));
+            scaled[i] = Math.signum(vertices[i]);
             if (i % 2 == 0)
-                scaled[i] = (scaled[i] * padding.x + getX()) * drawScale.x;
+                scaled[i] = (vertices[i] + scaled[i] * padding.x + getX()) * drawScale.x;
             else
-                scaled[i] = (scaled[i] * padding.y + getY()) * drawScale.y;
+                scaled[i] = (vertices[i] + scaled[i] * padding.y + getY()) * drawScale.y;
         }
         short[] tris = {0, 1, 3, 3, 2, 1};
         anchor = new Vector2(getX(), getY());
