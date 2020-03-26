@@ -58,8 +58,14 @@ public class GameEngine implements Screen {
     /**Boolean to keep track if the player won the level*/
     private boolean isSuccess;
 
+    /** Boolean to prevent countdown from becoming infinite */
+    private boolean prevSuccess;
+
     /**Boolean to keep track if the player died*/
     private boolean isFailed;
+
+    /**Boolean to keep track if the player had died */
+    private boolean prevFailed;
 
     /**Boolean to keep track if the player paused the game*/
     private boolean isPaused;
@@ -141,6 +147,9 @@ public class GameEngine implements Screen {
 
     public void setIsSuccess(boolean isSuccess){
         this.isSuccess = isSuccess;
+        if(isSuccess) {
+            countdown = 120;
+        }
     }
     /**Return true if the level has failed
      * @return: boolean that is true if the level is failed*/
@@ -151,6 +160,9 @@ public class GameEngine implements Screen {
 
     public void setIsFailed(boolean isFailed){
         this.isFailed = isFailed;
+        if (isFailed){
+            countdown = 120;
+        }
     }
 
     /**Return true if the level has paused
@@ -198,6 +210,8 @@ public class GameEngine implements Screen {
         level = new LevelController();
         isSuccess = false;
         isFailed = false;
+        prevFailed = false;
+        prevSuccess = false;
         isScreenActive = false;
         isPaused = false;
         canvasBounds = new Rectangle();
@@ -222,8 +236,10 @@ public class GameEngine implements Screen {
     public void reset() {
         level.dispose();
 
-        setIsSuccess(false);
-        setIsFailed(false);
+        isSuccess = false;
+        isFailed = false;
+        prevFailed = false;
+        prevSuccess = false;
          countdown = -1;
 
         // Reload the json each time
@@ -296,11 +312,10 @@ public class GameEngine implements Screen {
         }
         level.movePlayer(angle, tempAngle);
         level.update(delta);
-        isSuccess = level.getLevelState() == LevelController.LevelState.WIN;
-        isFailed = level.getLevelState() == LevelController.LevelState.LOSS;
-        if(isSuccess || isFailed){
-            countdown = 60;
-        }
+        isSuccess = level.getLevelState() == LevelController.LevelState.WIN && !prevSuccess;
+        prevSuccess = prevSuccess == true ? true : isSuccess;
+        isFailed = level.getLevelState() == LevelController.LevelState.LOSS && !prevFailed;
+        prevFailed = prevFailed == true ? true : isFailed;
     }
 
     /**
