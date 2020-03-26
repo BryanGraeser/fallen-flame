@@ -540,20 +540,6 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
      * @return whether to hand the event to other listeners.
      */
     public boolean scrolled(int amount) {
-        if(amount == 1 && InputController.getPrevLightRadius() != 1){
-            InputController.setLightRadius(1);
-            InputController.setPrevLightRadius(1);
-        }
-        else if(amount == -1 && InputController.getPrevLightRadius() != -1){
-            InputController.setLightRadius(-1);
-            InputController.setPrevLightRadius(-1);
-        }
-        else {
-            InputController.setLightRadius(0);
-            InputController.setPrevLightRadius(0);
-        }
-        System.out.println(InputController.getLightRadius());
-
         return true;
     }
 
