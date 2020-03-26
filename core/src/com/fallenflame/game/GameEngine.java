@@ -230,6 +230,7 @@ public class GameEngine implements Screen {
         String currentLevelPath = "jsons/" + saveJson.getString("current");
         levelJson = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
         level.populate(levelJson);
+        level.setLevelState(LevelController.LevelState.IN_PROGRESS);
         level.getWorld().setContactListener(level);
     }
 
@@ -328,12 +329,12 @@ public class GameEngine implements Screen {
         if (isSuccess) {
             displayFont.setColor(Color.YELLOW);
             canvas.begin(); // DO NOT SCALE
-            canvas.drawTextCentered("VICTORY!", displayFont, 2.0f);
+            canvas.drawTextCentered("VICTORY!", displayFont, 0.0f);
             canvas.end();
         } else if (isFailed) {
             displayFont.setColor(Color.RED);
             canvas.begin(); // DO NOT SCALE
-            canvas.drawTextCentered("YOU DIED!", displayFont, 2.0f);
+            canvas.drawTextCentered("YOU DIED!", displayFont, 0.0f);
             canvas.end();
         }
 

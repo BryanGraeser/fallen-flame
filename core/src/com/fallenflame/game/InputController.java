@@ -238,7 +238,6 @@ public class InputController {
      * @param secondary true if the keyboard should give priority to a gamepad
      */
     private void readKeyboard(boolean secondary) {
-        System.out.println("LightRadius is " + lightRadius);
         // Give priority to gamepad results
         resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyPressed(Input.Keys.R));
         debugPressed = (secondary && debugPressed) || (Gdx.input.isKeyPressed(Input.Keys.D));
