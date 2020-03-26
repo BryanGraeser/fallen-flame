@@ -10,10 +10,13 @@ import java.util.*;
 /** Credit to Walker White for some code reused from B2LightsDemo */
 public class LevelController implements ContactListener {
     //  MAY NEED THESE:
-//    /** Number of velocity iterations for the constrain solvers */
-//    public static final int WORLD_VELOC = 6;
-//    /** Number of position iterations for the constrain solvers */
-//    public static final int WORLD_POSIT = 2;
+    /** Number of velocity iterations for the constrain solvers */
+    public static final int WORLD_VELOC = 6;
+    /** Number of position iterations for the constrain solvers */
+    public static final int WORLD_POSIT = 2;
+
+    /** Whether or not the level has been populated */
+    private boolean populated;
 
     /** Whether or not the level has been populated */
     private boolean populated;
@@ -268,33 +271,37 @@ public class LevelController implements ContactListener {
         player.initialize(levelJson.get("player"));
         player.setDrawScale(scale);
         player.activatePhysics(world);
+        assert inBounds(player);
         // Create Exit
         exit = new ExitModel();
         exit.initialize(levelJson.get("exit"));
         exit.setDrawScale(scale);
         exit.activatePhysics(world);
+        assert inBounds(exit);
         for(JsonValue wallJSON : levelJson.get("walls")) {
             WallModel wall = new WallModel();
             wall.initialize(wallJSON);
             wall.setDrawScale(scale);
             wall.activatePhysics(world);
             walls.add(wall);
+            assert inBounds(wall);
         }
+        int enemyID = 0;
         for(JsonValue enemyJSON : levelJson.get("enemies")) {
-            //TODO #6 INIT enemies --> waiting for AIController to be finished
             EnemyModel enemy = new EnemyModel();
             enemy.initialize(enemyJSON);
             enemy.setDrawScale(scale);
             enemy.activatePhysics(world);
             enemies.add(enemy);
-            // AIController controller = new AIController(enemy, levelModel);
-            // AIControllers.add(controller);
-            //TODO #6
+            AIController controller = new AIController(enemyID, levelModel, enemies, player, flares);
+            enemyID++;
+            AIControllers.add(controller);
+            assert inBounds(enemy);
         }
         flareJSON = levelJson.get("flare");
 
         // Initialize levelModel
-        levelModel.initialize(bounds, player, walls, enemies);
+        // TODO: levelModel.initialize(bounds, player, walls, enemies);
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
     }
@@ -362,46 +369,75 @@ public class LevelController implements ContactListener {
      * @param dt the time passed since the last frame
      */
     public void update(float dt) {
-        // Update player (and update levelModel) and exit
-        levelModel.removePlayer(player);
-        player.update(dt);
-        levelModel.placePlayer(player);
+        if(fixedStep(dt)){
+            world.step(dt, WORLD_VELOC, WORLD_POSIT);
+            // Update player (and update levelModel) and exit
+            //TODO: levelModel.removePlayer(player);
+            player.update(dt);
+            assert inBounds(player);
+            //TODO: levelModel.placePlayer(player);
 
-        // TODO: Waiting for AI Controller to be finished
-//        // Get Enemy Actions
-//        Iterator<AIController> ctrlI = AIControllers.iterator();
-//        LinkedList<EnemyModel.Action> actions = new LinkedList();
-//        while(ctrlI.hasNext()){
-//            AIController ctrl = ctrlI.next();
-//            actions.add(ctrl.getAction());
-//        }
-//        // Execute Enemy Actions (and update levelModel)
-//        Iterator<EnemyModel> enemyI = enemies.iterator();
-//        Iterator<EnemyModel> actionI = enemies.iterator();
-//        while(enemyI.hasNext()){
-//            EnemyModel enemy = enemyI.next();
-//            levelModel.removeEnemy(enemy);
-//            enemy.executeAction(actionI.next()); // TODO handle here or in enemyModel?
-//            levelModel.placeEnemy(enemy);
-//        }
+            // Get Enemy Actions
+            Iterator<AIController> ctrlI = AIControllers.iterator();
+            LinkedList<AIController.Action> actions = new LinkedList();
+            while(ctrlI.hasNext()){
+                AIController ctrl = ctrlI.next();
+                actions.add(ctrl.getAction());
+            }
+            // Execute Enemy Actions (and update levelModel)
+            Iterator<EnemyModel> enemyI = enemies.iterator();
+            Iterator<AIController.Action> actionI = actions.iterator();
+            while(enemyI.hasNext()){
+                EnemyModel enemy = enemyI.next();
+                //TODO: levelModel.removeEnemy(enemy);
+                enemy.executeAction(actionI.next());
+                assert inBounds(enemy);
+                //TODO: levelModel.placeEnemy(enemy);
+            }
 
-        // Update flares
-        Iterator<FlareModel> i = flares.iterator();
-        while(i.hasNext()){
-            FlareModel flare = i.next();
-            if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
-                flare.deactivatePhysics(world);
-                flare.dispose();
-                i.remove();
+            // Update flares
+            Iterator<FlareModel> i = flares.iterator();
+            while(i.hasNext()){
+                FlareModel flare = i.next();
+                if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
+                    flare.deactivatePhysics(world);
+                    flare.dispose();
+                    i.remove();
+                }
+                else {
+                    flare.update(dt);
+                }
             }
-            else {
-                flare.update(dt);
-            }
+
+            // Update lights
+            lightController.updateLights(flares, enemies);
+        }
+    }
+
+    /**
+     * Fixes the physics frame rate to be in sync with the animation framerate
+     *
+     * http://gafferongames.com/game-physics/fix-your-timestep/
+     *
+     * @param dt the time passed since the last frame
+     */
+    private boolean fixedStep(float dt) {
+        if (world == null) return false;
+
+        physicsTimeLeft += dt;
+        if (physicsTimeLeft > maxTimePerFrame) {
+            physicsTimeLeft = maxTimePerFrame;
         }
 
-        // Update lights
-        lightController.updateLights(player, flares, enemies);
+        boolean stepped = false;
+        while (physicsTimeLeft >= timeStep) {
+            world.step(timeStep, WORLD_VELOC, WORLD_POSIT);
+            physicsTimeLeft -= timeStep;
+            stepped = true;
+        }
+        return stepped;
     }
+
 
     /**
      * Launch a flare from the player towards the mouse position based on preset flareJSON data.
@@ -414,6 +450,7 @@ public class LevelController implements ContactListener {
         flare.initialize(flareJSON);
         flare.applyInitialForce(mousePosition.angle(), mousePosition.cpy());
         flares.add(flare);
+        assert inBounds(flare);
     }
 
     /**
@@ -446,7 +483,7 @@ public class LevelController implements ContactListener {
      */
     public void draw(GameCanvas canvas) {
         canvas.clear();
-        canvas.setCameraPosition(player.getPosition());
+        canvas.setCameraPosition(player.getPosition().x * scale.x, player.getPosition().y * scale.y);
 
         // Draw all objects
         canvas.begin();

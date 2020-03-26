@@ -44,6 +44,16 @@ public class LevelModel {
     }
 
     /**
+     * @return the width of the screen
+     */
+    public float getWidth() {return this.width;}
+
+    /**
+     * @return the height of the screen
+     */
+    public float getHeight() {return this.height;}
+
+    /**
      * Sets tiles previously covered by player as available
      * @param player
      */
@@ -137,6 +147,6 @@ public class LevelModel {
      * @return isSafe boolean
      */
     public boolean getSafe(int x, int y) {
-        return tileGrid[x][y];
-    }
+        return true;
+    } //TODO: temporary change
 }
