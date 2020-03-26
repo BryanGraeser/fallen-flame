@@ -70,7 +70,8 @@ public class InputController {
     /** Did we increase or decrease the radius?
      * Can only be two values: -1 and 1
      */
-    private float lightRadius;
+    private static float lightRadius;
+    private static float prevLightRadius;
 
     /** An X-Box controller (if it is connected) */
     XBox360Controller xbox;
@@ -96,8 +97,18 @@ public class InputController {
     public float getVertical() {
         return vertical;
     }
-    public float getLightRadius(){
+    public static float getLightRadius(){
         return lightRadius;
+    }
+    public static void setLightRadius(float val){
+        lightRadius = val;
+    }
+
+    public static float getPrevLightRadius(){
+        return prevLightRadius;
+    }
+    public static void setPrevLightRadius(float val){
+        prevLightRadius = val;
     }
 
     public Vector2 getMousePosition(){
@@ -160,7 +171,8 @@ public class InputController {
         return flarePressed && !flarePrevious;
     }
 
-    public boolean didLight() {return lightRadius != 0.0f;}
+    public boolean didLight() {
+        return lightRadius != 0.0f;}
 
     /**
      * Creates a new input controller
@@ -226,6 +238,7 @@ public class InputController {
      * @param secondary true if the keyboard should give priority to a gamepad
      */
     private void readKeyboard(boolean secondary) {
+        System.out.println("LightRadius is " + lightRadius);
         // Give priority to gamepad results
         resetPressed = (secondary && resetPressed) || (Gdx.input.isKeyPressed(Input.Keys.R));
         debugPressed = (secondary && debugPressed) || (Gdx.input.isKeyPressed(Input.Keys.D));
@@ -242,13 +255,9 @@ public class InputController {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             horizontal -= 1.0f;
         }
-        lightRadius = (secondary ? lightRadius : 0);
-        if(Gdx.input.getInputProcessor().scrolled(1)){
-            lightRadius += 1.0f;
-        }
-        if(Gdx.input.getInputProcessor().scrolled(-1)){
-            lightRadius += -1.0f;
-        }
+
+
+
         vertical = (secondary ? vertical : 0.0f);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             vertical += 1.0f;
