@@ -256,6 +256,16 @@ public class InputController {
             horizontal -= 1.0f;
         }
 
+        lightRadius = secondary ? lightRadius : 0;
+        // TODO: REMOVE CODE BELOW WHEN MOUSE WHEEL IS FIXED.
+        //#region mouse wheel alternative
+        if(Gdx.input.isKeyPressed(Input.Keys.PERIOD)){
+            lightRadius += 1.0f;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.COMMA)){
+            lightRadius += -1.0f;
+        }
+        //#endregion
 
 
         vertical = (secondary ? vertical : 0.0f);
