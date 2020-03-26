@@ -43,15 +43,15 @@ public class LevelModel {
                 tileGrid[x][y] = new Tile();
             }
         }
-
-        // Set grid to false where obstacle exists
-        setWheelObstacleInGrid(player, false);
-        for(EnemyModel e : enemies) {
-            setWheelObstacleInGrid(e, false);
-        }
-        for(WallModel w : walls) {
-            setBoxObstacleInGrid(w, false);
-        }
+//
+//        // Set grid to false where obstacle exists
+//        setWheelObstacleInGrid(player, false);
+//        for(EnemyModel e : enemies) {
+//            setWheelObstacleInGrid(e, false);
+//        }
+//        for(WallModel w : walls) {
+//            setBoxObstacleInGrid(w, false);
+//        }
     }
 
     /**

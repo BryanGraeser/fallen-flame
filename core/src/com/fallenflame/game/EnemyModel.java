@@ -27,7 +27,11 @@ public class EnemyModel extends CharacterModel {
      * @return the Vector2 representing the position the enemy seeks to investigate
      */
     public Vector2 getInvestigatePosition() {
-        return this.investigatePosition.cpy();
+        if (investigatePosition == null) {
+            return null;
+        } else {
+            return this.investigatePosition.cpy();
+        }
     }
 
     /**

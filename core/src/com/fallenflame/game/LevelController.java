@@ -298,7 +298,7 @@ public class LevelController implements ContactListener {
         flareJSON = levelJson.get("flare");
 
         // Initialize levelModel
-        // TODO: levelModel.initialize(bounds, player, walls, enemies);
+        levelModel.initialize(bounds, player, walls, enemies);
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
     }
