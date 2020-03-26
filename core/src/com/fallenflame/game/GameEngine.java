@@ -2,6 +2,8 @@ package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -40,6 +42,9 @@ public class GameEngine implements Screen {
     /**What actually keeps track of the assetState. Initially set to empty, as no resources will be in at that point*/
     private AssetState currentAssetState = AssetState.EMPTY;
 
+    /** The font for giving messages to the player */
+    protected BitmapFont displayFont;
+
     /**@author: Professor White */
     /**Main game canvas*/
     protected GameCanvas canvas;
@@ -65,6 +70,9 @@ public class GameEngine implements Screen {
     /**Rectangle canvasBounds to keep track of the current canvas size for drawing purposes
      * @author: Professor White in ShipDemo*/
     private Rectangle canvasBounds;
+
+    /** Countdown active for winning or losing */
+    private int countdown;
     /**
      * Preloads the assets for this controller.
      *
@@ -106,6 +114,7 @@ public class GameEngine implements Screen {
         }
 
         JsonAssetManager.getInstance().allocateDirectory();
+        displayFont = JsonAssetManager.getInstance().getEntry("display", BitmapFont.class);
         currentAssetState = AssetState.COMPLETE;
     }
 
@@ -192,6 +201,7 @@ public class GameEngine implements Screen {
         isScreenActive = false;
         isPaused = false;
         canvasBounds = new Rectangle();
+        countdown = -1;
     }
 
     /**
@@ -214,7 +224,7 @@ public class GameEngine implements Screen {
 
         setIsSuccess(false);
         setIsFailed(false);
-        // countdown = -1; TODO Laura: what is this for?
+         countdown = -1;
 
         // Reload the json each time
         String currentLevelPath = "jsons/" + saveJson.getString("current");
@@ -253,6 +263,11 @@ public class GameEngine implements Screen {
             listener.exitScreen(this, EXIT_QUIT);
             return false;
         }
+        else if (countdown > 0) {
+            countdown--;
+        } else if (countdown == 0) {
+            reset();
+        }
 
         return true;
     }
@@ -283,6 +298,9 @@ public class GameEngine implements Screen {
         level.update(delta);
         isSuccess = level.getLevelState() == LevelController.LevelState.WIN;
         isFailed = level.getLevelState() == LevelController.LevelState.LOSS;
+        if(isSuccess || isFailed){
+            countdown = 60;
+        }
     }
 
     /**
@@ -302,10 +320,17 @@ public class GameEngine implements Screen {
 
         // Final message
         if (isSuccess) {
-            //TODO: Print some message here about winning
+            displayFont.setColor(Color.YELLOW);
+            canvas.begin(); // DO NOT SCALE
+            canvas.drawTextCentered("VICTORY!", displayFont, 2.0f);
+            canvas.end();
         } else if (isFailed) {
-            //TODO: Print some message here about winning
+            displayFont.setColor(Color.RED);
+            canvas.begin(); // DO NOT SCALE
+            canvas.drawTextCentered("YOU DIED!", displayFont, 2.0f);
+            canvas.end();
         }
+
     }
 
     /**
