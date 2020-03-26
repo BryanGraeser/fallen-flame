@@ -40,7 +40,13 @@ public class LightInputProcessor implements InputProcessor {
     }
 
     public boolean scrolled (int amount) {
-       gameEngine.lightFromPlayer((float)amount);
+       if(amount == 1){
+           gameEngine.lightFromPlayer(-1.0f);
+       }
+       if(amount == -1){
+           gameEngine.lightFromPlayer(1.0f);
+       }
+
        return true;
     }
 }
