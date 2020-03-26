@@ -18,9 +18,6 @@ public class LevelController implements ContactListener {
     /** Whether or not the level has been populated */
     private boolean populated;
 
-    /** Whether or not the level has been populated */
-    private boolean populated;
-
     // Physics objects for the level
     /** Reference to the player character */
     private PlayerModel player;
