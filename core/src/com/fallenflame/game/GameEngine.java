@@ -142,28 +142,9 @@ public class GameEngine implements Screen {
      * @return: boolean that is true if the level is completed*/
     public boolean isSuccess(){return isSuccess;}
 
-    /**Set if the level has been completed
-     * @param: boolean isSuccess that is true if the level is completed*/
-
-    public void setIsSuccess(boolean isSuccess){
-        this.isSuccess = isSuccess;
-        if(isSuccess) {
-            countdown = 120;
-        }
-    }
     /**Return true if the level has failed
      * @return: boolean that is true if the level is failed*/
     public boolean isFailed(){return isFailed;}
-
-    /**Set if the level has been failed
-     * @param: boolean isFailed that is true if the level is completed*/
-
-    public void setIsFailed(boolean isFailed){
-        this.isFailed = isFailed;
-        if (isFailed){
-            countdown = 120;
-        }
-    }
 
     /**Return true if the level has paused
      * @return: boolean that is true if the level is failed*/
@@ -312,10 +293,13 @@ public class GameEngine implements Screen {
         }
         level.movePlayer(angle, tempAngle);
         level.update(delta);
-        isSuccess = level.getLevelState() == LevelController.LevelState.WIN && !prevSuccess;
-        prevSuccess = prevSuccess == true ? true : isSuccess;
-        isFailed = level.getLevelState() == LevelController.LevelState.LOSS && !prevFailed;
-        prevFailed = prevFailed == true ? true : isFailed;
+        isSuccess = level.getLevelState() == LevelController.LevelState.WIN;
+        isFailed = level.getLevelState() == LevelController.LevelState.LOSS;
+        if((isSuccess && !prevSuccess) || (isFailed && !prevFailed)){
+            countdown = 80;
+        }
+        prevSuccess = isSuccess;
+        prevFailed = isFailed;
     }
 
     /**
