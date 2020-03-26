@@ -161,7 +161,7 @@ public class LevelModel {
      * @return true if the given position is a valid tile
      */
     private boolean inBounds(int x, int y) {
-        return x >= 0 && y >= 0 && x < width/tileSize && y < height/tileSize;
+        return x >= 0 && y >= 0 && x < tileGrid.length && y < tileGrid[0].length;
     }
 
     /**
@@ -236,10 +236,7 @@ public class LevelModel {
      * @param y The y index for the Tile cell
      */
     public void setGoal(int x, int y){
-        if (!inBounds(x,y)) {
-            Gdx.app.error("Board", "Illegal tile "+x+","+y, new IndexOutOfBoundsException());
-            return;
-        }
+        if (!inBounds(x,y))
         tileGrid[x][y].goal = true;
     }
 
