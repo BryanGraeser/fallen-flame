@@ -125,27 +125,37 @@ public class AIController {
                     break;
                 }
 
-                FlareModel closestFlare = null; //Safety for if closestFlare is not null for some-reason.
-                //This is to prevent an enemy from getting stuck between two flares
-                int closestFlareDistance = FLARE_DETECTION_RADIUS;
-                for(FlareModel flare : flares){
-                    double flareDistance = cartesianDistance(
-                            level.screenToTile(flare.getX()),
-                            level.screenToTile(enemy.getX()),
-                            level.screenToTile(flare.getY()),
-                            level.screenToTile(enemy.getY())
-                    );
+                //FLARES
+                if(enemy.getInvestigatePosition() == null) {
+                    FlareModel closestFlare = null; //Safety for if closestFlare is not null for some-reason.
+                    //This is to prevent an enemy from getting stuck between two flares
+                    int closestFlareDistance = FLARE_DETECTION_RADIUS;
+                    for (FlareModel flare : flares) {
+                        double flareDistance = cartesianDistance(
+                                level.screenToTile(flare.getX()),
+                                level.screenToTile(enemy.getX()),
+                                level.screenToTile(flare.getY()),
+                                level.screenToTile(enemy.getY())
+                        );
 
-                    if(flareDistance <= closestFlareDistance && !investigatedFlares.contains(flare)) {
-                        closestFlare = flare;
-                        closestFlareDistance = (int) flareDistance;
+                        if (flareDistance <= closestFlareDistance && !investigatedFlares.contains(flare)) {
+                            closestFlare = flare;
+                            closestFlareDistance = (int) flareDistance;
+                        }
+                    }
+
+                    if (closestFlare != null) {
+                        investigatedFlares.add(closestFlare);
+                        investigationPosition = new Vector2(closestFlare.getX(), closestFlare.getY());
+                        state = FSMState.INVESTIGATE;
                     }
                 }
 
-                if(closestFlare != null){
-                    investigatedFlares.add(closestFlare);
-                    investigationPosition = new Vector2(closestFlare.getX(), closestFlare.getY());
-                    state = FSMState.INVESTIGATE;
+                if (enemy.getInvestigatePosition() == null || random.nextInt(100) < 10) {
+                    float x, y;
+                    x = random.nextFloat() * level.getHeight();
+                    y = random.nextFloat() * level.getWidth();
+                    enemy.setInvestigatePosition(x, y);
                 }
 
                 break;
@@ -204,38 +214,43 @@ public class AIController {
      */
     private void markGoalTiles() {
         boolean setGoal = false;
-        float playerX = player.getX(), playerY = player.getY();
+        int sx, sy;
 
         switch (state) {
-            case IDLE:
-                float x, y;
-                if (enemy.getGoal() == null || random.nextInt(100) < 10) {
-                    x = random.nextFloat() * level.getHeight();
-                    y = random.nextFloat() * level.getWidth();
-                    enemy.setGoal(x, y);
-                    setGoal = true;
-                }
+            case IDLE: //investigation position must not be null
+                sx = level.screenToTile(enemy.getInvestigatePositionX());
+                sy = level.screenToTile(enemy.getInvestigatePositionY());
+                level.setGoal(sx, sy);
+                setGoal = true;
+
                 break;
 
             case CHASE:
-                enemy.setGoal(playerX, playerY);
+                sx = level.screenToTile(player.getX());
+                sy = level.screenToTile(player.getY());
+                level.setGoal(sx, sy);
                 setGoal = true;
                 break;
 
             case ATTACK:
-                enemy.setGoal(playerX, playerY);
+                sx = level.screenToTile(player.getX());
+                sy = level.screenToTile(player.getY());
+                level.setGoal(sx, sy);
                 setGoal = true;
                 break;
 
             case INVESTIGATE: //investigationPosition must not be null
-                float investX = investigationPosition.x;
-                float investY = investigationPosition.y;
-                enemy.setGoal(investX, investY);
+                sx = level.screenToTile(enemy.getInvestigatePositionX());
+                sy = level.screenToTile(enemy.getInvestigatePositionY());
+                level.setGoal(sx, sy);
+                setGoal = true;
                 break;
         }
 
         if (!setGoal) {
-            enemy.clearGoal();
+            sx = level.screenToTile(enemy.getX());
+            sy = level.screenToTile(enemy.getY());
+            level.setGoal(sx, sy);
         }
     }
 
@@ -248,9 +263,10 @@ public class AIController {
      * @return a movement direction that moves towards a goal tile or NO_ACTION.
      */
     private Action getMoveAlongPathToGoalTile() {
+        level.clearAllTiles();
         int startX = level.screenToTile(enemy.getX());
         int startY = level.screenToTile(enemy.getY());
-        if (enemy.isGoal(startX, startY)) {
+        if (level.isGoal(startX, startY)) {
             return Action.NO_ACTION;
         }
 
@@ -260,23 +276,21 @@ public class AIController {
         Queue<Coordinate> queue = new LinkedList<>();
         queue.add(c);
 
-        HashSet<Coordinate> visited = new HashSet<>();
-
         while (!queue.isEmpty()) {
 
             c = queue.poll();
-            if (enemy.isGoal(c.getX(), c.getY())) {
+            if (level.isGoal(c.getX(), c.getY())) {
                 break;
             }
 
-            if (!visited.contains(c)) {
-                visited.add(c);
+            if (!level.isVisited(c.getX(), c.getY())) {
+                level.setVisited(c.getX(), c.getY());
 
                 for (int yOffSet = -1; yOffSet <= 1; yOffSet++) {
                     for (int xOffSet = -1; xOffSet <= 1; xOffSet++) {
                         int x = c.getX() + xOffSet;
                         int y = c.getY() + yOffSet;
-                        if (level.getSafe(x, y)) {
+                        if (level.isSafe(x, y)) {
                             queue.add(new Coordinate(x, y, c));
                         }
                     }
@@ -309,10 +323,10 @@ public class AIController {
         /** Determines the correct direction to move to based on the desired goal and current state */
         private Action getDirectionFromPrev(){
             if(prev == null){return randAction();}
-            if(this.x > prev.x && level.getSafe(this.x + 1, this.y)) {return Action.RIGHT;
-            } else if(this.x < prev.x && level.getSafe(this.x - 1, this.y)){return Action.LEFT;
-            } else if(this.y < prev.y && level.getSafe(this.x, this.y-1)){return Action.UP;
-            } else if (this.y > prev.y && level.getSafe(this.x, this.y + 1)){return Action.DOWN;
+            if(this.x > prev.x && level.isSafe(this.x + 1, this.y)) {return Action.RIGHT;
+            } else if(this.x < prev.x && level.isSafe(this.x - 1, this.y)){return Action.LEFT;
+            } else if(this.y < prev.y && level.isSafe(this.x, this.y-1)){return Action.UP;
+            } else if (this.y > prev.y && level.isSafe(this.x, this.y + 1)){return Action.DOWN;
             } else {return randAction();}
         }
 
@@ -347,9 +361,9 @@ public class AIController {
     /** Determines whether the player has reached the coordinates they are investigating */
     private boolean investigateReached(){
         double distance = cartesianDistance(level.screenToTile(enemy.getX()),
-                level.screenToTile(enemy.getGoalX()),
+                level.screenToTile(enemy.getInvestigatePositionX()),
                 level.screenToTile(enemy.getY()),
-                level.screenToTile(enemy.getGoalY()));
+                level.screenToTile(enemy.getInvestigatePositionY()));
         return distance <= REACHED_INVESTIGATE;
     }
 

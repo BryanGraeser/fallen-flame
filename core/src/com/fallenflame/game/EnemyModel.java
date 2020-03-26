@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 public class EnemyModel extends CharacterModel {
     protected boolean activated = false;
 
-    protected Vector2 goal;
+    protected Vector2 investigatePosition;
 
     /**
      * Gets enemy's active status
@@ -24,63 +24,41 @@ public class EnemyModel extends CharacterModel {
     }
 
     /**
-     * @return the Vector2 representing the enemy's goal sate
+     * @return the Vector2 representing the position the enemy seeks to investigate
      */
-    public Vector2 getGoal() {
-        return this.goal.cpy();
+    public Vector2 getInvestigatePosition() {
+        return this.investigatePosition.cpy();
     }
 
     /**
-     * @return the y coordinate of the enemy's goal state
+     * @return the y coordinate of the position the enemy seeks to investigate
      */
-    public float getGoalY() {
-        return this.goal.y;
+    public float getInvestigatePositionY() {
+        return this.investigatePosition.y;
     }
 
     /**
      * @return the x coordinate of the enemy's goal state
      */
-    public float getGoalX() {
-        return this.goal.x;
+    public float getInvestigatePositionX() {
+        return this.investigatePosition.x;
     }
 
     /**
-     * Set enemy's goal position
-     * @param v Vector representing enemy's goal position
+     * Set enemy's investigation position
+     * @param v Vector representing enemy's investigation position
      */
-    public void setGoal(Vector2 v) {
-        this.goal = v;
+    public void setInvestigatePosition(Vector2 v) {
+        this.investigatePosition = v;
     }
 
     /**
-     * Set enemy's goal position
+     * Set enemy's investigation position
      * @param x x-coor of enemy's goal
      * @param y y-coor of enemy's goal
      */
-    public void setGoal(float x, float y) {
-        setGoal(new Vector2(x, y));
-    }
-
-    /**
-     * @param v is a vector with a x and y attributes
-     * @return whether given coordinate is equal to the enemy's current goal
-     */
-    public boolean isGoal(Vector2 v){
-        return this.goal.equals(v);
-    }
-
-    /**
-     * @param x x-coor of position to check
-     * @param y y-coor of position to check
-     * @return whether given coordinate is equal to the enemy's current goal
-     */
-    public boolean isGoal(float x, float y){
-        return isGoal(new Vector2(x, y));
-    }
-
-    /** Sets the goal of the enemy to be equal to its current position */
-    public void clearGoal() {
-        setGoal(new Vector2(getX(), getY()));
+    public void setInvestigatePosition(float x, float y) {
+        setInvestigatePosition(new Vector2(x, y));
     }
 
     /**
