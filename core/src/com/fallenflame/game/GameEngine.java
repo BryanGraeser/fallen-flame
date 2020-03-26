@@ -230,7 +230,7 @@ public class GameEngine implements Screen {
         String currentLevelPath = "jsons/" + saveJson.getString("current");
         levelJson = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
         level.populate(levelJson);
-        level.getWorld().setContactListener(level); //TODO Laura: I switched this to level
+        level.getWorld().setContactListener(level);
     }
 
     /**
@@ -283,9 +283,6 @@ public class GameEngine implements Screen {
         if (input.didFlare()) {
             level.createFlare(input.getMousePosition());
         }
-        if(input.didLight()){
-            level.lightFromPlayer(input.getLightRadius());
-        }
         // Rotate the avatar to face the direction of movement
         tempAngle.set(input.getHorizontal(),input.getVertical());
         float angle = 0;
@@ -303,6 +300,13 @@ public class GameEngine implements Screen {
         }
         prevSuccess = isSuccess;
         prevFailed = isFailed;
+    }
+
+    /**Increments the player's light radius
+     * @param amount, which represents the amount to increment the light radius*/
+
+    public void lightFromPlayer(float amount){
+        level.lightFromPlayer(amount);
     }
 
     /**
