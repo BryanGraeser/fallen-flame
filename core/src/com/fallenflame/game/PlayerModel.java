@@ -62,6 +62,7 @@ public class PlayerModel extends CharacterModel {
      * @param i value to increment radius by
      */
     public void incrementLightRadius(float i) {
+        System.out.println(lightRadius);
         lightRadius = Math.max(lightRadius + i, 0);
     }
 }
