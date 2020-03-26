@@ -242,13 +242,17 @@ public class InputController {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             horizontal -= 1.0f;
         }
-        lightRadius = (secondary ? lightRadius : 0);
-        if(Gdx.input.getInputProcessor().scrolled(1)){
+
+        // TODO: REMOVE CODE BELOW WHEN MOUSE WHEEL IS FIXED.
+        //#region mouse wheel alternative
+        if(Gdx.input.isKeyPressed(Input.Keys.PERIOD)){
             lightRadius += 1.0f;
         }
-        if(Gdx.input.getInputProcessor().scrolled(-1)){
+        if(Gdx.input.isKeyPressed(Input.Keys.COMMA)){
             lightRadius += -1.0f;
         }
+        //#endregion
+
         vertical = (secondary ? vertical : 0.0f);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             vertical += 1.0f;

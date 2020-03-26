@@ -11,10 +11,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.physics.lights.PointSource;
 import com.fallenflame.game.physics.obstacle.Obstacle;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -76,20 +73,13 @@ public class LightController {
      * @param player The player instance.
      * @param levelLighting The lighting JSON config of this level.
      * @param world The instance of Box2D {@code World}.
-     * @param bound The bound of the viewport.
+     * @param bounds The bound of the viewport.
      */
-    public void initialize(PlayerModel player, JsonValue levelLighting, World world, Rectangle bound) {
-        if (rayhandler != null) {
-            throw new Error("It seems that this controller is initialised already.");
-        }
-
+    public void initialize(PlayerModel player, JsonValue levelLighting, World world, Rectangle bounds) {
+        dispose();
+        
         // Set up camera first.
-        raycamera = new OrthographicCamera(bound.x, bound.y);
-        // TODO: This defo doesn't work. Need testing.
-        // TODO: [Leo] Determine if this is the correct value
-        float z = 0;
-        raycamera.position.set(player.getPosition(), z);
-        raycamera.update();
+        raycamera = new OrthographicCamera(bounds.width, bounds.height);
 
         // set up ray handler.
         RayHandler.setGammaCorrection(true);
@@ -167,6 +157,9 @@ public class LightController {
      * @param enemies A collection of enemies.
      */
     public void updateLights(Collection<FlareModel> flares, Collection<EnemyModel> enemies) {
+        raycamera.position.set(player.getX(), player.getY(), 0);
+        raycamera.update();
+        rayhandler.setCombinedMatrix(raycamera);
         playerLight.setDistance(player.getLightRadius());
         flareLights.keySet().stream().filter(i -> !flares.contains(i)).forEach(i -> {
             PointSource f = flareLights.get(i);
@@ -179,17 +172,23 @@ public class LightController {
             attachLightTo(f, i);
             flareLights.put(i, f);
         });
-//        enemyLights.keySet().stream().filter(i -> !enemies.contains(i) || !i.getActivated()).forEach(i -> {
-//            PointSource f = enemyLights.get(i);
-//            f.setActive(false);
-//            f.dispose();
-//            enemyLights.remove(i);
-//        });
+        // Iterate through all enemy lights and if the enemy is no longer activated or the enemy is gone, remove the light
+        Iterator<EnemyModel> iter = enemyLights.keySet().iterator();
+        while(iter.hasNext()){
+            EnemyModel e = iter.next();
+            if(!enemies.contains(e) || !e.getActivated()){
+                PointSource f = enemyLights.get(e);
+                f.setActive(false);
+                f.dispose();
+                iter.remove();
+            }
+        }
         enemies.stream().filter(i -> !enemyLights.containsKey(i)).forEach(i -> {
             PointSource f = createPointLight(i.getLightRadius());
             attachLightTo(f, i);
             enemyLights.put(i, f);
         });
+        rayhandler.update();
     }
 
     /**
