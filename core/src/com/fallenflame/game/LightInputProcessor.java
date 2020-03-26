@@ -19,9 +19,11 @@ public class LightInputProcessor implements InputProcessor {
        gameEngine = g;
    }
    /**Below are functions that are required to be implemented by InputProcessor. All return false if unused to indicate
-    * that the event was not handled by this inputProcessor. All return that return false here
-    * return true in the LoadingMode inputProcessor to ensure that the even is handled (either LoadingMode does something
-    * or just returns true.*/
+    * that the event was not handled by this inputProcessor. The functions that return false in this file return true
+    * in the LoadingMode inputProcessor to ensure that the even is handled (either LoadingMode does something
+    * or just returns true). This has to be used because mouse scrolling can only be done with InputProcessor.
+    * Gdx.Input does not have any functions to handle mouse scrolling and this should not take too much time,
+    * even with the events*/
 
    /**What happens when a key is pressed
     * @param keycode representing what key was pressed
@@ -74,6 +76,9 @@ public class LightInputProcessor implements InputProcessor {
         return false;
     }
 
+    /**What happens when the mouse is scrolling. Should take O(1).
+     * @param amount representing if the wheel scrolled down (1) or up (-1). Can only be those two values.
+     * @return boolean saying if the event was handled*/
     public boolean scrolled (int amount) {
         if(!gameEngine.isScreenActive()){
             return true;
