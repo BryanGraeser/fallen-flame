@@ -172,7 +172,9 @@ public class LevelModel {
      * @return isSafe boolean
      */
     public boolean isSafe(int x, int y) {
-        return true;
+        //TODO: should return inBounds(x, y) and whether Tile.safe is true.
+        //TODO: Tile.safe is false when it's an obstacle on it and true otherwise.
+        return inBounds(x, y);
     } //TODO: temporary change
 
     /**
@@ -236,8 +238,14 @@ public class LevelModel {
      * @param y The y index for the Tile cell
      */
     public void setGoal(int x, int y){
-        if (!inBounds(x,y))
-        tileGrid[x][y].goal = true;
+        if (!inBounds(x,y)) {
+            System.out.println(x);
+            System.out.println(y);
+            Gdx.app.error("Board", "Illegal tile "+x+","+y, new IndexOutOfBoundsException());
+            return;
+        } else {
+            tileGrid[x][y].goal = true;
+        }
     }
 
     /**
