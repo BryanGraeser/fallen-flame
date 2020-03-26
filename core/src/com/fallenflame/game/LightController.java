@@ -79,10 +79,8 @@ public class LightController {
      * @param bounds The bound of the viewport.
      */
     public void initialize(PlayerModel player, JsonValue levelLighting, World world, Rectangle bounds) {
-        if (rayhandler != null) {
-            throw new Error("It seems that this controller is initialised already.");
-        }
-
+        dispose();
+        
         // Set up camera first.
         raycamera = new OrthographicCamera(bounds.width, bounds.height);
 
