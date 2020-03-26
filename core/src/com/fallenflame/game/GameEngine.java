@@ -220,7 +220,7 @@ public class GameEngine implements Screen {
         String currentLevelPath = "jsons/" + saveJson.getString("current");
         levelJson = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
         level.populate(levelJson);
-        level.getWorld().setContactListener(level); //TODO Laura: I switched this to level
+        level.getWorld().setContactListener(level);
     }
 
     /**
@@ -286,7 +286,6 @@ public class GameEngine implements Screen {
      * @param amount, which represents the amount to increment the light radius*/
 
     public void lightFromPlayer(float amount){
-        System.out.println("amount is: " + amount);
         level.lightFromPlayer(amount);
     }
 

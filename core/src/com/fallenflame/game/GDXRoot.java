@@ -46,7 +46,9 @@ public class GDXRoot extends Game implements ScreenListener {
 		loading = new LoadingMode(canvas,1);
 		engine = new GameEngine();
 		lightInputProcessor = new LightInputProcessor(engine);
-		InputMultiplexer multiplexer = new InputMultiplexer();
+		InputMultiplexer multiplexer = new InputMultiplexer(); //Allows for multiple InputProcessors
+		//Multiplexer is an ordered list, so when an event occurs, it'll check loadingMode first, and then
+		// LightInputProcessor
 		multiplexer.addProcessor(loading);
 		multiplexer.addProcessor(lightInputProcessor);
 		Gdx.input.setInputProcessor(multiplexer);
