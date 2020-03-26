@@ -38,8 +38,13 @@ public class EnemyModel extends CharacterModel {
         return super.getDefaultMaxSpeed() * 1.25f;
     }
 
-    protected String getDefaultTexture() {
-        return "enemy-walking";
+    //TODO: fix error occuring from "enemy-walking" not existing
+//    protected String getDefaultTexture() {
+//        return "enemy-walking";
+//    }
+
+    protected String getDefaultTexture(){
+        return "player";
     }
 
     /**

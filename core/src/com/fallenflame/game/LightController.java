@@ -179,12 +179,12 @@ public class LightController {
             attachLightTo(f, i);
             flareLights.put(i, f);
         });
-        enemyLights.keySet().stream().filter(i -> !enemies.contains(i) || !i.getActivated()).forEach(i -> {
-            PointSource f = enemyLights.get(i);
-            f.setActive(false);
-            f.dispose();
-            enemyLights.remove(i);
-        });
+//        enemyLights.keySet().stream().filter(i -> !enemies.contains(i) || !i.getActivated()).forEach(i -> {
+//            PointSource f = enemyLights.get(i);
+//            f.setActive(false);
+//            f.dispose();
+//            enemyLights.remove(i);
+//        });
         enemies.stream().filter(i -> !enemyLights.containsKey(i)).forEach(i -> {
             PointSource f = createPointLight(i.getLightRadius());
             attachLightTo(f, i);
