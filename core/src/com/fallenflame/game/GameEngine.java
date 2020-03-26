@@ -27,6 +27,9 @@ public class GameEngine implements Screen {
     /** Exit code for quitting the game */
     public static final int EXIT_QUIT = 0;
 
+    /** How long the game should countdown */
+    public static final int COUNTDOWN_TIME = 80;
+
  /**@author: Professor White */
     private JsonReader jsonReader;
     /**@author: Professor White */
@@ -296,7 +299,7 @@ public class GameEngine implements Screen {
         isSuccess = level.getLevelState() == LevelController.LevelState.WIN;
         isFailed = level.getLevelState() == LevelController.LevelState.LOSS;
         if((isSuccess && !prevSuccess) || (isFailed && !prevFailed)){
-            countdown = 80;
+            countdown = COUNTDOWN_TIME;
         }
         prevSuccess = isSuccess;
         prevFailed = isFailed;
