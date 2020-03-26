@@ -254,7 +254,8 @@ public class AIController {
             return Action.NO_ACTION;
         }
 
-        Coordinate c = new Coordinate(startX, startY, null);
+        Coordinate start = new Coordinate(startX, startY, null);
+        Coordinate c = start;
 
         Queue<Coordinate> queue = new LinkedList<>();
         queue.add(c);
