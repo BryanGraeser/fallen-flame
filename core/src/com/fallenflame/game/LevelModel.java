@@ -33,7 +33,7 @@ public class LevelModel {
     public LevelModel(){ }
 
     public void initialize(Rectangle bounds, List<WallModel> walls, List<EnemyModel> enemies) {
-        tileSize = .2f;
+        tileSize = .4f;
         width = bounds.getWidth();
         height = bounds.getHeight();
 
@@ -45,9 +45,7 @@ public class LevelModel {
             }
         }
         // Set grid to false where obstacle exists
-        for(EnemyModel e : enemies) {
-           // setWheelObstacleInGrid(e, false);
-        }
+        // TODO: place enemies?
         for(WallModel w : walls) {
             setBoxObstacleInGrid(w, false);
         }

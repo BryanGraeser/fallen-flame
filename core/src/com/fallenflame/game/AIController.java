@@ -179,6 +179,7 @@ public class AIController {
     private Action getMoveAlongPathToGoalTile() {
         int startX = level.screenToTile(enemy.getX());
         int startY = level.screenToTile(enemy.getY());
+        System.out.println("ENEMY START POS: " + startX + ", " + startY);
         if(!level.isSafe(startX, startY))
             System.out.println("start not safe");
 
@@ -199,13 +200,15 @@ public class AIController {
             // Already visited
             if(level.isVisited(curr.x, curr.y))
                 continue;
+            // Set visited
+            level.setVisited(curr.x, curr.y);
+            if(curr.y == startY)
+                System.out.println(curr.x + "," + curr.y);
             // Find goal
             if(level.isGoal(curr.x, curr.y)){
                 System.out.println(curr.a);
                 return curr.a;
             }
-            // Set visited
-            level.setVisited(curr.x, curr.y);
             // Push all valid movements to queue (with current action because that is the first move from start location
             // that has shortest path to this point)
             if(level.isSafe(curr.x+1, curr.y))
