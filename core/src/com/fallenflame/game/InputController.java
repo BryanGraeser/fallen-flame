@@ -101,8 +101,7 @@ public class InputController {
     }
 
     public Vector2 getMousePosition(){
-
-      return new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        return new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
     }
 
@@ -201,7 +200,7 @@ public class InputController {
      * The method provides both the input bounds and the drawing scale.  It needs
      * the drawing scale to convert screen coordinates to world coordinates.  The
      * bounds are for the crosshair.  They cannot go outside of this zone.
-
+     * 
      */
     private void readGamepad() {
         resetPressed = xbox.getStart();
