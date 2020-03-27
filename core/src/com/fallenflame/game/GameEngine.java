@@ -264,6 +264,8 @@ public class GameEngine implements Screen {
             listener.exitScreen(this, EXIT_QUIT);
             return false;
         }
+        //If countdown is > -1, then the player must have won or lost. Either continue to show the win condition message
+        //Or reset, if the countdown is up.
         else if (countdown > 0) {
             countdown--;
         } else if (countdown == 0) {

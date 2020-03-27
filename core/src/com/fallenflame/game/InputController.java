@@ -70,8 +70,7 @@ public class InputController {
     /** Did we increase or decrease the radius?
      * Can only be two values: -1 and 1
      */
-    private static float lightRadius;
-    private static float prevLightRadius;
+    private float lightRadius;
 
     /** An X-Box controller (if it is connected) */
     XBox360Controller xbox;
@@ -97,23 +96,13 @@ public class InputController {
     public float getVertical() {
         return vertical;
     }
-    public static float getLightRadius(){
+    public float getLightRadius(){
         return lightRadius;
-    }
-    public static void setLightRadius(float val){
-        lightRadius = val;
-    }
-
-    public static float getPrevLightRadius(){
-        return prevLightRadius;
-    }
-    public static void setPrevLightRadius(float val){
-        prevLightRadius = val;
     }
 
     public Vector2 getMousePosition(){
 
-      return new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        return new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
     }
 
@@ -171,8 +160,7 @@ public class InputController {
         return flarePressed && !flarePrevious;
     }
 
-    public boolean didLight() {
-        return lightRadius != 0.0f;}
+    public boolean didLight() {return lightRadius != 0.0f;}
 
     /**
      * Creates a new input controller
@@ -213,7 +201,6 @@ public class InputController {
      * The method provides both the input bounds and the drawing scale.  It needs
      * the drawing scale to convert screen coordinates to world coordinates.  The
      * bounds are for the crosshair.  They cannot go outside of this zone.
-
      */
     private void readGamepad() {
         resetPressed = xbox.getStart();
@@ -255,7 +242,6 @@ public class InputController {
             horizontal -= 1.0f;
         }
 
-        lightRadius = secondary ? lightRadius : 0;
         // TODO: REMOVE CODE BELOW WHEN MOUSE WHEEL IS FIXED.
         //#region mouse wheel alternative
         if(Gdx.input.isKeyPressed(Input.Keys.PERIOD)){
@@ -265,7 +251,6 @@ public class InputController {
             lightRadius += -1.0f;
         }
         //#endregion
-
 
         vertical = (secondary ? vertical : 0.0f);
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
