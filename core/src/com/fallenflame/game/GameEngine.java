@@ -211,6 +211,7 @@ public class GameEngine implements Screen {
      */
     public void reset() {
         level.dispose();
+        level = new LevelController();
 
         setIsSuccess(false);
         setIsFailed(false);
