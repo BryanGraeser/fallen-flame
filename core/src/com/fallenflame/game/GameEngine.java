@@ -329,7 +329,7 @@ public class GameEngine implements Screen {
         if (isSuccess) {
             displayFont.setColor(Color.YELLOW);
             canvas.begin(); // DO NOT SCALE
-            canvas.drawTextCentered("VICTORY!", displayFont, 0.0f);
+            canvas.drawText("VICTORY!", displayFont, 0, canvas.getHeight());
             canvas.end();
         } else if (isFailed) {
             displayFont.setColor(Color.RED);
