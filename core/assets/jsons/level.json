@@ -3,7 +3,7 @@
   "graphicSize":      [ 800, 600],
   "fpsRange":         [  20,  60],
   "player":           {
-    "pos":        	[ 1.5, 1.5],
+    "pos":        	[ 5, 5],
     "radius":      	0.4,
     "bodytype":    	"dynamic",
     "density":        1.0,
