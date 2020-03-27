@@ -367,7 +367,7 @@ public class LevelController implements ContactListener {
      */
     public void update(float dt) {
         if(fixedStep(dt)){
-            world.step(dt, WORLD_VELOC, WORLD_POSIT);
+            //world.step(dt, WORLD_VELOC, WORLD_POSIT);
             // Update player (and update levelModel) and exit
             player.update(dt);
             assert inBounds(player);
