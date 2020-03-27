@@ -1,45 +1,11 @@
 package com.fallenflame.game;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.utils.JsonValue;
-import com.fallenflame.game.util.FilmStrip;
-import com.fallenflame.game.util.JsonAssetManager;
 
 public class EnemyModel extends CharacterModel {
     protected boolean activated = false;
 
     protected Vector2 goal;
-    /**
-     * Initializes the player via the given JSON value
-     *
-     * The JSON value has been parsed and is part of a bigger level file.  However,
-     * this JSON value is limited to the player subtree
-     *
-     * @param json	the JSON subtree defining the player
-     */
-    public void initialize(JsonValue json) {
-        super.initialize(json);
-        // Enemy specific initialization
-        // Now get the texture from the AssetManager singleton
-        String key = getDefaultTexture(); // TODO: should get from JSON?
-        TextureRegion texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        try {
-            filmstrip = (FilmStrip)texture;
-        } catch (Exception e) {
-            filmstrip = null;
-        }
-        setTexture(texture);
-    }
-
-    protected float getDefaultMaxSpeed() {
-        return super.getDefaultMaxSpeed() * 1.25f;
-    }
-
-    protected String getDefaultTexture() {
-        return "enemy-walking";
-    }
 
     /**
      * Gets enemy's active status
@@ -123,5 +89,41 @@ public class EnemyModel extends CharacterModel {
      */
     public float getLightRadius() {
         return getActivated() ? 1 : 0;
+    }
+
+    /**
+     * Executes enemy action
+     * @param action for enemy to execute. can be left, right, up, down movement or no action
+     * @return true if enemy has moved
+     */
+    public boolean executeAction(AIController.Action action) {
+        Vector2 tempAngle = new Vector2(); // x: -1 = left, 1 = right, 0 = still; y: -1 = down, 1 = up, 0 = still
+        switch(action){
+            case NO_ACTION:
+                return false;
+            case LEFT:
+                tempAngle.set(-1,0);
+                break;
+            case RIGHT:
+                tempAngle.set(1,0);
+                break;
+            case UP:
+                tempAngle.set(0,1);
+                break;
+            case DOWN:
+                tempAngle.set(0,-1);
+                break;
+            default:
+                System.out.println("invalid enemy action");
+                assert false;
+        }
+        tempAngle.scl(getForce());
+        setMovement(tempAngle.x, tempAngle.y);
+        float angle = tempAngle.angle();
+        // Convert to radians with up as 0
+        angle = (float)Math.PI*(angle-90.0f)/180.0f;
+        setAngle(angle);
+        applyForce();
+        return true;
     }
 }
