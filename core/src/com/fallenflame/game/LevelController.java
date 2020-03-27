@@ -440,6 +440,7 @@ public class LevelController implements ContactListener {
     public void createFlare(Vector2 mousePosition){
         FlareModel flare = new FlareModel(player.getPosition());
         flare.initialize(flareJSON);
+        flare.activatePhysics(world);
         flare.applyInitialForce(mousePosition.angle(), mousePosition.cpy());
         flares.add(flare);
     }

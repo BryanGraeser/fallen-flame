@@ -247,6 +247,7 @@ public abstract class CharacterModel extends WheelObstacle {
         // Apply force for movement
         if (getMovement().len2() > 0f) {
             forceCache.set(getMovement());
+            System.out.println(body);
             body.applyForce(forceCache,getPosition(),true);
             animate = true;
         } else {

@@ -188,6 +188,8 @@ public class FlareModel extends WheelObstacle {
             filmstrip = null;
         }
         setTexture(texture);
+
+
     }
 
     /**
