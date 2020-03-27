@@ -123,7 +123,7 @@
     "friction":       0.0,
     "restitution":    0.0,
     "texture":        "fire",
-    "initialforce":   1.0,
+    "initialforce":   3.0,
     "damping": 		 0.0,
     "startframe":       0
   },
