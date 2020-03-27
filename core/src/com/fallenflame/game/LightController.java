@@ -161,12 +161,17 @@ public class LightController {
         raycamera.update();
         rayhandler.setCombinedMatrix(raycamera);
         playerLight.setDistance(player.getLightRadius());
-        flareLights.keySet().stream().filter(i -> !flares.contains(i)).forEach(i -> {
-            PointSource f = flareLights.get(i);
-            f.setActive(false);
-            f.dispose();
-            flareLights.remove(i);
-        });
+        // Iterate through all flares and if the flare is no longer present, remove the light
+        Iterator<FlareModel> flareIter = flareLights.keySet().iterator();
+        while(flareIter.hasNext()){
+            FlareModel flare = flareIter.next();
+            if(!flares.contains(flare)){
+                PointSource f = flareLights.get(flare);
+                f.setActive(false);
+                f.dispose();
+                flareIter.remove();
+            }
+        }
         flares.stream().filter(i -> !flareLights.containsKey(i)).forEach(i -> {
             PointSource f = createPointLight(i.getLightRadius());
             attachLightTo(f, i);
