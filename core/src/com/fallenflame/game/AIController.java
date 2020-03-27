@@ -32,15 +32,13 @@ public class AIController {
 
     // Constants
     /** The radius from which an enemy will notice a flare and approach it*/
-    private static final int FLARE_DETECTION_RADIUS = 1000;
+    private static final int FLARE_DETECTION_RADIUS = 10;
     //TODO: consider chase distance relative to player light radius
-    /** The radius from which an enemy can chase a player */
-    private static final int CHASE_DIST = 1000;
     /** The radius from which an enemy can attack a player */
-    private static final int ATTACK_DIST = 1000;
+    private static final int ATTACK_DIST = 3;
     /** The radius from which an enemy could have considered to have finished its investigation
      * of a flare or of a player's last-known location*/
-    private static final int REACHED_INVESTIGATE = 1000;
+    private static final int REACHED_INVESTIGATE = 3;
 
     // Instance Attributes
     /** The enemy being controlled by this AIController */
@@ -101,7 +99,7 @@ public class AIController {
 
         if ((randomID + ticks) % 10 == 0) {
             changeStateIfApplicable();
-
+            System.out.println(state);
             markGoalTiles();
             move = getMoveAlongPathToGoalTile();
         }
