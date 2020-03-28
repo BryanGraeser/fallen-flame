@@ -577,28 +577,6 @@ public class LevelController implements ContactListener {
     /** Unused ContactListener method */
     public void postSolve(Contact contact, ContactImpulse impulse) {}
     /** Unused ContactListener method */
-    public void preSolve(Contact contact, Manifold oldManifold) {
-        Fixture fix1 = contact.getFixtureA();
-        Fixture fix2 = contact.getFixtureB();
-
-        Body body1 = fix1.getBody();
-        Body body2 = fix2.getBody();
-
-        Obstacle bd1 = (Obstacle)body1.getUserData();
-        Obstacle bd2 = (Obstacle)body2.getUserData();
-
-        // Check if flare collides with another flare and if so ignore it
-        if(bd1 instanceof FlareModel && bd2 instanceof FlareModel) {
-            contact.setEnabled(false);
-        }
-        // Ensure flare does not collide with player or enemy
-        if ((bd1 == player && bd2 instanceof FlareModel)
-                || (bd1 instanceof FlareModel && bd2 == player)
-                || (bd1 instanceof EnemyModel && bd2 instanceof FlareModel)
-                || (bd1 instanceof FlareModel && bd2 instanceof EnemyModel)) {
-            contact.setEnabled(false);
-            return;
-        }
-    }
+    public void preSolve(Contact contact, Manifold oldManifold) {}
 
 }
