@@ -437,23 +437,26 @@ public class LevelController implements ContactListener {
 
 
     /**
-     * Launch a flare from the player towards the mouse position based on preset flareJSON data.
+     * Launch a flare from the player towards the mouse position based on preset flareJSON data, or does nothing if the
+     * player has already created the max number of flares.
      * (Called by GameEngine)
      *
      * @param mousePosition Position of mouse when flare launched
      */
     public void createFlare(Vector2 mousePosition){
-        FlareModel flare = new FlareModel(player.getPosition());
-        flare.setDrawScale(scale);
-        flare.initialize(flareJSON);
-        flare.activatePhysics(world);
-        Vector2 centerScreenPosition = new Vector2((bounds.width * scale.x) / 2,(bounds.height * scale.y) / 2);
-        Vector2 posDif = new Vector2(mousePosition.x - centerScreenPosition.x, mousePosition.y - centerScreenPosition.y);
-        float angleRad = posDif.angleRad(new Vector2(1,0));
-        Vector2 force = (new Vector2(flare.getInitialForce(),0)).rotateRad(angleRad);
-        flare.applyInitialForce(angleRad, force);
-        flares.add(flare);
-        assert inBounds(flare);
+        if (flares.size() < player.getFlareCount()) {
+            FlareModel flare = new FlareModel(player.getPosition());
+            flare.setDrawScale(scale);
+            flare.initialize(flareJSON);
+            flare.activatePhysics(world);
+            Vector2 centerScreenPosition = new Vector2((bounds.width * scale.x) / 2, (bounds.height * scale.y) / 2);
+            Vector2 posDif = new Vector2(mousePosition.x - centerScreenPosition.x, mousePosition.y - centerScreenPosition.y);
+            float angleRad = posDif.angleRad(new Vector2(1, 0));
+            Vector2 force = (new Vector2(flare.getInitialForce(), 0)).rotateRad(angleRad);
+            flare.applyInitialForce(angleRad, force);
+            flares.add(flare);
+            assert inBounds(flare);
+        }
     }
 
     /**
@@ -565,14 +568,6 @@ public class LevelController implements ContactListener {
                 else
                     ((FlareModel) bd2).stopMovement();
             }
-            // Ensure flare does not collide with player or enemy
-            if ((bd1 == player && bd2 instanceof FlareModel)
-                    || (bd1 instanceof FlareModel && bd2 == player)
-                    || (bd1 instanceof EnemyModel && bd2 instanceof FlareModel)
-                    || (bd1 instanceof FlareModel && bd2 instanceof EnemyModel)) {
-                contact.setEnabled(false);
-                return;
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -583,6 +578,28 @@ public class LevelController implements ContactListener {
     /** Unused ContactListener method */
     public void postSolve(Contact contact, ContactImpulse impulse) {}
     /** Unused ContactListener method */
-    public void preSolve(Contact contact, Manifold oldManifold) {}
+    public void preSolve(Contact contact, Manifold oldManifold) {
+        Fixture fix1 = contact.getFixtureA();
+        Fixture fix2 = contact.getFixtureB();
+
+        Body body1 = fix1.getBody();
+        Body body2 = fix2.getBody();
+
+        Obstacle bd1 = (Obstacle)body1.getUserData();
+        Obstacle bd2 = (Obstacle)body2.getUserData();
+
+        // Check if flare collides with another flare and if so ignore it
+        if(bd1 instanceof FlareModel && bd2 instanceof FlareModel) {
+            contact.setEnabled(false);
+        }
+        // Ensure flare does not collide with player or enemy
+        if ((bd1 == player && bd2 instanceof FlareModel)
+                || (bd1 instanceof FlareModel && bd2 == player)
+                || (bd1 instanceof EnemyModel && bd2 instanceof FlareModel)
+                || (bd1 instanceof FlareModel && bd2 instanceof EnemyModel)) {
+            contact.setEnabled(false);
+            return;
+        }
+    }
 
 }
