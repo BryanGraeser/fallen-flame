@@ -82,7 +82,7 @@ public class EnemyModel extends CharacterModel {
         Vector2 tempAngle = new Vector2(); // x: -1 = left, 1 = right, 0 = still; y: -1 = down, 1 = up, 0 = still
         switch(action){
             case NO_ACTION:
-                return false;
+                break; // Do not return false immediately, because then the previous movement will not be cleared.
             case LEFT:
                 tempAngle.set(-1,0);
                 break;
@@ -101,11 +101,16 @@ public class EnemyModel extends CharacterModel {
         }
         tempAngle.scl(getForce());
         setMovement(tempAngle.x, tempAngle.y);
-        float angle = tempAngle.angle();
-        // Convert to radians with up as 0
-        angle = (float)Math.PI*(angle-90.0f)/180.0f;
-        setAngle(angle);
+        // Only set angle if our temp angle is not 0. If temp angle is 0 then it means no movement, in which case leave
+        // the current facing angle of the enemy as-is. (Unless we want it to face the front when idle like Animal
+        // Crossing, but that's a discussion when we get to three-quarters)
+        if (!tempAngle.isZero()) {
+            float angle = tempAngle.angle();
+            // Convert to radians with up as 0
+            angle = (float)Math.PI*(angle-90.0f)/180.0f;
+            setAngle(angle);
+        ]
         applyForce();
-        return true;
+        return action != AIController.Action.NO_ACTION; // Return false if no action.
     }
 }
