@@ -77,6 +77,10 @@ public class LevelController implements ContactListener {
     protected float maxTimePerFrame;
     /** The amount of time that has passed without updating the frame */
     protected float physicsTimeLeft;
+    /** FPS of game */
+    private float fps;
+    /** Number of ticks sense we started this controller (used to limit number of fps updates) */
+    private long ticks;
 
     /**
      * Returns the bounding rectangle for the physics world
@@ -524,10 +528,14 @@ public class LevelController implements ContactListener {
                 flare.drawDebug(canvas);
             }
             canvas.endDebug();
+            if(ticks % 10 == 0){
+                fps = 1/delta;
+            }
             displayFont.setColor(Color.YELLOW);
             canvas.begin();
-            canvas.drawText(Float.toString(delta), displayFont, 0, canvas.getHeight()/2);
+            canvas.drawText(Float.toString(fps), displayFont, 0, canvas.getHeight()/2);
             canvas.end();
+            ticks++;
         }
     }
 
