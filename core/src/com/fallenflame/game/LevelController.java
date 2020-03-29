@@ -1,5 +1,7 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
@@ -486,7 +488,7 @@ public class LevelController implements ContactListener {
      *
      * @param canvas	the drawing context
      */
-    public void draw(GameCanvas canvas) {
+    public void draw(GameCanvas canvas, float delta, BitmapFont displayFont) {
         canvas.clear();
         canvas.setCameraPosition(player.getPosition().x * scale.x, player.getPosition().y * scale.y);
 
@@ -522,6 +524,10 @@ public class LevelController implements ContactListener {
                 flare.drawDebug(canvas);
             }
             canvas.endDebug();
+            displayFont.setColor(Color.YELLOW);
+            canvas.begin();
+            canvas.drawText(Float.toString(delta), displayFont, 0, canvas.getHeight()/2);
+            canvas.end();
         }
     }
 
