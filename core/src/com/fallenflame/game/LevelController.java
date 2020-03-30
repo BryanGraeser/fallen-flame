@@ -35,7 +35,7 @@ public class LevelController implements ContactListener {
     private JsonValue flareJSON;
 
     /** Whether or not the level is in debug more (showing off physics) */
-    private boolean debug;
+    private int debug;
 
     // World Definitions
     /** The Box2D world */
@@ -151,7 +151,7 @@ public class LevelController implements ContactListener {
      *
      * @return whether this level is currently in debug node
      */
-    public boolean getDebug() { return debug; }
+    public int getDebug() { return debug; }
 
     /**
      * Sets whether this level is currently in debug node
@@ -161,7 +161,7 @@ public class LevelController implements ContactListener {
      *
      * @param value	whether this level is currently in debug node
      */
-    public void setDebug(boolean value) { debug = value; }
+    public void setDebug(int value) { debug = value % 3; }
 
     /**
      * Returns the maximum FPS supported by this level
@@ -226,7 +226,7 @@ public class LevelController implements ContactListener {
         world  = null;
         bounds = new Rectangle(0,0,1,1);
         scale = new Vector2(1,1);
-        debug  = false;
+        debug  = 0;
         levelState = LevelState.IN_PROGRESS;
         // Controllers
         lightController = new LightController();
@@ -503,7 +503,7 @@ public class LevelController implements ContactListener {
         lightController.draw();
 
         // Draw debugging on top of everything.
-        if (debug) {
+        if (debug == 1) {
             canvas.beginDebug();
             player.drawDebug(canvas);
             exit.drawDebug(canvas);
@@ -516,6 +516,10 @@ public class LevelController implements ContactListener {
             for(FlareModel flare : flares) {
                 flare.drawDebug(canvas);
             }
+            canvas.endDebug();
+        } else if (debug == 2) {
+            canvas.beginDebugFilled();
+            levelModel.drawDebug(canvas, scale);
             canvas.endDebug();
         }
     }

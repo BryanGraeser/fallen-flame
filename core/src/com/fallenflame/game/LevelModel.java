@@ -2,6 +2,7 @@ package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.fallenflame.game.physics.obstacle.BoxObstacle;
 import com.fallenflame.game.physics.obstacle.WheelObstacle;
 
@@ -11,7 +12,7 @@ import java.util.*;
 
 public class LevelModel {
 
-    private static class Tile {
+    public static class Tile {
         /** Is this a goal tiles */
         public boolean goal = false;
         /** Has this tile been visited by pathfinding? */
@@ -258,6 +259,14 @@ public class LevelModel {
             for (int y = 0; y < tileGrid[0].length; y++) {
                 tileGrid[x][y].goal = false;
                 tileGrid[x][y].visited = false;
+            }
+        }
+    }
+
+    public void drawDebug(GameCanvas canvas, Vector2 drawScale) {
+        for (int x = 0; x < tileGrid.length; x++) {
+            for (int y = 0; y < tileGrid[0].length; y++) {
+                canvas.drawGrid(x, y, tileGrid[x][y], drawScale, tileSize);
             }
         }
     }
