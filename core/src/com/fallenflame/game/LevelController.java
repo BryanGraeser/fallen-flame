@@ -461,7 +461,7 @@ public class LevelController implements ContactListener {
     public void movePlayer(float angle, Vector2 tempAngle) {
         tempAngle.scl(player.getForce());
         player.setMovement(tempAngle.x, tempAngle.y);
-        player.setAngle(angle);
+        if (!tempAngle.isZero()) player.setAngle(angle);
         player.applyForce();
     }
 

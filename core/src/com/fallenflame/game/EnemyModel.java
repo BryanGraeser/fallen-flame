@@ -102,8 +102,7 @@ public class EnemyModel extends CharacterModel {
         tempAngle.scl(getForce());
         setMovement(tempAngle.x, tempAngle.y);
         // Only set angle if our temp angle is not 0. If temp angle is 0 then it means no movement, in which case leave
-        // the current facing angle of the enemy as-is. (Unless we want it to face the front when idle like Animal
-        // Crossing, but that's a discussion when we get to three-quarters)
+        // the current facing angle of the enemy as-is.
         if (!tempAngle.isZero()) {
             float angle = tempAngle.angle();
             // Convert to radians with up as 0
