@@ -1,5 +1,7 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
@@ -75,6 +77,10 @@ public class LevelController implements ContactListener {
     protected float maxTimePerFrame;
     /** The amount of time that has passed without updating the frame */
     protected float physicsTimeLeft;
+    /** FPS of game */
+    private float fps;
+    /** Number of ticks sense we started this controller (used to limit number of fps updates) */
+    private long ticks;
 
     /**
      * Returns the bounding rectangle for the physics world
@@ -434,23 +440,26 @@ public class LevelController implements ContactListener {
 
 
     /**
-     * Launch a flare from the player towards the mouse position based on preset flareJSON data.
+     * Launch a flare from the player towards the mouse position based on preset flareJSON data, or does nothing if the
+     * player has already created the max number of flares.
      * (Called by GameEngine)
      *
      * @param mousePosition Position of mouse when flare launched
      */
     public void createFlare(Vector2 mousePosition){
-        FlareModel flare = new FlareModel(player.getPosition());
-        flare.setDrawScale(scale);
-        flare.initialize(flareJSON);
-        flare.activatePhysics(world);
-        Vector2 centerScreenPosition = new Vector2((bounds.width * scale.x) / 2,(bounds.height * scale.y) / 2);
-        Vector2 posDif = new Vector2(mousePosition.x - centerScreenPosition.x, mousePosition.y - centerScreenPosition.y);
-        float angleRad = posDif.angleRad(new Vector2(1,0));
-        Vector2 force = (new Vector2(flare.getInitialForce(),0)).rotateRad(angleRad);
-        flare.applyInitialForce(angleRad, force);
-        flares.add(flare);
-        assert inBounds(flare);
+        if (flares.size() < player.getFlareCount()) {
+            FlareModel flare = new FlareModel(player.getPosition());
+            flare.setDrawScale(scale);
+            flare.initialize(flareJSON);
+            flare.activatePhysics(world);
+            Vector2 centerScreenPosition = new Vector2((bounds.width * scale.x) / 2, (bounds.height * scale.y) / 2);
+            Vector2 posDif = new Vector2(mousePosition.x - centerScreenPosition.x, mousePosition.y - centerScreenPosition.y);
+            float angleRad = posDif.angleRad(new Vector2(1, 0));
+            Vector2 force = (new Vector2(flare.getInitialForce(), 0)).rotateRad(angleRad);
+            flare.applyInitialForce(angleRad, force);
+            flares.add(flare);
+            assert inBounds(flare);
+        }
     }
 
     /**
@@ -481,7 +490,7 @@ public class LevelController implements ContactListener {
      *
      * @param canvas	the drawing context
      */
-    public void draw(GameCanvas canvas) {
+    public void draw(GameCanvas canvas, float delta, BitmapFont displayFont) {
         canvas.clear();
         canvas.setCameraPosition(player.getPosition().x * scale.x, player.getPosition().y * scale.y);
 
@@ -517,6 +526,14 @@ public class LevelController implements ContactListener {
                 flare.drawDebug(canvas);
             }
             canvas.endDebug();
+            if(ticks % 10 == 0){
+                fps = 1/delta;
+            }
+            displayFont.setColor(Color.YELLOW);
+            canvas.begin();
+            canvas.drawText(Float.toString(fps), displayFont, 0, canvas.getHeight()/2);
+            canvas.end();
+            ticks++;
         } else if (debug == 2) {
             canvas.beginDebugFilled();
             levelModel.drawDebug(canvas, scale);
@@ -565,14 +582,6 @@ public class LevelController implements ContactListener {
                     ((FlareModel) bd1).stopMovement();
                 else
                     ((FlareModel) bd2).stopMovement();
-            }
-            // Ensure flare does not collide with player or enemy
-            if ((bd1 == player && bd2 instanceof FlareModel)
-                    || (bd1 instanceof FlareModel && bd2 == player)
-                    || (bd1 instanceof EnemyModel && bd2 instanceof FlareModel)
-                    || (bd1 instanceof FlareModel && bd2 instanceof EnemyModel)) {
-                contact.setEnabled(false);
-                return;
             }
 
         } catch (Exception e) {

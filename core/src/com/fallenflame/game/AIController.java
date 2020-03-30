@@ -1,5 +1,6 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.*;
@@ -81,10 +82,9 @@ public class AIController {
     public Action getAction() {
         ticks++;
 
-        if ((randomID + ticks) % 10 == 0) {
+        if ((randomID + ticks) % 5 == 0) {
             level.clearAllTiles();
             changeStateIfApplicable();
-            System.out.println(state);
             markGoalTiles();
             chooseAction();
         }
@@ -145,15 +145,13 @@ public class AIController {
 
             case CHASE:
                 level.setGoal(level.screenToTile(player.getX()), level.screenToTile(player.getY()));
-                System.out.println("Goal chase: " + level.screenToTile(player.getX()) + ", " +
-                    level.screenToTile(player.getY()));
+                //System.out.println("Goal chase: " + level.screenToTile(player.getX()) + ", " + level.screenToTile(player.getY()));
                 break;
 
             case INVESTIGATE:
                 level.setGoal(level.screenToTile(enemy.getInvestigatePositionX()),
                         level.screenToTile(enemy.getInvestigatePositionY()));
-                System.out.println("Goal inv: " + level.screenToTile(enemy.getInvestigatePositionX()) + "," +
-                        level.screenToTile(enemy.getInvestigatePositionY()));
+                //System.out.println("Goal inv: " + level.screenToTile(enemy.getInvestigatePositionX()) + "," + level.screenToTile(enemy.getInvestigatePositionY()));
                 break;
 
             default:
@@ -179,7 +177,7 @@ public class AIController {
     private Action getMoveAlongPathToGoalTile() {
         int startX = level.screenToTile(enemy.getX());
         int startY = level.screenToTile(enemy.getY());
-        System.out.println("ENEMY START POS: " + startX + ", " + startY);
+
         if(!level.isSafe(startX, startY))
             System.out.println("start not safe");
 
@@ -202,13 +200,10 @@ public class AIController {
                 continue;
             // Set visited
             level.setVisited(curr.x, curr.y);
-            if(curr.y == startY)
-                System.out.println(curr.x + "," + curr.y);
             // Find goal
-            if(level.isGoal(curr.x, curr.y)){
-                System.out.println(curr.a);
+            if(level.isGoal(curr.x, curr.y))
                 return curr.a;
-            }
+
             // Push all valid movements to queue (with current action because that is the first move from start location
             // that has shortest path to this point)
             if(level.isSafe(curr.x+1, curr.y))
@@ -220,7 +215,7 @@ public class AIController {
             if(level.isSafe(curr.x, curr.y-1))
                 queue.add(new TileIndex(curr.x, curr.y-1, curr.a));
         }
-        System.out.println("Goal not acquired");
+        //System.out.println("Goal not acquired");
         return Action.NO_ACTION;
     }
 
