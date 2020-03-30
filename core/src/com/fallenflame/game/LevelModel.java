@@ -93,9 +93,10 @@ public class LevelModel {
      */
     public void setWheelObstacleInGrid(WheelObstacle obs, boolean b) {
         for(int x = screenToTile(obs.getX() - obs.getRadius());
-            x < screenToTile(obs.getX() + obs.getRadius()); x++) {
+            x <= screenToTile(obs.getX() + obs.getRadius()); x++) {
             for(int y = screenToTile(obs.getY() - obs.getRadius());
-                y < screenToTile(obs.getY() + obs.getRadius()); y++) {
+                y <= screenToTile(obs.getY() + obs.getRadius()); y++) {
+                if (!inBounds(x, y)) continue;
                 tileGrid[x][y].safe = b;
             }
         }
@@ -108,9 +109,10 @@ public class LevelModel {
      */
     public void setBoxObstacleInGrid(BoxObstacle obs, boolean b) {
         for(int x = screenToTile(obs.getX() - obs.getWidth()/2);
-            x < screenToTile(obs.getX() + obs.getWidth()/2); x++) {
+            x <= screenToTile(obs.getX() + obs.getWidth()/2); x++) {
             for(int y = screenToTile(obs.getY() - obs.getHeight()/2);
-                y < screenToTile(obs.getY() + obs.getHeight()/2); y++) {
+                y <= screenToTile(obs.getY() + obs.getHeight()/2); y++) {
+                if (!inBounds(x, y)) continue;
                 tileGrid[x][y].safe = b;
             }
         }
