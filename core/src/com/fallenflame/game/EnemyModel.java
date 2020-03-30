@@ -107,9 +107,9 @@ public class EnemyModel extends CharacterModel {
         if (!tempAngle.isZero()) {
             float angle = tempAngle.angle();
             // Convert to radians with up as 0
-            angle = (float)Math.PI*(angle-90.0f)/180.0f;
+            angle = (float) Math.PI * (angle - 90.0f) / 180.0f;
             setAngle(angle);
-        ]
+        }
         applyForce();
         return action != AIController.Action.NO_ACTION; // Return false if no action.
     }
