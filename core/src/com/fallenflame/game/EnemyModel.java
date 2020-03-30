@@ -20,7 +20,7 @@ public class EnemyModel extends CharacterModel {
      * @param activated
      */
     public void setActivated(boolean activated) {
-        this.activated = true;
+        this.activated = activated;
     }
 
     /**

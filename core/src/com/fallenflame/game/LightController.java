@@ -15,6 +15,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * {@code LightController} manages and renders the light effect of the game.
@@ -198,7 +199,9 @@ public class LightController {
         updateLightsForList(flares, flareLights);
 
         // Update enemy lights.
-        updateLightsForList(enemies, enemyLights);
+        updateLightsForList(
+                enemies.stream().filter(EnemyModel::getActivated).collect(Collectors.toList()),
+                enemyLights);
 
         rayhandler.update();
     }
