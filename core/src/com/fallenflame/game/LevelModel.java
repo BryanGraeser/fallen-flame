@@ -8,8 +8,6 @@ import com.fallenflame.game.physics.obstacle.WheelObstacle;
 
 import java.util.*;
 
-// TODO: ASSUMES OBSTACLE POSITION IS AT CENTER, NEED TO VERIFY IF TRUE
-
 public class LevelModel {
 
     public static class Tile {
@@ -24,21 +22,21 @@ public class LevelModel {
 
     /** 2D tile representation of board where TRUE indicates tile is available for movement*/
     private Tile[][] tileGrid;
-    /** Size of tiles (tiles are square so is x and y) */
-    private float tileSize;
+    /** Constant tile size (tiles are square so this is x and y) */
+    private static final float TILE_SIZE = .6f;
     /** Width of screen */
     private float width;
     /** Height of screen */
     private float height;
 
+
     public LevelModel(){ }
 
     public void initialize(Rectangle bounds, List<WallModel> walls, List<EnemyModel> enemies) {
-        tileSize = .4f;
         width = bounds.getWidth();
         height = bounds.getHeight();
 
-        tileGrid = new Tile[(int) Math.ceil(width / tileSize)][(int) Math.ceil(height / tileSize)];
+        tileGrid = new Tile[(int) Math.ceil(width / TILE_SIZE)][(int) Math.ceil(height / TILE_SIZE)];
         for(int x = 0; x < tileGrid.length; x++){
             for(int y = 0; y < tileGrid[0].length; y++){
                 tileGrid[x][y] = new Tile();
@@ -131,7 +129,7 @@ public class LevelModel {
      * @return the tile cell index for a screen position.
      */
     public int screenToTile(float f) {
-        return (int)(f / tileSize);
+        return (int)(f / TILE_SIZE);
     }
 
     /**
@@ -147,7 +145,7 @@ public class LevelModel {
      * @return the screen position coordinate for a tile cell index.
      */
     public float tileToScreen(int n) {
-        return (float) (n + 0.5f) * tileSize;
+        return (float) (n + 0.5f) * TILE_SIZE;
     }
 
     /**
@@ -266,7 +264,7 @@ public class LevelModel {
     public void drawDebug(GameCanvas canvas, Vector2 drawScale) {
         for (int x = 0; x < tileGrid.length; x++) {
             for (int y = 0; y < tileGrid[0].length; y++) {
-                canvas.drawGrid(x, y, tileGrid[x][y], drawScale, tileSize);
+                canvas.drawGrid(x, y, tileGrid[x][y], drawScale, TILE_SIZE);
             }
         }
     }
