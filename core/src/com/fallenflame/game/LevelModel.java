@@ -172,7 +172,7 @@ public class LevelModel {
     public boolean isSafe(int x, int y) {
         //TODO: should return inBounds(x, y) and whether Tile.safe is true.
         //TODO: Tile.safe is false when it's an obstacle on it and true otherwise.
-        return inBounds(x,y) && tileGrid[x][y].safe;
+        return (inBounds(x,y) && tileGrid[x][y].safe) || tileGrid[x][y].goal;
     } //TODO: temporary change
 
     /**
