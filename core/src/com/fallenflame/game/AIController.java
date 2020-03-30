@@ -82,7 +82,7 @@ public class AIController {
     public Action getAction() {
         ticks++;
 
-        if ((randomID + ticks) % 10 == 0) {
+        if ((randomID + ticks) % 5 == 0) {
             level.clearAllTiles();
             changeStateIfApplicable();
             markGoalTiles();

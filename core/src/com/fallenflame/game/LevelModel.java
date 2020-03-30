@@ -23,7 +23,7 @@ public class LevelModel {
     /** 2D tile representation of board where TRUE indicates tile is available for movement*/
     private Tile[][] tileGrid;
     /** Constant tile size (tiles are square so this is x and y) */
-    private static final float TILE_SIZE = .6f;
+    private static final float TILE_SIZE = .4f;
     /** Width of screen */
     private float width;
     /** Height of screen */
