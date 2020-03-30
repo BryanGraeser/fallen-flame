@@ -245,8 +245,6 @@ public class LevelModel {
      */
     public void setGoal(int x, int y){
         if (!inBounds(x,y)) {
-            System.out.println(x);
-            System.out.println(y);
             Gdx.app.error("Board", "Illegal tile "+x+","+y, new IndexOutOfBoundsException());
             return;
         }
