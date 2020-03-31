@@ -36,8 +36,10 @@ public class LevelController implements ContactListener {
     /** Flare JSONValue */
     private JsonValue flareJSON;
 
-    /** Whether or not the level is in debug more (showing off physics) */
-    private boolean debug;
+    /** Whether or not the level is in debug mode (showing off physics) */
+    private int debug;
+    /** Whether or not the level is in debug 2 mode (unlit area only half dark) */
+    private boolean debug2;
 
     // World Definitions
     /** The Box2D world */
@@ -157,7 +159,16 @@ public class LevelController implements ContactListener {
      *
      * @return whether this level is currently in debug node
      */
-    public boolean getDebug() { return debug; }
+    public int getDebug() { return debug; }
+
+    /**
+     * Returns whether this level is currently in debug node
+     *
+     * If the level is in debug 2 mode, then unlit area will be half-dark
+     *
+     * @return whether this level is currently in debug node
+     */
+    public boolean getDebug2() { return debug2; }
 
     /**
      * Sets whether this level is currently in debug node
@@ -167,7 +178,16 @@ public class LevelController implements ContactListener {
      *
      * @param value	whether this level is currently in debug node
      */
-    public void setDebug(boolean value) { debug = value; }
+    public void setDebug(int value) { debug = value % 3; }
+
+    /**
+     * Sets whether this level is currently in debug 2 node
+     *
+     * If the level is in debug 2 mode, then unlit area will be half-dark
+     *
+     * @param value	whether this level is currently in debug node
+     */
+    public void setDebug2(boolean value) { debug2 = value; }
 
     /**
      * Returns the maximum FPS supported by this level
@@ -232,7 +252,8 @@ public class LevelController implements ContactListener {
         world  = null;
         bounds = new Rectangle(0,0,1,1);
         scale = new Vector2(1,1);
-        debug  = false;
+        debug  = 0;
+        debug2 = false;
         levelState = LevelState.IN_PROGRESS;
         // Controllers
         lightController = new LightController();
@@ -306,7 +327,7 @@ public class LevelController implements ContactListener {
         flareJSON = levelJson.get("flare");
 
         // Initialize levelModel
-        levelModel.initialize(bounds, player, walls, enemies);
+        levelModel.initialize(bounds, walls, enemies);
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
     }
@@ -376,10 +397,10 @@ public class LevelController implements ContactListener {
     public void update(float dt) {
         if(fixedStep(dt)){
             // Update player (and update levelModel) and exit
-            levelModel.removePlayer(player);
             player.update(dt);
             assert inBounds(player);
-            levelModel.placePlayer(player);
+
+            // TODO: handle enemy placement in levelmodel
 
             // Get Enemy Actions
             Iterator<AIController> ctrlI = AIControllers.iterator();
@@ -393,10 +414,8 @@ public class LevelController implements ContactListener {
             Iterator<AIController.Action> actionI = actions.iterator();
             while(enemyI.hasNext()){
                 EnemyModel enemy = enemyI.next();
-                levelModel.removeEnemy(enemy);
                 enemy.executeAction(actionI.next());
                 assert inBounds(enemy);
-                levelModel.placeEnemy(enemy);
             }
 
             // Update flares
@@ -467,6 +486,33 @@ public class LevelController implements ContactListener {
     }
 
     /**
+     * Change the player's movement to sprint
+     * (Called by GameEngine)
+     *
+     */
+    public void makeSprint(){
+        player.setForce(player.getForceSprint());
+    }
+
+    /**
+     * Change the player's movement to walk
+     * (Called by GameEngine)
+     *
+     */
+    public void makeWalk(){
+        player.setForce(player.getForceWalk());
+    }
+
+    /**
+     * Change the player's movement to sneak
+     * (Called by GameEngine)
+     *
+     */
+    public void makeSneak(){
+        player.setForce(player.getForceSneak());
+    }
+
+    /**
      * Moves the player. (Called by GameEngine)
      * @param angle angle player is facing
      * @param tempAngle movement angle of player (to be scaled by player force)
@@ -474,7 +520,7 @@ public class LevelController implements ContactListener {
     public void movePlayer(float angle, Vector2 tempAngle) {
         tempAngle.scl(player.getForce());
         player.setMovement(tempAngle.x, tempAngle.y);
-        player.setAngle(angle);
+        if (!tempAngle.isZero()) player.setAngle(angle);
         player.applyForce();
     }
 
@@ -513,10 +559,11 @@ public class LevelController implements ContactListener {
         }
         canvas.end();
 
+        lightController.setDebug(debug2);
         lightController.draw();
 
         // Draw debugging on top of everything.
-        if (debug) {
+        if (debug == 1) {
             canvas.beginDebug();
             player.drawDebug(canvas);
             exit.drawDebug(canvas);
@@ -538,6 +585,10 @@ public class LevelController implements ContactListener {
             canvas.drawText(Float.toString(fps), displayFont, 0, canvas.getHeight()/2);
             canvas.end();
             ticks++;
+        } else if (debug == 2) {
+            canvas.beginDebugFilled();
+            levelModel.drawDebug(canvas, scale);
+            canvas.endDebug();
         }
     }
 
