@@ -258,7 +258,11 @@ public class GameEngine implements Screen {
         }
 
         if (input.didDebug()) {
-            level.setDebug(!level.getDebug());
+            level.setDebug(level.getDebug() + 1);
+        }
+
+        if (input.didDebug2()) {
+            level.setDebug2(!level.getDebug2());
         }
 
         if (input.didReset()) {
@@ -300,7 +304,7 @@ public class GameEngine implements Screen {
             // Convert to radians with up as 0
             angle = (float)Math.PI*(angle-90.0f)/180.0f;
         }
-        if (level.getPlayer().getLightRadius() > 0) {
+        if (level.getPlayer().getLightRadius() > level.getPlayer().getMinLightRadius()) {
             if (level.getPlayer().getForce() == level.getPlayer().getForceSneak()) {
                 // If player just stopped sneaking, set to walk
                 level.makeWalk();
