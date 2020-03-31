@@ -9,12 +9,34 @@ import com.badlogic.gdx.utils.JsonValue;
  * by reading the JSON value.
  */
 public class PlayerModel extends CharacterModel {
+    /** Number of flares the player can have on the screen at once */
+    private int flareCount;
     /** Radius of player's light */
-    protected float lightRadius = 1;
+    protected float lightRadius;
+    protected float minLightRadius;
+
 
     public void initialize(JsonValue json) {
         super.initialize(json);
-        setFlareCount(json.get("flarecount").asInt());
+        flareCount = json.get("flarecount").asInt();
+        minLightRadius = json.get("minlightradius").asInt();
+        lightRadius = minLightRadius;
+    }
+
+    /**
+     * Returns the minimum light radius the player can have
+     *
+     * @return minimum light radius
+     */
+    public float getMinLightRadius() { return minLightRadius; }
+
+    /**
+     * Returns the number of flares the player can have on the screen at once
+     *
+     * @return the number of flares the player can have on the screen at once
+     */
+    public int getFlareCount() {
+        return flareCount;
     }
 
     /**
@@ -30,7 +52,7 @@ public class PlayerModel extends CharacterModel {
      * @param r light radius
      */
     public void setLightRadius(float r) {
-        lightRadius = Math.max(r, 1);
+        lightRadius = Math.max(r, minLightRadius);
     }
 
     /**
