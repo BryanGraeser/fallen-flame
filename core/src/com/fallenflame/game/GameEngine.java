@@ -233,8 +233,8 @@ public class GameEngine implements Screen {
          countdown = -1;
 
         // Reload the json each time
-        String currentLevelPath = "jsons/" + saveJson.getString("current");
-        levelJson = jsonReader.parse(Gdx.files.internal("jsons/level.json"));
+        String currentLevelPath = "jsons/" + saveJson.get("levels").get(0).getString("path"); // Currently just gets first level
+        levelJson = jsonReader.parse(Gdx.files.internal(currentLevelPath));
         level.populate(levelJson, globalJson);
         level.setLevelState(LevelController.LevelState.IN_PROGRESS);
         level.getWorld().setContactListener(level);

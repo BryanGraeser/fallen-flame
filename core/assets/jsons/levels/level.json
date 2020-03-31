@@ -8,10 +8,6 @@
     {
       "enemytype":    "typeA",
       "enemypos":     [ 5, 5]
-    },
-    {
-      "enemytype":    "typeA",
-      "enemypos":     [ 7, 2]
     }
   ],
   "lighting":         {
