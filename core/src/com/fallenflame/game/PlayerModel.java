@@ -12,8 +12,8 @@ public class PlayerModel extends CharacterModel {
     /** Radius of player's light */
     protected float lightRadius = 0;
 
-    public void initialize(JsonValue json) {
-        super.initialize(json);
+    public void initialize(JsonValue json, float[] pos) {
+        super.initialize(json, pos);
         setFlareCount(json.get("flarecount").asInt());
     }
 
