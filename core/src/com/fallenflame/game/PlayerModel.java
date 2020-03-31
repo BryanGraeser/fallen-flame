@@ -11,15 +11,13 @@ import com.badlogic.gdx.utils.JsonValue;
 public class PlayerModel extends CharacterModel {
     /** Number of flares the player can have on the screen at once */
     private int flareCount;
+    /** Player's force when moving at standard walk speed */
+    protected float forceWalk;
     /** Radius of player's light */
-
-    protected float forceSneak = 0;
-    protected float forceSprint = 0;
-    protected float forceWalk = 0;
-    protected float lightRadiusNotSprint = 0;
-    protected float lightRadiusSprint = 0;
     protected float lightRadius;
     protected float minLightRadius;
+    protected float lightRadiusNotSprint;
+    protected float lightRadiusSprint;
 
 
     /**
@@ -31,8 +29,6 @@ public class PlayerModel extends CharacterModel {
         super.initialize(json);
 
         flareCount = json.get("flarecount").asInt();
-        forceSprint = getForce()*2;
-        forceSneak = getForce()/2;
         forceWalk = getForce();
         lightRadiusSprint = json.get("sprintlightrad").asInt();
         minLightRadius = json.get("minlightradius").asInt();
@@ -81,15 +77,7 @@ public class PlayerModel extends CharacterModel {
      * @return player force for sneaking
      */
     public float getForceSneak() {
-        return forceSneak;
-    }
-
-    /**
-     * Sets player force for sneaking
-     * @param r player force for sneaking
-     */
-    public void setForceSneak(float r) {
-        forceSneak = r;
+        return getForceWalk()/2;
     }
 
     /**
@@ -97,15 +85,7 @@ public class PlayerModel extends CharacterModel {
      * @return player force for sprinting
      */
     public float getForceSprint() {
-        return forceSprint;
-    }
-
-    /**
-     * Sets player force for sprinting
-     * @param r player force for sprinting
-     */
-    public void setForceSprint(float r) {
-        forceSprint = r;
+        return getForceWalk()*2;
     }
 
     /**
@@ -114,14 +94,6 @@ public class PlayerModel extends CharacterModel {
      */
     public float getForceWalk() {
         return forceWalk;
-    }
-
-    /**
-     * Sets player force for walking
-     * @param r player force for walking
-     */
-    public void setForceWalk(float r) {
-        forceWalk = r;
     }
 
     /**
@@ -146,14 +118,6 @@ public class PlayerModel extends CharacterModel {
      */
     public float getLightRadiusSprint() {
         return lightRadiusSprint;
-    }
-
-    /**
-     * Sets player light radius when sprinting
-     * @param r light radius
-     */
-    public void setLightRadiusSprint(float r) {
-        lightRadiusSprint = r;
     }
 
     public void incrementLightRadius(float i) { setLightRadius(lightRadius + i); }
