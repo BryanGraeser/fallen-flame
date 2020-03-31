@@ -261,6 +261,10 @@ public class GameEngine implements Screen {
             level.setDebug(level.getDebug() + 1);
         }
 
+        if (input.didDebug2()) {
+            level.setDebug2(!level.getDebug2());
+        }
+
         if (input.didReset()) {
             reset();
         }

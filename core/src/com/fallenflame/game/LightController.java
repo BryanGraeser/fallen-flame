@@ -70,6 +70,8 @@ public class LightController {
      */
     protected RayHandler rayhandler;
 
+    protected boolean debug;
+
     /**
      * Initialise this controller.
      *
@@ -87,7 +89,7 @@ public class LightController {
         RayHandler.useDiffuseLight(true);
         rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         rayhandler.setCombinedMatrix(raycamera);
-        rayhandler.setAmbientLight(.5f, .5f, .5f, 0);
+        rayhandler.setAmbientLight(0, 0, 0, 0);
         rayhandler.setBlur(true);
         rayhandler.setBlurNum(3);
 
@@ -102,6 +104,14 @@ public class LightController {
         // Create empty maps for flare and enemy lights.
         this.flareLights = new HashMap<>();
         this.enemyLights = new HashMap<>();
+    }
+
+    public boolean getDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean value) {
+        debug = value;
     }
 
     /**
@@ -185,6 +195,13 @@ public class LightController {
      * @param enemies A collection of enemies.
      */
     public void updateLights(Collection<FlareModel> flares, Collection<EnemyModel> enemies) {
+        // Update debug.
+        if (debug) {
+            rayhandler.setAmbientLight(.5f, .5f, .5f, 0);
+        } else {
+            rayhandler.setAmbientLight(0, 0, 0, 0);
+        }
+
         // Update raycamera.
         raycamera.position.set(player.getX(), player.getY(), 0);
         raycamera.update();

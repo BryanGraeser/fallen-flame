@@ -36,8 +36,10 @@ public class LevelController implements ContactListener {
     /** Flare JSONValue */
     private JsonValue flareJSON;
 
-    /** Whether or not the level is in debug more (showing off physics) */
+    /** Whether or not the level is in debug mode (showing off physics) */
     private int debug;
+    /** Whether or not the level is in debug 2 mode (unlit area only half dark) */
+    private boolean debug2;
 
     // World Definitions
     /** The Box2D world */
@@ -160,6 +162,15 @@ public class LevelController implements ContactListener {
     public int getDebug() { return debug; }
 
     /**
+     * Returns whether this level is currently in debug node
+     *
+     * If the level is in debug 2 mode, then unlit area will be half-dark
+     *
+     * @return whether this level is currently in debug node
+     */
+    public boolean getDebug2() { return debug2; }
+
+    /**
      * Sets whether this level is currently in debug node
      *
      * If the level is in debug mode, then the physics bodies will all be drawn as
@@ -168,6 +179,15 @@ public class LevelController implements ContactListener {
      * @param value	whether this level is currently in debug node
      */
     public void setDebug(int value) { debug = value % 3; }
+
+    /**
+     * Sets whether this level is currently in debug 2 node
+     *
+     * If the level is in debug 2 mode, then unlit area will be half-dark
+     *
+     * @param value	whether this level is currently in debug node
+     */
+    public void setDebug2(boolean value) { debug2 = value; }
 
     /**
      * Returns the maximum FPS supported by this level
@@ -233,6 +253,7 @@ public class LevelController implements ContactListener {
         bounds = new Rectangle(0,0,1,1);
         scale = new Vector2(1,1);
         debug  = 0;
+        debug2 = false;
         levelState = LevelState.IN_PROGRESS;
         // Controllers
         lightController = new LightController();
@@ -509,6 +530,7 @@ public class LevelController implements ContactListener {
         }
         canvas.end();
 
+        lightController.setDebug(debug2);
         lightController.draw();
 
         // Draw debugging on top of everything.

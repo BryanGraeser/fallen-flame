@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.JsonValue;
  */
 public class PlayerModel extends CharacterModel {
     /** Radius of player's light */
-    protected float lightRadius = 0;
+    protected float lightRadius = 1;
 
     public void initialize(JsonValue json) {
         super.initialize(json);
@@ -30,12 +30,12 @@ public class PlayerModel extends CharacterModel {
      * @param r light radius
      */
     public void setLightRadius(float r) {
-        lightRadius = r;
+        lightRadius = Math.max(r, 1);
     }
 
     /**
      * Increments light radius by i (can be positive or negative) ensuring lightRadius is never less than 0.
      * @param i value to increment radius by
      */
-    public void incrementLightRadius(float i) { lightRadius = Math.max(lightRadius + i, 0); }
+    public void incrementLightRadius(float i) { setLightRadius(lightRadius + i); }
 }
