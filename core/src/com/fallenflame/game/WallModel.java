@@ -168,7 +168,10 @@ public class WallModel extends BoxObstacle {
 
         // TODO: Debug?
 
-        String key = levelJson.get("texture").asString();
+        // Get default texture
+        String key = globalJson.get("texture").asString();;
+        if(levelJson.has("texture"))
+            levelJson.get("texture").asString(); // Get specific texture if available
         TextureRegion texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         setTexture(texture);
     }
