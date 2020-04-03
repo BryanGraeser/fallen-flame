@@ -94,7 +94,8 @@ public class EnemyTypeAModel extends EnemyModel {
         boolean movingDownRight = (ctrlCode & CONTROL_MOVE_DOWN_RIGHT) != 0;
         boolean movingUpLeft = (ctrlCode & CONTROL_MOVE_UP_LEFT) != 0;
         boolean movingUpRight = (ctrlCode & CONTROL_MOVE_UP_RIGHT) != 0;
-        Vector2 tempAngle = new Vector2(); // x: -1 = left, 1 = right, 0 = still; y: -1 = down, 1 = up, 0 = still
+
+        Vector2 tempAngle = new Vector2(); // x: - = left, + = right, 0 = still; y: - = down, + = up, 0 = still
         if(movingLeft) {
             tempAngle.set(-1, 0);
         } else if(movingRight) {
