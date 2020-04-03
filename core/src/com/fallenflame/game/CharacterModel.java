@@ -64,7 +64,7 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
      * This is the result of input times character force.
      *
      * @param dx the horizontal movement of this character.
-     * @param dy the horizontal movement of this character.
+     * @param dy the vertical movement of this character.
      */
     public void setMovement(float dx, float dy) {
         movement.set(dx,dy);

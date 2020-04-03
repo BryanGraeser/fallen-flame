@@ -18,8 +18,14 @@ public abstract class EnemyModel extends CharacterModel {
     public static final int CONTROL_MOVE_UP    = 0x04;
     /** Move the ship to the down */
     public static final int CONTROL_MOVE_DOWN  = 0x08;
-    /** Fire the ship weapon */
-    public static final int CONTROL_FIRE 	   = 0x10;
+    /** Move the ship to the down and left */
+    public static final int CONTROL_MOVE_DOWN_LEFT = 0x10;
+    /** Move the ship to the down and right */
+    public static final int CONTROL_MOVE_DOWN_RIGHT = 0x20;
+    /** Move the ship to the up and left */
+    public static final int CONTROL_MOVE_UP_LEFT = 0x40;
+    /** Move the ship to the up and right */
+    public static final int CONTROL_MOVE_UP_RIGHT = 0x80;
 
     /**
      * Gets enemy's active status
