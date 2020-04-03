@@ -72,8 +72,8 @@ public class EnemyTypeAModel extends EnemyModel {
 
     /**
      * Set enemy's investigation position
-     * @param x x-coor of enemy's goal
-     * @param y y-coor of enemy's goal
+     * @param x x-coor of enemy's investigation position
+     * @param y y-coor of enemy's investigation position
      */
     public void setInvestigatePosition(float x, float y) {
         setInvestigatePosition(new Vector2(x, y));
