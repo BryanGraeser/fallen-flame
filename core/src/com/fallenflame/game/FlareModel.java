@@ -10,7 +10,8 @@ import com.fallenflame.game.physics.obstacle.WheelObstacle;
 import com.fallenflame.game.util.*;
 import com.badlogic.gdx.graphics.*;
 
-public class FlareModel extends WheelObstacle implements ILightRadius {
+
+public class FlareModel extends WheelObstacle implements ILight {
     // Physics constants
     /** The force with which flare is originally thrown */
     private float initialForce;
@@ -45,6 +46,11 @@ public class FlareModel extends WheelObstacle implements ILightRadius {
     public float getLightRadius() {
         return lightRadius;
     }
+
+    /**
+     * @return the color of the Flare's tint
+     */
+    public Color getLightColor() {return new Color(255, 255, 255, 0.0f);}
 
     /**
      * Returns the directional movement of this flare.

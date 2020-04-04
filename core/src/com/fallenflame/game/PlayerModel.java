@@ -1,5 +1,6 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.JsonValue;
 
 /**
@@ -55,6 +56,14 @@ public class PlayerModel extends CharacterModel {
      */
     public float getLightRadius() {
         return lightRadius;
+    }
+
+    /**
+     * Gets player color tint
+     * @return light color
+     */
+    public Color getLightColor() {
+        return new Color(255, 255, 255, 0.0f);
     }
 
     /**
