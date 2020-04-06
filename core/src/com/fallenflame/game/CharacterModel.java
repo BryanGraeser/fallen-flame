@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.fallenflame.game.physics.obstacle.WheelObstacle;
 import com.fallenflame.game.util.FilmStrip;
 import com.fallenflame.game.util.JsonAssetManager;
@@ -194,8 +195,7 @@ public abstract class CharacterModel extends WheelObstacle implements ILight {
     /**
      * Initializes the character via the given JSON value
      *
-     * The JSON value has been parsed and is part of a bigger level file.  However,
-     * this JSON value is limited to the player subtree
+     * The JSON value has been parsed and is part of a bigger level file.
      *
      * @param json	the JSON subtree defining the player
      */

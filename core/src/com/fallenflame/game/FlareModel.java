@@ -38,6 +38,9 @@ public class FlareModel extends WheelObstacle implements ILight {
     /** Whether or not flare has stuck to wall */
     private boolean isStuck;
 
+    /**The color to tint the flare */
+    private Color tint;
+
     /**
      * Returns the light radius of this flare.
      *
@@ -50,7 +53,7 @@ public class FlareModel extends WheelObstacle implements ILight {
     /**
      * @return the color of the Flare's tint
      */
-    public Color getLightColor() {return new Color(255, 255, 255, 0.0f);}
+    public Color getLightColor() {return tint;}
 
     /**
      * Returns the directional movement of this flare.
@@ -197,6 +200,9 @@ public class FlareModel extends WheelObstacle implements ILight {
 //        int opacity = json.get("debugopacity").asInt();
 //        debugColor.mul(opacity/255.0f);
 //        setDebugColor(debugColor);
+
+        float[] tintValues = json.get("tint").asFloatArray();//RGBA
+        tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
 
         // Get the texture from the AssetManager singleton
         String key = json.get("texture").asString();

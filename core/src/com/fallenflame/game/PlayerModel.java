@@ -20,6 +20,9 @@ public class PlayerModel extends CharacterModel {
     protected float lightRadiusNotSprint;
     protected float lightRadiusSprint;
 
+    /**Tint of player light */
+    protected Color tint;
+
     /**
      * Initializes the character via the given JSON value
      *
@@ -32,6 +35,9 @@ public class PlayerModel extends CharacterModel {
         lightRadiusSprint = json.get("sprintlightrad").asInt();
         minLightRadius = json.get("minlightradius").asInt();
         lightRadius = minLightRadius;
+
+        float[] tintValues = json.get("tint").asFloatArray();//RGBA
+        tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
     }
 
     /**
@@ -63,7 +69,7 @@ public class PlayerModel extends CharacterModel {
      * @return light color
      */
     public Color getLightColor() {
-        return new Color(255, 255, 255, 0.0f);
+        return tint;
     }
 
     /**

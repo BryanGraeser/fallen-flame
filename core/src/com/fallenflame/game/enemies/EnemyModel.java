@@ -1,5 +1,8 @@
 package com.fallenflame.game.enemies;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.fallenflame.game.CharacterModel;
 
 public abstract class EnemyModel extends CharacterModel {
@@ -10,6 +13,8 @@ public abstract class EnemyModel extends CharacterModel {
         Aggressive
     }
 
+    private ObjectMap<ActivationStates, Color> stateTints = new ObjectMap<>();
+
     // Active status
     protected ActivationStates state = ActivationStates.Calm;
 
@@ -17,22 +22,43 @@ public abstract class EnemyModel extends CharacterModel {
     // We would normally use an enum here, but Java enums do not bitmask nicely
     /** Do not do anything */
     public static final int CONTROL_NO_ACTION  = 0x00;
-    /** Move the ship to the left */
+    /** Move the enemy to the left */
     public static final int CONTROL_MOVE_LEFT  = 0x01;
-    /** Move the ship to the right */
+    /** Move the enemy to the right */
     public static final int CONTROL_MOVE_RIGHT = 0x02;
-    /** Move the ship to the up */
+    /** Move the enemy to the up */
     public static final int CONTROL_MOVE_UP    = 0x04;
-    /** Move the ship to the down */
+    /** Move the enemy to the down */
     public static final int CONTROL_MOVE_DOWN  = 0x08;
-    /** Move the ship to the down and left */
+    /** Move the enemy to the down and left */
     public static final int CONTROL_MOVE_DOWN_LEFT = 0x10;
-    /** Move the ship to the down and right */
+    /** Move the enemy to the down and right */
     public static final int CONTROL_MOVE_DOWN_RIGHT = 0x20;
-    /** Move the ship to the up and left */
+    /** Move the enemy to the up and left */
     public static final int CONTROL_MOVE_UP_LEFT = 0x40;
-    /** Move the ship to the up and right */
+    /** Move the enemy to the up and right */
     public static final int CONTROL_MOVE_UP_RIGHT = 0x80;
+    /** Command the enemy to shoot */
+    public static final int CONTROL_SHOOT = 0x100;
+
+    /**
+     * Initializes the enemy via the given JSON value
+     *
+     * The JSON value has been parsed and is part of a bigger level file.  However,
+     * this JSON value is limited to the enemy subtree
+     *
+     * @param json	the JSON subtree defining the enemy
+     */
+    public void initialize(JsonValue json, float[] pos) {
+        super.initialize(json, pos);
+
+        for(ActivationStates state : ActivationStates.values()){
+            String stateName = state.name().toLowerCase();
+            float[] tintValues = json.get("stateTints").get(stateName).asFloatArray();//RGBA
+            Color tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
+            stateTints.put(state, tint);
+        }
+    }
 
     /**
      * @return whether enemy is aggressive
@@ -92,10 +118,8 @@ public abstract class EnemyModel extends CharacterModel {
         return isActivated() ? 1.0f : 0.0f;
     }
 
-    public com.badlogic.gdx.graphics.Color getLightColor() {
-        if(isAgressive()){return com.badlogic.gdx.graphics.Color.RED;}
-        else if (isAlert()){return com.badlogic.gdx.graphics.Color.GREEN;}
-        else {return com.badlogic.gdx.graphics.Color.WHITE;}
+    public Color getLightColor() {
+        return stateTints.get(state);
     }
 
     /**
