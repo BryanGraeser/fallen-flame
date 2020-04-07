@@ -20,8 +20,8 @@ public abstract class EnemyModel extends CharacterModel {
     /**Enemy move sound */
     private Sound moveSound;
 
-    /**Enemy is making move sound */
-    protected boolean playingSound;
+    /**ID of enemy move sound*/
+    protected long moveSoundID;
 
     // Active status
     protected ActivationStates state = ActivationStates.Calm;
@@ -145,9 +145,9 @@ public abstract class EnemyModel extends CharacterModel {
         return moveSound;
     }
 
-    public boolean isPlayingSound() {return playingSound;}
+    public long getSoundID() {return moveSoundID;}
 
-    public void setPlayingSound(boolean status) {playingSound = status;}
+    public void setSoundID(long id) {moveSoundID = id;}
 
     /**
      * Executes enemy action
