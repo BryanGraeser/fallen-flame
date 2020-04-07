@@ -48,5 +48,19 @@
 			"file": 	"fonts/RetroGame.ttf",
 			"size":		20
 		}
-  	}
+  	},
+	"sounds": {
+		"bump": {
+			"file": "sounds/Bump.mp3"
+		},
+		"fall": {
+			"file": "sounds/Fall.mp3"
+		},
+		"fire": {
+			"file": "sounds/Fire.mp3"
+		},
+		"gameover": {
+			"file": "sounds/GameOver.mp3"
+		}
+	}
 }

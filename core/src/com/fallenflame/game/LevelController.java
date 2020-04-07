@@ -442,6 +442,7 @@ public class LevelController implements ContactListener {
                 FlareModel flare = i.next();
                 if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
                     flare.deactivatePhysics(world);
+                    flare.getBurnoutSound().play();
                     flare.dispose();
                     i.remove();
                 }
@@ -498,6 +499,7 @@ public class LevelController implements ContactListener {
             float angleRad = posDif.angleRad(new Vector2(1, 0));
             Vector2 force = (new Vector2(flare.getInitialForce(), 0)).rotateRad(angleRad);
             flare.applyInitialForce(angleRad, force);
+            flare.getShotSound().play();
             flares.add(flare);
             assert inBounds(flare);
         }
