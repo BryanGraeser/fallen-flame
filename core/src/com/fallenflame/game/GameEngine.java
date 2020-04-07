@@ -102,10 +102,6 @@ public class GameEngine implements Screen, InputProcessor {
     private float horizontal;
     /** How much did we move vertically? */
     private float vertical;
-    /** Did we increase or decrease the radius?
-     * Can only be two values: -1 and 1
-     */
-    private float lightRadius;
 
 
     /**
@@ -506,17 +502,6 @@ public class GameEngine implements Screen, InputProcessor {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             horizontal -= 1.0f;
         }
-
-        // TODO: REMOVE CODE BELOW WHEN MOUSE WHEEL IS FIXED --> We should still include this as a functional alternative if possible
-        //#region mouse wheel alternative
-        if(Gdx.input.isKeyPressed(Input.Keys.PERIOD)){
-            lightRadius += 1.0f;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.COMMA)){
-            lightRadius += -1.0f;
-        }
-        //#endregion
-
         vertical = 0.0f;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             vertical += 1.0f;
@@ -524,6 +509,15 @@ public class GameEngine implements Screen, InputProcessor {
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             vertical -= 1.0f;
         }
+
+        //#region mouse wheel alternative
+        if(Gdx.input.isKeyPressed(Input.Keys.PERIOD)){
+            level.lightFromPlayer(0.5f);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.COMMA)){
+            level.lightFromPlayer(-0.5f);
+        }
+        //#endregion
     }
 
     /************************ EVENT-BASED INPUT HANDLING ************************/
