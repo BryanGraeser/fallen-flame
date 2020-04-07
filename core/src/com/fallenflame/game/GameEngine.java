@@ -15,6 +15,7 @@ import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
 
 /**
+ * This class' purpose is explained in detail in the Architecture specifciation.
  * Credit to @author: Professor White for code used in this class
  */
 
