@@ -69,7 +69,6 @@ public class GDXRoot extends Game implements ScreenListener {
 		setScreen(null);
 		engine.unloadContent();
 		engine.dispose();
-		loading.dispose();
 		canvas.dispose();
 		canvas = null;
 
