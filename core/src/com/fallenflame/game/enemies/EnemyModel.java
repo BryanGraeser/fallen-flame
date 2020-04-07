@@ -120,7 +120,6 @@ public abstract class EnemyModel extends CharacterModel {
         this.state = ActivationStates.Aggressive;
     }
 
-
     /**
      * Gets light radius for enemy. MAY BE OVERWRITTEN BY CHILD for different light behavior
      * @return light radius
@@ -129,6 +128,10 @@ public abstract class EnemyModel extends CharacterModel {
         return isActivated() ? 1.0f : 0.0f;
     }
 
+    /**
+     * Gets the tint to color the enemy. MAY BE OVERWRITTEN BY CHILD for different light behavior
+     * @return light color
+     */
     public Color getLightColor() {
         return stateTints.get(state);
     }
