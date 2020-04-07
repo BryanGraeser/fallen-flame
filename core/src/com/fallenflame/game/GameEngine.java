@@ -301,9 +301,16 @@ public class GameEngine implements Screen {
         tempAngle.setLength(1); // Fix diagonal too-fast issue.
         float angle = 0;
         if (tempAngle.len2() > 0.0f) {
+            if (!level.getPlayer().isPlayingSound()) {
+                level.getPlayer().getWalkSound().loop(.3f);
+                level.getPlayer().setPlayingSound(true);
+            }
             angle = tempAngle.angle();
             // Convert to radians with up as 0
             angle = (float)Math.PI*(angle-90.0f)/180.0f;
+        } else {
+            level.getPlayer().getWalkSound().stop();
+            level.getPlayer().setPlayingSound(false);
         }
         if (level.getPlayer().getLightRadius() > level.getPlayer().getMinLightRadius()) {
             if (level.getPlayer().getForce() == level.getPlayer().getForceSneak()) {

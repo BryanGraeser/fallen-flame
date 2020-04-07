@@ -433,6 +433,13 @@ public class LevelController implements ContactListener {
             while(enemyI.hasNext()){
                 EnemyModel enemy = enemyI.next();
                 enemy.executeAction(actionI.next());
+                if (enemy.isActivated() && !enemy.isPlayingSound()) {;
+                    enemy.getMoveSound().loop(.3f);
+                    enemy.setPlayingSound(true);
+                } else if (!enemy.isActivated()) {
+                    enemy.getMoveSound().stop();
+                    enemy.setPlayingSound(false);
+                }
                 assert inBounds(enemy);
             }
 

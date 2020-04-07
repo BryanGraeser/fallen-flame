@@ -1,9 +1,11 @@
 package com.fallenflame.game.enemies;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.fallenflame.game.CharacterModel;
+import com.fallenflame.game.util.JsonAssetManager;
 
 public abstract class EnemyModel extends CharacterModel {
 
@@ -14,6 +16,12 @@ public abstract class EnemyModel extends CharacterModel {
     }
 
     private ObjectMap<ActivationStates, Color> stateTints = new ObjectMap<>();
+
+    /**Enemy move sound */
+    private Sound moveSound;
+
+    /**Enemy is making move sound */
+    protected boolean playingSound;
 
     // Active status
     protected ActivationStates state = ActivationStates.Calm;
@@ -51,6 +59,9 @@ public abstract class EnemyModel extends CharacterModel {
      */
     public void initialize(JsonValue json, float[] pos) {
         super.initialize(json, pos);
+
+        String moveSoundKey = json.get("movesound").asString();
+        moveSound = JsonAssetManager.getInstance().getEntry(moveSoundKey, Sound.class);
 
         for(ActivationStates state : ActivationStates.values()){
             String stateName = state.name().toLowerCase();
@@ -121,6 +132,19 @@ public abstract class EnemyModel extends CharacterModel {
     public Color getLightColor() {
         return stateTints.get(state);
     }
+
+    /**
+     * Returns the move sound
+     *
+     * @return the move sound
+     */
+    public Sound getMoveSound() {
+        return moveSound;
+    }
+
+    public boolean isPlayingSound() {return playingSound;}
+
+    public void setPlayingSound(boolean status) {playingSound = status;}
 
     /**
      * Executes enemy action

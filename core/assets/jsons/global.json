@@ -14,6 +14,7 @@
     "sprintlightrad":  10,
     "minlightradius":   2,
     "texture":     	"player",
+    "walksound":    "bump",
     "debugcolor":  	"white",
     "debugopacity":	192,
     "tint": [1.0, 1.0, 1.0, 1.0],
@@ -32,6 +33,7 @@
       "startframe": 0,
       "walklimit": 4,
       "texture": "enemy",
+      "movesound": "gameover",
       "debugcolor": "white",
       "debugopacity": 192,
       "stateTints": {
