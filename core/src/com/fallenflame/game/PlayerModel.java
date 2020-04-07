@@ -17,8 +17,9 @@ public class PlayerModel extends CharacterModel {
     /** Radius of player's light */
     protected float lightRadius;
     protected float minLightRadius;
-    protected float lightRadiusNotSprint;
+    protected float lightRadiusSaved;
     protected float lightRadiusSprint;
+    protected float lightRadiusSneak;
 
     /**Tint of player light */
     protected Color tint;
@@ -33,6 +34,7 @@ public class PlayerModel extends CharacterModel {
         flareCount = json.get("flarecount").asInt();
         forceWalk = getForce();
         lightRadiusSprint = json.get("sprintlightrad").asInt();
+        lightRadiusSneak = json.get("sneaklightrad").asInt();
         minLightRadius = json.get("minlightradius").asInt();
         lightRadius = minLightRadius;
 
@@ -73,12 +75,17 @@ public class PlayerModel extends CharacterModel {
     }
 
     /**
-     * Sets player light radius
+     * Sets player light radius (does not include sneak speed)
      * @param r light radius
      */
     public void setLightRadius(float r) {
         lightRadius = Math.max(r, minLightRadius);
     }
+
+    /**
+     * Sets player to sneak light radius (not reachable by scrolling)
+     */
+    public void setLightRadiusSneak() { lightRadius = lightRadiusSneak; }
 
     /**
      * Increments light radius by i (can be positive or negative) ensuring lightRadius is never less than 0.
@@ -110,19 +117,19 @@ public class PlayerModel extends CharacterModel {
     }
 
     /**
-     * Gets player light radius when not sprinting
+     * Gets player light radius when not sprinting or sneaking
      * @return light radius
      */
-    public float getLightRadiusNotSprint() {
-        return lightRadiusNotSprint;
+    public float getLightRadiusSaved() {
+        return lightRadiusSaved;
     }
 
     /**
-     * Sets player light radius when not sprinting
+     * Sets player light radius when not sprinting or sneaking
      * @param r light radius
      */
-    public void setLightRadiusNotSprint(float r) {
-        lightRadiusNotSprint = r;
+    public void setLightRadiusSaved(float r) {
+        lightRadiusSaved = r;
     }
 
     /**

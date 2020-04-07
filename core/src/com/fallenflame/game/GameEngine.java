@@ -305,24 +305,25 @@ public class GameEngine implements Screen {
             // Convert to radians with up as 0
             angle = (float)Math.PI*(angle-90.0f)/180.0f;
         }
-        if (level.getPlayer().getLightRadius() > level.getPlayer().getMinLightRadius()) {
-            if (level.getPlayer().getForce() == level.getPlayer().getForceSneak()) {
-                // If player just stopped sneaking, set to walk
-                level.makeWalk();
-            }
-            if (input.didStartSprint()) {
-                // If player just started sprinting, store current light radius in lightRadiusNotSprint and change light radius to lightRadiusSprint
-                level.getPlayer().setLightRadiusNotSprint(level.getPlayer().getLightRadius());
-                level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSprint());
-                level.makeSprint();
-            } else if (input.didEndSprint()) {
-                // If player just stopped sprinting, set to walk and restore light radius to what it was before sprinting, which is in lightRadiusNotSprint
-                level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusNotSprint());
-                level.makeWalk();
-            }
-        } else {
-            // If player light radius is 0, just sneak
+        if (input.didStartSprint()) {
+            // If player just started sprinting, store current light radius in lightRadiusSaved and change light radius to lightRadiusSprint
+            level.getPlayer().setLightRadiusSaved(level.getPlayer().getLightRadius());
+            level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSprint());
+            level.makeSprint();
+        } else if (input.didEndSprint()) {
+            // If player just stopped sprinting, set to walk and restore light radius to what it was before sprinting, which is in lightRadiusSaved
+            level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSaved());
+            level.makeWalk();
+        }
+        if (input.didStartSneak()) {
+            // If player just started sneaking, store current light radius in lightRadiusSaved and change light radius to lightRadiusSneak
+            level.getPlayer().setLightRadiusSaved(level.getPlayer().getLightRadius());
+            level.getPlayer().setLightRadiusSneak();
             level.makeSneak();
+        } else if (input.didEndSneak()) {
+            // If player just stopped sneaking, set to walk and restore light radius to what it was before sneaking, which is in lightRadiusSaved
+            level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSaved());
+            level.makeWalk();
         }
         level.movePlayer(angle, tempAngle);
         level.update(delta);
