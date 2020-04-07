@@ -306,23 +306,17 @@ public class GameEngine implements Screen {
             angle = (float)Math.PI*(angle-90.0f)/180.0f;
         }
         if (input.didStartSprint()) {
-            // If player just started sprinting, store current light radius in lightRadiusSaved and change light radius to lightRadiusSprint
-            level.getPlayer().setLightRadiusSaved(level.getPlayer().getLightRadius());
-            level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSprint());
+            // If player just started sprinting
             level.makeSprint();
         } else if (input.didEndSprint()) {
-            // If player just stopped sprinting, set to walk and restore light radius to what it was before sprinting, which is in lightRadiusSaved
-            level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSaved());
+            // If player just stopped sprinting
             level.makeWalk();
         }
         if (input.didStartSneak()) {
-            // If player just started sneaking, store current light radius in lightRadiusSaved and change light radius to lightRadiusSneak
-            level.getPlayer().setLightRadiusSaved(level.getPlayer().getLightRadius());
-            level.getPlayer().setLightRadiusSneak();
+            // If player just started sneaking
             level.makeSneak();
         } else if (input.didEndSneak()) {
-            // If player just stopped sneaking, set to walk and restore light radius to what it was before sneaking, which is in lightRadiusSaved
-            level.getPlayer().setLightRadius(level.getPlayer().getLightRadiusSaved());
+            // If player just stopped sneaking
             level.makeWalk();
         }
         level.movePlayer(angle, tempAngle);

@@ -20,6 +20,8 @@ public class PlayerModel extends CharacterModel {
     protected float lightRadiusSaved;
     protected float lightRadiusSprint;
     protected float lightRadiusSneak;
+    /** If player is walking (as opposed to sprinting or sneaking) */
+    protected boolean walking;
 
     /**Tint of player light */
     protected Color tint;
@@ -37,6 +39,7 @@ public class PlayerModel extends CharacterModel {
         lightRadiusSneak = json.get("sneaklightrad").asInt();
         minLightRadius = json.get("minlightradius").asInt();
         lightRadius = minLightRadius;
+        walking = true;
 
         float[] tintValues = json.get("tint").asFloatArray();//RGBA
         tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
@@ -139,6 +142,18 @@ public class PlayerModel extends CharacterModel {
     public float getLightRadiusSprint() {
         return lightRadiusSprint;
     }
+
+    /**
+     * Sets whether player is walking
+     * @param b True if walking, False if sprinting or sneaking
+     */
+    public void setWalking(Boolean b) { walking = b; }
+
+    /**
+     * Returns whether player is walking
+     * @return True if walking, False if sprinting or sneaking
+     */
+    public boolean isWalking() { return walking; }
 
     public void incrementLightRadius(float i) { setLightRadius(lightRadius + i); }
 
