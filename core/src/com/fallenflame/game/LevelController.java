@@ -433,16 +433,18 @@ public class LevelController implements ContactListener {
             while(enemyI.hasNext()){
                 EnemyModel enemy = enemyI.next();
                 enemy.executeAction(actionI.next());
+                //float pan = (enemy.getX() - player.getX()) < 0 ? -1f : 1f;
+                float pan = (enemy.getX() - player.getX()) * .4f;
                 if (enemy.isActivated() && (enemy.getSoundID() == -1)) {
                     //start sound
-                    enemy.setSoundID(enemy.getMoveSound().loop(.3f, 1, (enemy.getX() - player.getX()) * .2f));
+                    enemy.setSoundID(enemy.getMoveSound().loop(.3f, 1, pan));
                 } else if (!enemy.isActivated()) {
                     //end sound
                     enemy.getMoveSound().stop();
                     enemy.setSoundID(-1);
                 } else {
                     //modify sound
-                    enemy.getMoveSound().setPan(enemy.getSoundID(), (enemy.getX() - player.getX()) * .2f, (float) Math.max(0,(1 - enemy.getDistanceBetween(player) * .15)));
+                    enemy.getMoveSound().setPan(enemy.getSoundID(), pan, (float) Math.max(0,(1 - enemy.getDistanceBetween(player) * .15)));
                 }
                 assert inBounds(enemy);
             }
