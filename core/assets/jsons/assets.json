@@ -61,6 +61,12 @@
 		},
 		"gameover": {
 			"file": "sounds/GameOver.mp3"
+		},
+		"walk": {
+			"file": "sounds/Walk.mp3"
+		},
+		"tone": {
+			"file": "sounds/Tone.mp3"
 		}
 	}
 }
