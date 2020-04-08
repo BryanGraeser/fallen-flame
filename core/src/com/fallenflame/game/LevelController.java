@@ -3,7 +3,10 @@ package com.fallenflame.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
 import com.fallenflame.game.enemies.AIController;
@@ -12,7 +15,9 @@ import com.fallenflame.game.enemies.EnemyModel;
 import com.fallenflame.game.enemies.EnemyTypeAModel;
 import com.fallenflame.game.physics.obstacle.Obstacle;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /** Credit to Walker White for some code reused from B2LightsDemo */
 public class LevelController implements ContactListener {
@@ -88,6 +93,10 @@ public class LevelController implements ContactListener {
     private float fps;
     /** Number of ticks sense we started this controller (used to limit number of fps updates) */
     private long ticks;
+
+    //Fog parameters. Code heavily based off of https://github.com/libgdx/libgdx/wiki/2D-ParticleEffects
+    private ParticleEffectPool fogPool;
+    private Array<ParticleEffectPool.PooledEffect> fog;
 
     /**
      * Returns the bounding rectangle for the physics world
@@ -270,6 +279,8 @@ public class LevelController implements ContactListener {
         levelModel = new LevelModel();
         // Not yet populated
         populated = false;
+        fog = new Array();
+
     }
 
     /**
@@ -277,7 +288,7 @@ public class LevelController implements ContactListener {
      *
      * @param levelJson	the JSON tree defining the level
      */
-    public void populate(JsonValue levelJson, JsonValue globalJson) {
+    public void populate(JsonValue levelJson, JsonValue globalJson, ParticleEffect fogTemplate) {
         populated = true;
 
         float[] pSize = levelJson.get("physicsSize").asFloatArray();
@@ -348,6 +359,8 @@ public class LevelController implements ContactListener {
         levelModel.initialize(bounds, walls, enemies);
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
+        //TODO: Update the initial capacity and max once full fog is implemented
+        fogPool = new ParticleEffectPool(fogTemplate, 0, 2);
     }
 
     /**
@@ -447,6 +460,12 @@ public class LevelController implements ContactListener {
                 }
                 else {
                     flare.update(dt);
+                }
+            }
+            for(ParticleEffectPool.PooledEffect effect: fog){
+                if(effect.isComplete()){
+                    effect.free();
+                    fog.removeValue(effect, true);
                 }
             }
 
@@ -579,7 +598,16 @@ public class LevelController implements ContactListener {
             wall.draw(canvas);
         }
         for(EnemyModel enemy : enemies) {
-            enemy.draw(canvas);
+            if(enemy.isActivated()) {
+                enemy.draw(canvas);
+            }
+            else{
+                ParticleEffectPool.PooledEffect effect = fogPool.obtain();
+                System.out.println("X is: " + enemy.getX());
+                System.out.println("Y is: " + enemy.getY());
+                effect.setPosition(50, enemy.getY());
+                fog.add(effect);
+            }
         }
         for(FlareModel flare : flares) {
             flare.draw(canvas);
@@ -588,6 +616,9 @@ public class LevelController implements ContactListener {
 
         lightController.setDebug(debug2);
         lightController.draw();
+        canvas.begin();
+        canvas.drawFog(fogPool, fog, delta);
+        canvas.end();
 
         // Draw debugging on top of everything.
         if (debug == 1) {
@@ -674,3 +705,4 @@ public class LevelController implements ContactListener {
     public void preSolve(Contact contact, Manifold oldManifold) {}
 
 }
+

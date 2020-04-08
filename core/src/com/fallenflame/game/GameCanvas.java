@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 public class GameCanvas {
     /**@author: Professor White */
@@ -861,6 +862,17 @@ public class GameCanvas {
         // Invert and restore
         local.inv();
         computeVertices(local,region.getVertices());
+    }
+
+    /**Draw a swirling fog at a certain position (x, y)
+     * @param fogPool, the ParticleEffectPool for resource management
+     * @param fog, a PooledEffect array with all fog that needs to be drawn
+     * @param delta, frames per second*/
+
+    public void drawFog(ParticleEffectPool fogPool, Array<ParticleEffectPool.PooledEffect> fog, float delta){
+        for(ParticleEffectPool.PooledEffect f: fog){
+            f.draw(spriteBatch, delta);
+        }
     }
 
     /**

@@ -89,7 +89,7 @@ public class LightController {
         RayHandler.useDiffuseLight(true);
         rayhandler = new RayHandler(world, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         rayhandler.setCombinedMatrix(raycamera);
-        rayhandler.setAmbientLight(0, 0, 0, 0);
+        rayhandler.setAmbientLight(0, 0, 0, 0.2f);
         rayhandler.setBlur(true);
         rayhandler.setBlurNum(3);
 

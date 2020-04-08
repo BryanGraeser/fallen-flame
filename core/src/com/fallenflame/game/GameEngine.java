@@ -2,8 +2,10 @@ package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -87,6 +89,11 @@ public class GameEngine implements Screen {
 
     /** Countdown active for winning or losing */
     private int countdown;
+
+    //Fog-related parameters
+    /**ParticleEffect that will be used as a template for the ParticleEffectPool. This is in GameEngine because it needs
+     * to load in the .p file, and file loading is done here*/
+    private ParticleEffect fogTemplate;
     /**
      * Preloads the assets for this controller.
      *
@@ -108,6 +115,8 @@ public class GameEngine implements Screen {
         assetJson = jsonReader.parse(Gdx.files.internal("jsons/assets.json"));
         saveJson = jsonReader.parse(Gdx.files.internal("jsons/save.json"));
         globalJson = jsonReader.parse(Gdx.files.internal("jsons/global.json"));
+        fogTemplate = new ParticleEffect();
+        fogTemplate.load(Gdx.files.internal("effects/fog.p"), Gdx.files.internal("textures"));
 
         JsonAssetManager.getInstance().loadDirectory(assetJson);
     }
@@ -212,6 +221,7 @@ public class GameEngine implements Screen {
      */
     public void dispose() {
         level.dispose();
+        fogTemplate.dispose();
         level  = null;
         canvas = null;
     }
@@ -235,7 +245,7 @@ public class GameEngine implements Screen {
         // Reload the json each time
         String currentLevelPath = "jsons/" + saveJson.get("levels").get(0).getString("path"); // Currently just gets first level
         levelJson = jsonReader.parse(Gdx.files.internal(currentLevelPath));
-        level.populate(levelJson, globalJson);
+        level.populate(levelJson, globalJson, fogTemplate);
         level.setLevelState(LevelController.LevelState.IN_PROGRESS);
         level.getWorld().setContactListener(level);
     }
