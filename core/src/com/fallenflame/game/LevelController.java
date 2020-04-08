@@ -603,9 +603,7 @@ public class LevelController implements ContactListener {
             }
             else{
                 ParticleEffectPool.PooledEffect effect = fogPool.obtain();
-                System.out.println("X is: " + enemy.getX());
-                System.out.println("Y is: " + enemy.getY());
-                effect.setPosition(50, enemy.getY());
+                effect.setPosition(enemy.getX()*scale.x, enemy.getY()*scale.y);
                 fog.add(effect);
             }
         }
