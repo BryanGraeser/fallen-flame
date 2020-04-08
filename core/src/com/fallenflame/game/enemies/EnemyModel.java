@@ -62,6 +62,7 @@ public abstract class EnemyModel extends CharacterModel {
 
         String moveSoundKey = json.get("movesound").asString();
         moveSound = JsonAssetManager.getInstance().getEntry(moveSoundKey, Sound.class);
+        moveSoundID = -1;
 
         for(ActivationStates state : ActivationStates.values()){
             String stateName = state.name().toLowerCase();
