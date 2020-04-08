@@ -520,28 +520,36 @@ public class LevelController implements ContactListener {
 
     /**
      * Change the player's movement to sprint
+     * Store current light radius in lightRadiusSaved and change light radius to lightRadiusSprint
      * (Called by GameEngine)
-     *
      */
     public void makeSprint(){
+        player.setLightRadiusSaved(player.getLightRadius());
+        player.setLightRadius(player.getLightRadiusSprint());
+        player.setWalking(false);
         player.setForce(player.getForceSprint());
     }
 
     /**
      * Change the player's movement to walk
+     * Set to walk and restore light radius to what it was before sprinting, which is in lightRadiusSaved
      * (Called by GameEngine)
-     *
      */
     public void makeWalk(){
+        player.setLightRadius(player.getLightRadiusSaved());
+        player.setWalking(true);
         player.setForce(player.getForceWalk());
     }
 
     /**
      * Change the player's movement to sneak
+     * Store current light radius in lightRadiusSaved and change light radius to lightRadiusSneak
      * (Called by GameEngine)
-     *
      */
     public void makeSneak(){
+        player.setLightRadiusSaved(player.getLightRadius());
+        player.setLightRadiusSneak();
+        player.setWalking(false);
         player.setForce(player.getForceSneak());
     }
 
@@ -562,7 +570,8 @@ public class LevelController implements ContactListener {
      * @param lightRadius radius of light around player
      */
     public void lightFromPlayer(float lightRadius) {
-        player.incrementLightRadius(lightRadius);
+        if(player.isWalking())
+            player.incrementLightRadius(lightRadius);
     }
 
     /**
