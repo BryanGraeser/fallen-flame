@@ -65,8 +65,11 @@
 		"walk": {
 			"file": "sounds/Walk.mp3"
 		},
-		"tone": {
+		"bark": {
 			"file": "sounds/bark.mp3"
+		},
+		"tonemono": {
+			"file": "sounds/ToneMono.mp3"
 		}
 	}
 }

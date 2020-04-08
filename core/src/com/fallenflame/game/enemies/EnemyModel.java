@@ -20,8 +20,14 @@ public abstract class EnemyModel extends CharacterModel {
     /**Enemy move sound */
     private Sound moveSound;
 
+    /**Enemy constant sound */
+    private Sound constantSound;
+
     /**ID of enemy move sound*/
     protected long moveSoundID;
+
+    /**ID of enemy constant sound*/
+    protected long constantSoundID;
 
     // Active status
     protected ActivationStates state = ActivationStates.Calm;
@@ -63,6 +69,10 @@ public abstract class EnemyModel extends CharacterModel {
         String moveSoundKey = json.get("movesound").asString();
         moveSound = JsonAssetManager.getInstance().getEntry(moveSoundKey, Sound.class);
         moveSoundID = -1;
+
+        String constantSoundKey = json.get("constantsound").asString();
+        constantSound = JsonAssetManager.getInstance().getEntry(constantSoundKey, Sound.class);
+        constantSoundID = -1;
 
         for(ActivationStates state : ActivationStates.values()){
             String stateName = state.name().toLowerCase();
@@ -146,9 +156,22 @@ public abstract class EnemyModel extends CharacterModel {
         return moveSound;
     }
 
-    public long getSoundID() {return moveSoundID;}
+    public long getMoveSoundID() {return moveSoundID;}
 
-    public void setSoundID(long id) {moveSoundID = id;}
+    public void setMoveSoundID(long id) {moveSoundID = id;}
+
+    /**
+     * Returns the constant sound
+     *
+     * @return the constant sound
+     */
+    public Sound getConstantSound() {
+        return constantSound;
+    }
+
+    public long getConstantSoundID() {return constantSoundID;}
+
+    public void setConstantSoundID(long id) {constantSoundID = id;}
 
     /**
      * Executes enemy action

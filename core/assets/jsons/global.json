@@ -34,7 +34,8 @@
       "startframe": 0,
       "walklimit": 4,
       "texture": "enemy",
-      "movesound": "tone",
+      "movesound": "bark",
+      "constantsound": "tonemono",
       "debugcolor": "white",
       "debugopacity": 192,
       "stateTints": {
