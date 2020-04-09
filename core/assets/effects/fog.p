@@ -26,12 +26,12 @@ highMin: 500.0
 highMax: 1000.0
 relative: false
 scalingCount: 3
-scaling0: 1.0
-scaling1: 1.0
+scaling0: 0.33333334
+scaling1: 0.4509804
 scaling2: 0.3
 timelineCount: 3
 timeline0: 0.0
-timeline1: 0.66
+timeline1: 0.6643836
 timeline2: 1.0
 independent: false
 - Life Offset - 
@@ -46,20 +46,20 @@ shape: ellipse
 edges: false
 side: both
 - Spawn Width - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 0.0
-highMax: 0.0
+lowMin: 1.0
+lowMax: 1.0
+highMin: 2.0
+highMax: 2.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
 - Spawn Height - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 0.0
-highMax: 0.0
+lowMin: 1.0
+lowMax: 1.0
+highMin: 2.0
+highMax: 2.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -88,13 +88,13 @@ timelineCount: 1
 timeline0: 0.0
 - Velocity - 
 active: true
-lowMin: 0.0
-lowMax: 0.0
+lowMin: 50.0
+lowMax: 50.0
 highMin: 30.0
 highMax: 300.0
 relative: false
 scalingCount: 1
-scaling0: 0.47058824
+scaling0: 0.7254902
 timelineCount: 1
 timeline0: 0.0
 - Angle - 
