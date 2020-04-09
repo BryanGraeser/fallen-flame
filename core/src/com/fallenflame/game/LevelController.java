@@ -448,7 +448,7 @@ public class LevelController implements ContactListener {
                     //modify sound
                     enemy.getMoveSound().setPan(enemy.getMoveSoundID(), pan, (float) Math.max(0,(1 - enemy.getDistanceBetween(player) * .15)));
                 }
-                enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, (float) Math.max(0,(.3 - enemy.getDistanceBetween(player) * .05)));
+                enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, (float) Math.max(0,(3 - enemy.getDistanceBetween(player) * .5)));
                 assert inBounds(enemy);
             }
 

@@ -17,10 +17,10 @@ public abstract class EnemyModel extends CharacterModel {
 
     private ObjectMap<ActivationStates, Color> stateTints = new ObjectMap<>();
 
-    /**Enemy move sound */
+    /**Enemy move sound (Acquired from https://freesound.org/people/000600/sounds/180015/)*/
     private Sound moveSound;
 
-    /**Enemy constant sound */
+    /**Enemy constant sound (Acquired from https://freesound.org/people/ecfike/sounds/132865/)*/
     private Sound constantSound;
 
     /**ID of enemy move sound*/

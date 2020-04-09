@@ -42,10 +42,10 @@ public class FlareModel extends WheelObstacle implements ILight {
     /**The color to tint the flare */
     private Color tint;
 
-    /**The sound a flare makes when shot */
+    /**The sound a flare makes when shot (Acquired from https://freesound.org/people/HighPixel/sounds/431174/) */
     private Sound shotSound;
 
-    /**The sound a flare makes when it burns out */
+    /**The sound a flare makes when it burns out (Acquired from https://freesound.org/people/roboroo/sounds/436791/) */
     private Sound burnoutSound;
 
     /**
