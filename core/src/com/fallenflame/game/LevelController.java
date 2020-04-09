@@ -360,7 +360,7 @@ public class LevelController implements ContactListener {
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
         //TODO: Update the initial capacity and max once full fog is implemented
-        fogPool = new ParticleEffectPool(fogTemplate, 0, 2);
+        fogPool = new ParticleEffectPool(fogTemplate, 0, 1);
     }
 
     /**
