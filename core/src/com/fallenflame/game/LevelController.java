@@ -435,7 +435,6 @@ public class LevelController implements ContactListener {
             while(enemyI.hasNext()){
                 EnemyModel enemy = enemyI.next();
                 enemy.executeAction(actionI.next());
-                //float pan = (enemy.getX() - player.getX()) < 0 ? -1f : 1f;
                 float pan = (enemy.getX() - player.getX()) * .4f;
                 if (enemy.isActivated() && (enemy.getMoveSoundID() == -1)) {
                     //start sound
