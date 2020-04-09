@@ -57,11 +57,13 @@ public class AITypeBController extends AIController {
                 enemy.makeCalm();
                 // Check for player target within range
                 if(withinRange()) {
+                    enemy.setFiringTarget(player.getX(), player.getY());
                     state = FSMState.DIRECT_FIRE;
                     break;
                 }
                 break;
             case DIRECT_FIRE:
+                System.out.println("Direct fire!");
                 enemy.makeAggressive();
                 enemy.setFiringTarget(player.getX(), player.getY());
                 // If player now out of range, switch to sustained fire at last known position
@@ -72,6 +74,7 @@ public class AITypeBController extends AIController {
                 }
                 break;
             case SUSTAINED_FIRE:
+                System.out.println("Sustained fire!");
                 enemy.makeAlert();
                 // Check for player target within range
                 if(withinRange()) {
@@ -92,9 +95,14 @@ public class AITypeBController extends AIController {
      *
      * This method implements pathfinding through the use of goal tiles.
      */
-    protected void markGoalTiles() {
-        level.setGoal(level.screenToTile(enemy.getX()), level.screenToTile(enemy.getY()));
-    }
+    protected void markGoalTiles() { }
+
+    /**
+     * Get enemy movement toward goal
+     *
+     * @return a movement direction that moves towards a goal tile or NO_ACTION.
+     */
+    protected int getMoveAlongPathToGoalTile() { return EnemyModel.CONTROL_NO_ACTION; }
 
     /**
      * Return firing action code if enemy is firing
@@ -103,7 +111,7 @@ public class AITypeBController extends AIController {
     protected int getOtherAction() {
         if(state == FSMState.DIRECT_FIRE || state == FSMState.SUSTAINED_FIRE)
             return EnemyModel.CONTROL_FIRE;
-        return 0;
+        return EnemyModel.CONTROL_NO_ACTION;
     }
 
     /** Returns whether an enemy is in range to chase a player */

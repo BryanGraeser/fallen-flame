@@ -40,7 +40,7 @@ public abstract class EnemyModel extends CharacterModel {
     /** Move the enemy to the up and right */
     public static final int CONTROL_MOVE_UP_RIGHT = 0x80;
     /** Command the enemy to shoot */
-    public static final int CONTROL_FIRE = 0x100;
+    public static final int CONTROL_FIRE = 0x1000;
 
     /**
      * Initializes the enemy via the given JSON value

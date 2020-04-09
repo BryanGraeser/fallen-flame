@@ -45,7 +45,7 @@ public class EnemyTypeBModel extends EnemyModel{
      * @return boolean canFire
      */
     public boolean canFire() {
-        return false;
+        return firecool <= 0;
     }
 
     /**@author Walker White

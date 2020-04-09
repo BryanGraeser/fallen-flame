@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
 import com.fallenflame.game.enemies.*;
 import com.fallenflame.game.physics.obstacle.Obstacle;
+import sun.awt.image.ImageWatched;
 
 import java.util.*;
 
@@ -33,10 +34,14 @@ public class LevelController implements ContactListener {
     private List<WallModel> walls;
     /** Reference to all flares */
     private List<FlareModel> flares;
+    /** Reference to all fireballs */
+    private List<FireballModel> fireballs;
     /** Level Model for AI Pathfinding */
     private LevelModel levelModel;
     /** Flare JSONValue */
     private JsonValue flareJSON;
+    /** Fireball JSONValue */
+    private JsonValue fireballJSON;
 
     /** Whether or not the level is in debug mode (showing off physics) */
     private int debug;
@@ -264,6 +269,7 @@ public class LevelController implements ContactListener {
         walls = new LinkedList<>();
         enemies = new LinkedList<>();
         flares = new LinkedList<>();
+        fireballs = new LinkedList<>();
         levelModel = new LevelModel();
         // Not yet populated
         populated = false;
@@ -304,6 +310,7 @@ public class LevelController implements ContactListener {
         exit.setDrawScale(scale);
         exit.activatePhysics(world);
         assert inBounds(exit);
+        // Create Walls
         for(JsonValue wallJSON : levelJson.get("walls")) {
             WallModel wall = new WallModel();
             wall.initialize(globalJson.get("wall"), wallJSON);
@@ -312,6 +319,7 @@ public class LevelController implements ContactListener {
             walls.add(wall);
             assert inBounds(wall);
         }
+        // Create enemies
         int enemyID = 0;
         JsonValue globalEnemies = globalJson.get("enemies");
         for(JsonValue enemyJSON : levelJson.get("enemies")) {
@@ -320,7 +328,11 @@ public class LevelController implements ContactListener {
             EnemyModel enemy;
             if(enemyType.equals("typeA")) {
                 enemy = new EnemyTypeAModel();
-            } else{
+            }
+            else if(enemyType.equals("typeB")){
+                enemy = new EnemyTypeBModel();
+            }
+            else {
                 Gdx.app.error("LevelController", "Enemy type without model", new IllegalArgumentException());
                 return;
             }
@@ -343,7 +355,9 @@ public class LevelController implements ContactListener {
             enemyID++;
             assert inBounds(enemy);
         }
+        // Prepare flare and fireball jsons
         flareJSON = globalJson.get("flare");
+        fireballJSON = globalJson.get("fireball");
 
         // Initialize levelModel
         levelModel.initialize(bounds, walls, enemies);
@@ -366,18 +380,23 @@ public class LevelController implements ContactListener {
         for(WallModel wall : walls) {
             wall.deactivatePhysics(world);
             wall.dispose();
-            walls.clear();
         }
+        walls.clear();
         for(EnemyModel enemy : enemies) {
             enemy.deactivatePhysics(world);
             enemy.dispose();
-            enemies.clear();
         }
+        enemies.clear();
         for(FlareModel flare : flares) {
             flare.deactivatePhysics(world);
             flare.dispose();
-            flares.clear();
         }
+        flares.clear();
+        for(FireballModel fireball : fireballs) {
+            fireball.deactivatePhysics(world);
+            fireball.dispose();
+        }
+        fireballs.clear();
         exit.deactivatePhysics(world);
         exit.dispose();
         player.deactivatePhysics(world);
@@ -439,13 +458,12 @@ public class LevelController implements ContactListener {
                 boolean firing = (action & EnemyModel.CONTROL_FIRE) != 0;
                 if (enemy.getClass() == EnemyTypeBModel.class && firing) {
                     if(((EnemyTypeBModel)enemy).canFire())
-                        fireWeapon(enemy);
+                        fireWeapon((EnemyTypeBModel)enemy);
                     else
                         ((EnemyTypeBModel)enemy).coolDown(true);
                 }
                 assert inBounds(enemy);
             }
-
             // Update flares
             Iterator<FlareModel> i = flares.iterator();
             while(i.hasNext()){
@@ -516,8 +534,19 @@ public class LevelController implements ContactListener {
     /**
      * Fires a bullet from an enemy
      */
-    public void fireWeapon(EnemyModel enemy) {
-        //TODO
+    public void fireWeapon(EnemyTypeBModel enemy) {
+        Vector2 enemyPos = enemy.getPosition();
+        FireballModel fireball = new FireballModel(enemyPos);
+        fireball.setDrawScale(scale);
+        fireball.initialize(fireballJSON);
+        fireball.activatePhysics(world);
+        System.out.println(enemy.getFiringTarget());
+        Vector2 posDif = new Vector2(enemy.getFiringTarget().x - enemyPos.x, enemy.getFiringTarget().y - enemyPos.y);
+        float angleRad = posDif.angleRad(new Vector2(1, 0));
+        Vector2 force = (new Vector2(fireball.getInitialForce(), 0)).rotateRad(angleRad);
+        fireball.applyInitialForce(angleRad, force);
+        fireballs.add(fireball);
+        //assert inBounds(fireball);
     }
 
     /**
@@ -664,7 +693,7 @@ public class LevelController implements ContactListener {
             setLevelState(levelState.WIN);
                 return;
             }
-            // Check for loss condition (player runs into enemy)
+            // Check for loss condition 1 (player runs into enemy)
             if((bd1 == player && bd2 instanceof EnemyModel)
                     || (bd1 instanceof  EnemyModel && bd2 == player)){
                 setLevelState(LevelState.LOSS);
@@ -678,7 +707,24 @@ public class LevelController implements ContactListener {
                 else
                     ((FlareModel) bd2).stopMovement();
             }
-
+            // Check for loss condition 2 (fireball hits player)
+            if((bd1 instanceof FireballModel && bd2 instanceof PlayerModel
+                    || bd1 instanceof  PlayerModel && bd2 instanceof FireballModel)) {
+                setLevelState(LevelState.LOSS);
+                return;
+            }
+            // Check for fireball-wall collision and if so remove fireball
+            if((bd1 instanceof FireballModel && bd2 instanceof WallModel
+                    || bd1 instanceof  WallModel && bd2 instanceof FireballModel)) {
+                if(bd1 instanceof FireballModel){
+                    bd1.deactivatePhysics(world);
+                    bd1.dispose();
+                }
+                else{
+                    bd2.deactivatePhysics(world);
+                    bd2.dispose();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
