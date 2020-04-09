@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
-import com.fallenflame.game.enemies.AIController;
-import com.fallenflame.game.enemies.AITypeAController;
-import com.fallenflame.game.enemies.EnemyModel;
-import com.fallenflame.game.enemies.EnemyTypeAModel;
+import com.fallenflame.game.enemies.*;
 import com.fallenflame.game.physics.obstacle.Obstacle;
 
 import java.util.*;
@@ -334,7 +331,11 @@ public class LevelController implements ContactListener {
             // Initialize AIController
             if(enemyType.equals("typeA")) {
                 AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares));
-            } else{
+            }
+            else if(enemyType.equals("typeB")) {
+                AIControllers.add(new AITypeBController(enemyID, levelModel, enemies, player));
+            }
+            else{
                 Gdx.app.error("LevelController", "Enemy type without AIController", new IllegalArgumentException());
                 return;
             }
@@ -432,7 +433,16 @@ public class LevelController implements ContactListener {
             Iterator<Integer> actionI = ctrlCodes.iterator();
             while(enemyI.hasNext()){
                 EnemyModel enemy = enemyI.next();
-                enemy.executeAction(actionI.next());
+                int action = actionI.next();
+                enemy.executeMovementAction(action);
+                // Check if enemy is firing, for now only supports EnemyTypeBModel. TODO: Will need to rework if more firing enemies
+                boolean firing = (action & EnemyModel.CONTROL_FIRE) != 0;
+                if (enemy.getClass() == EnemyTypeBModel.class && firing) {
+                    if(((EnemyTypeBModel)enemy).canFire())
+                        fireWeapon(enemy);
+                    else
+                        ((EnemyTypeBModel)enemy).coolDown(true);
+                }
                 assert inBounds(enemy);
             }
 
@@ -501,6 +511,13 @@ public class LevelController implements ContactListener {
             flares.add(flare);
             assert inBounds(flare);
         }
+    }
+
+    /**
+     * Fires a bullet from an enemy
+     */
+    public void fireWeapon(EnemyModel enemy) {
+        //TODO
     }
 
     /**

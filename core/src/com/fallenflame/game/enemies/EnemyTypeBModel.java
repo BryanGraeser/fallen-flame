@@ -1,10 +1,20 @@
 package com.fallenflame.game.enemies;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class EnemyTypeBModel extends EnemyModel{
+    /** Cooldown length */
+    private int cooldownLength;
     /** Position to sustain fire towards. Player last known location */
     protected Vector2 firingTarget;
+    /** The number of frames until we can fire again */
+    private int firecool;
+
+    public void initialize(JsonValue json, float[] pos){
+        super.initialize(json, pos);
+        cooldownLength = json.get("cooldown").asInt();
+    }
 
     /**
      * Set enemy's firing target position
@@ -30,12 +40,27 @@ public class EnemyTypeBModel extends EnemyModel{
     public Vector2 getFiringTarget() { return firingTarget; }
 
     /**
-     * Executes enemy action
-     * @param ctrlCode action for enemy to execute. can be left, right, up, down movement or no action
-     * @return true if enemy has moved
+     * Returns whether an enemy can fire. Default implementation returns false.
+     * For enemies that can fire, override and return true if not in cooldown
+     * @return boolean canFire
      */
-    public boolean executeAction(int ctrlCode) {
-
+    public boolean canFire() {
         return false;
+    }
+
+    /**@author Walker White
+     * Reset or cool down the enemy weapon.
+     *
+     * If flag is true, the weapon will cool down by one animation frame.  Otherwise
+     * it will reset to its maximum cooldown.
+     *
+     * @param flag whether to cooldown or reset
+     */
+    public void coolDown(boolean flag) {
+        if (flag && firecool > 0) {
+            firecool--;
+        } else if (!flag) {
+            firecool = cooldownLength;
+        }
     }
 }

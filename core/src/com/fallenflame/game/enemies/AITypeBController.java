@@ -13,13 +13,14 @@ public class AITypeBController extends AIController {
     private enum FSMState {
         /** The enemy does not have a target */
         IDLE,
-        /** The enemy is firing at the player (or player's last known position)
-         * TODO: may want to split into attack and sustained fire*/
-        FIRING,
+        /** The enemy is firing directly at the player */
+        DIRECT_FIRE,
+        /** The enemy is firing at the player's last known position */
+        SUSTAINED_FIRE,
     }
 
     // Constants
-    private static final int FIRING_TIME = 2000;
+    private static final int SUSTAINED_FIRE_TIME = 2000;
 
     // Instance Attributes
     /** The enemy's current state*/
@@ -28,6 +29,8 @@ public class AITypeBController extends AIController {
     private PlayerModel player;
     /** The enemy being controlled by this AIController */
     private EnemyTypeBModel enemy;
+    /** How long enemy has been in sustained fire */
+    private int firingTime;
 
     /**
      * Creates an AIController for the enemy with the given id.
@@ -49,7 +52,39 @@ public class AITypeBController extends AIController {
      * Change the state of the enemy using a Finite State Machine.
      */
     protected void changeStateIfApplicable() {
-
+        switch(state) {
+            case IDLE:
+                enemy.makeCalm();
+                // Check for player target within range
+                if(withinRange()) {
+                    state = FSMState.DIRECT_FIRE;
+                    break;
+                }
+                break;
+            case DIRECT_FIRE:
+                enemy.makeAggressive();
+                enemy.setFiringTarget(player.getX(), player.getY());
+                // If player now out of range, switch to sustained fire at last known position
+                if(!withinRange()) {
+                    state = FSMState.SUSTAINED_FIRE;
+                    firingTime = 0;
+                    break;
+                }
+                break;
+            case SUSTAINED_FIRE:
+                enemy.makeAlert();
+                // Check for player target within range
+                if(withinRange()) {
+                    state = FSMState.DIRECT_FIRE;
+                    break;
+                }
+                // Check if sustained fire has ended
+                else if(firingTime >= SUSTAINED_FIRE_TIME){
+                    state = FSMState.IDLE;
+                    break;
+                }
+                firingTime++;
+        }
     }
 
     /**
@@ -59,5 +94,21 @@ public class AITypeBController extends AIController {
      */
     protected void markGoalTiles() {
         level.setGoal(level.screenToTile(enemy.getX()), level.screenToTile(enemy.getY()));
+    }
+
+    /**
+     * Return firing action code if enemy is firing
+     */
+    @Override
+    protected int getOtherAction() {
+        if(state == FSMState.DIRECT_FIRE || state == FSMState.SUSTAINED_FIRE)
+            return EnemyModel.CONTROL_FIRE;
+        return 0;
+    }
+
+    /** Returns whether an enemy is in range to chase a player */
+    private boolean withinRange(){
+        double distance = cartesianDistance(enemy.getX(),player.getX(),enemy.getY(),player.getY());
+        return distance <= player.getLightRadius();
     }
 }
