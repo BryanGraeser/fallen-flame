@@ -339,8 +339,8 @@ public class GameEngine implements Screen, InputProcessor {
         }
         level.movePlayer(angle, tempAngle);
         level.update(delta);
-        isSuccess = level.getLevelState() == LevelController.LevelState.WIN;
-        isFailed = level.getLevelState() == LevelController.LevelState.LOSS;
+        isSuccess = level.getLevelState() == LevelController.LevelState.WIN || prevSuccess;
+        isFailed = level.getLevelState() == LevelController.LevelState.LOSS || prevFailed;
         if((isSuccess && !prevSuccess) || (isFailed && !prevFailed)){
             countdown = COUNTDOWN_TIME;
         }
@@ -364,12 +364,12 @@ public class GameEngine implements Screen, InputProcessor {
         level.draw(canvas, delta, debugFont);
 
         // Final message
-        if (isSuccess) {
+        if (!isFailed && isSuccess) {
             displayFont.setColor(Color.YELLOW);
             canvas.begin(); // DO NOT SCALE
             canvas.drawText("VICTORY!", displayFont, 0, canvas.getHeight());
             canvas.end();
-        } else if (isFailed) {
+        } else if (!isSuccess && isFailed) {
             displayFont.setColor(Color.RED);
             canvas.begin(); // DO NOT SCALE
             canvas.drawTextCentered("YOU DIED!", displayFont, 0.0f);
