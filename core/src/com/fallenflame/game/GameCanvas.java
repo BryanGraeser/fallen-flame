@@ -864,12 +864,17 @@ public class GameCanvas {
         computeVertices(local,region.getVertices());
     }
 
+    /**@deprecated */
+
+    public void drawFog(ParticleEffectPool fogPool, Array<ParticleEffectPool.PooledEffect> fog, float delta){
+        drawFog(fog, delta);
+    }
+
     /**Draw a swirling fog at a certain position (x, y)
-     * @param fogPool, the ParticleEffectPool for resource management
      * @param fog, a PooledEffect array with all fog that needs to be drawn
      * @param delta, frames per second*/
 
-    public void drawFog(ParticleEffectPool fogPool, Array<ParticleEffectPool.PooledEffect> fog, float delta){
+    public void drawFog(Array<ParticleEffectPool.PooledEffect> fog, float delta){
         for(ParticleEffectPool.PooledEffect f: fog){
             f.draw(spriteBatch, delta);
         }
@@ -1179,13 +1184,13 @@ public class GameCanvas {
     private static final Color GRID_DEBUG_SAFE_COLOR = Color.GREEN;
     private static final Color GRID_DEBUG_UNSAFE_COLOR = Color.RED;
 
-    public void drawGrid(float x, float y, LevelModel.Tile info, Vector2 drawScale, float size) {
+    public void drawGrid(float x, float y, boolean safe, Vector2 drawScale, float size) {
         if (active != DrawPass.DEBUG) {
             Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
             return;
         }
 
-        Color c = info.safe ? GRID_DEBUG_SAFE_COLOR : GRID_DEBUG_UNSAFE_COLOR;
+        Color c = safe ? GRID_DEBUG_SAFE_COLOR : GRID_DEBUG_UNSAFE_COLOR;
 
         float dx = drawScale.x, dy = drawScale.y;
         float x0 = x * size * dx, y0 = y * size * dy, x1 = (x + 1) * size * dx, y1 = (y + 1) * size * dy;

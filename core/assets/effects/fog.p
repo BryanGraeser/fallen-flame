@@ -4,8 +4,8 @@ active: true
 lowMin: 0.0
 lowMax: 0.0
 - Duration - 
-lowMin: 3000.0
-lowMax: 3000.0
+lowMin: 300.0
+lowMax: 300.0
 - Count - 
 min: 0
 max: 100

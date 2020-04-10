@@ -61,9 +61,10 @@ public class LevelController implements ContactListener {
 
     // Controllers
     /** Light Controller */
-    private LightController lightController;
+    private final LightController lightController;
     /** AI Controllers */
-    private List<AIController> AIControllers;
+    private final List<AIController> AIControllers;
+    private final FogController fogController;
 
     /** Enum to specify level state */
     public enum LevelState {
@@ -93,10 +94,6 @@ public class LevelController implements ContactListener {
     private float fps;
     /** Number of ticks sense we started this controller (used to limit number of fps updates) */
     private long ticks;
-
-    //Fog parameters. Code heavily based off of https://github.com/libgdx/libgdx/wiki/2D-ParticleEffects
-    private ParticleEffectPool fogPool;
-    private Array<ParticleEffectPool.PooledEffect> fog;
 
     /**
      * Returns the bounding rectangle for the physics world
@@ -272,6 +269,7 @@ public class LevelController implements ContactListener {
         // Controllers
         lightController = new LightController();
         AIControllers = new LinkedList<>();
+        fogController = new FogController();
         // Models
         walls = new LinkedList<>();
         enemies = new LinkedList<>();
@@ -279,7 +277,6 @@ public class LevelController implements ContactListener {
         levelModel = new LevelModel();
         // Not yet populated
         populated = false;
-        fog = new Array();
 
     }
 
@@ -360,7 +357,7 @@ public class LevelController implements ContactListener {
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
         //TODO: Update the initial capacity and max once full fog is implemented
-        fogPool = new ParticleEffectPool(fogTemplate, 0, 1);
+        fogController.initialize(fogTemplate, levelModel);
     }
 
     /**
@@ -462,15 +459,15 @@ public class LevelController implements ContactListener {
                     flare.update(dt);
                 }
             }
-            for(ParticleEffectPool.PooledEffect effect: fog){
-                if(effect.isComplete()){
-                    effect.free();
-                    fog.removeValue(effect, true);
-                }
-            }
+
+            // Update level model.
+            levelModel.update(player, enemies);
 
             // Update lights
             lightController.updateLights(flares, enemies);
+
+            // Update fog.
+            fogController.updateFog(scale);
         }
     }
 
@@ -598,16 +595,7 @@ public class LevelController implements ContactListener {
             wall.draw(canvas);
         }
         for(EnemyModel enemy : enemies) {
-            if(enemy.isActivated()) {
-                enemy.draw(canvas);
-            }
-            else{
-                ParticleEffectPool.PooledEffect effect = fogPool.obtain();
-                float randomVal = (float)(Math.random());
-                effect.setPosition((enemy.getX()+randomVal)*scale.x,
-                        (enemy.getY()+randomVal)*scale.y);
-                fog.add(effect);
-            }
+            enemy.draw(canvas);
         }
         for(FlareModel flare : flares) {
             flare.draw(canvas);
@@ -616,9 +604,7 @@ public class LevelController implements ContactListener {
 
         lightController.setDebug(debug2);
         lightController.draw();
-        canvas.begin();
-        canvas.drawFog(fogPool, fog, delta);
-        canvas.end();
+        fogController.draw(canvas, delta);
 
         // Draw debugging on top of everything.
         if (debug == 1) {
