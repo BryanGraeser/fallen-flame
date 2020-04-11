@@ -875,6 +875,7 @@ public class GameCanvas {
      * @param delta, frames per second*/
 
     public void drawFog(Array<ParticleEffectPool.PooledEffect> fog, float delta){
+        System.out.println(fog.size);
         for(ParticleEffectPool.PooledEffect f: fog){
             f.draw(spriteBatch, delta);
         }

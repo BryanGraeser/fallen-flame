@@ -15,7 +15,7 @@ public class FogController {
     private int tileGridH;
 
     public void initialize(ParticleEffect fogTemplate, LevelModel lm) {
-        fogPool = new ParticleEffectPool(fogTemplate, 0, 1);
+        fogPool = new ParticleEffectPool(fogTemplate, 0, 100);
         fog = new Array<>();
         levelModel = lm;
         int[] n = levelModel.tileGridSize();
@@ -32,6 +32,7 @@ public class FogController {
         for (int x = 0; x < tileGridW; x++) {
             for (int y = 0; y < tileGridH; y++) {
                 if (levelModel.hasWall(x, y) || levelModel.hasPlayer(x, y)) continue;
+                if(!levelModel.hasEnemy(x, y) && (y % 2 != 0 && x % 2 != 0))continue;
                 ParticleEffectPool.PooledEffect effect = fogPool.obtain();
                 for (int i = 0; i < (1 + (levelModel.hasEnemy(x, y) ? 2 : 0)); i++) {
                     float randomVal = (float)(Math.random() * TILE_SIZE);
