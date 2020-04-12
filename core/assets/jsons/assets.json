@@ -60,7 +60,7 @@
 			"file": "sounds/Walk.mp3"
 		},
 		"enemystep": {
-			"file": "sounds/enemystep.mp3"
+			"file": "sounds/bark.mp3"
 		},
 		"enemyconstant": {
 			"file": "sounds/enemyconstant.mp3"
