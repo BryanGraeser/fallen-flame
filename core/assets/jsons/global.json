@@ -43,7 +43,7 @@
       "tintOpacity": 192
     },
     "typeB":  {
-      "cooldown": 30,
+      "cooldown": 3000,
       "radius": 0.4,
       "bodytype": "dynamic",
       "density": 1.0,

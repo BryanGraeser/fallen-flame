@@ -477,6 +477,16 @@ public class LevelController implements ContactListener {
                     flare.update(dt);
                 }
             }
+            // Remove old fireballs
+            Iterator<FireballModel> ii = fireballs.iterator();
+            while(ii.hasNext()){
+                FireballModel f = ii.next();
+                if(!f.isActive()){
+                    f.deactivatePhysics(world);
+                    f.dispose();
+                    ii.remove();
+                }
+            }
 
             // Update lights
             lightController.updateLights(flares, enemies);
@@ -535,17 +545,26 @@ public class LevelController implements ContactListener {
      * Fires a bullet from an enemy
      */
     public void fireWeapon(EnemyTypeBModel enemy) {
+        System.out.println("firing 1");
         Vector2 enemyPos = enemy.getPosition();
+        System.out.println("firing 2");
         FireballModel fireball = new FireballModel(enemyPos);
+        System.out.println("firing 3");
         fireball.setDrawScale(scale);
+        System.out.println("firing 4");
         fireball.initialize(fireballJSON);
+        System.out.println("firing 5");
         fireball.activatePhysics(world);
+        System.out.println("firing 6");
         System.out.println(enemy.getFiringTarget());
         Vector2 posDif = new Vector2(enemy.getFiringTarget().x - enemyPos.x, enemy.getFiringTarget().y - enemyPos.y);
         float angleRad = posDif.angleRad(new Vector2(1, 0));
         Vector2 force = (new Vector2(fireball.getInitialForce(), 0)).rotateRad(angleRad);
+        System.out.println("firing 7");
         fireball.applyInitialForce(angleRad, force);
+        System.out.println("firing 8");
         fireballs.add(fireball);
+        System.out.println("firing 9");
         //assert inBounds(fireball);
     }
 
@@ -629,6 +648,9 @@ public class LevelController implements ContactListener {
         }
         for(FlareModel flare : flares) {
             flare.draw(canvas);
+        }
+        for(FireballModel fireball : fireballs){
+            fireball.draw(canvas);
         }
         canvas.end();
 
@@ -717,12 +739,10 @@ public class LevelController implements ContactListener {
             if((bd1 instanceof FireballModel && bd2 instanceof WallModel
                     || bd1 instanceof  WallModel && bd2 instanceof FireballModel)) {
                 if(bd1 instanceof FireballModel){
-                    bd1.deactivatePhysics(world);
-                    bd1.dispose();
+                    ((FireballModel) bd1).deactivate();
                 }
                 else{
-                    bd2.deactivatePhysics(world);
-                    bd2.dispose();
+                    ((FireballModel) bd2).deactivate();
                 }
             }
         } catch (Exception e) {

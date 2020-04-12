@@ -25,6 +25,19 @@ public class FireballModel extends WheelObstacle implements ILight {
     private Color tint;
     /** Light Radius */
     private float lightRadius;
+    /** Active status (aka mark for deletion) */
+    private boolean active;
+
+    /**
+     * Get active status
+     * @return True if active
+     */
+    public boolean isActive() { return active; }
+
+    /**
+     * Set active status to false
+     */
+    public void deactivate() { active = false; }
 
     /**
      * Returns the light radius of this flare.
@@ -52,6 +65,7 @@ public class FireballModel extends WheelObstacle implements ILight {
     public FireballModel(Vector2 pos) {
         super(pos.x,pos.y,1.0f);
         this.setSensor(true);
+        active = true;
         setFixedRotation(false);
     }
 
