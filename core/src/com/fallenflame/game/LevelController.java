@@ -357,7 +357,7 @@ public class LevelController implements ContactListener {
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
         //TODO: Update the initial capacity and max once full fog is implemented
-        fogController.initialize(fogTemplate, levelModel);
+        fogController.initialize(fogTemplate, levelModel, player);
     }
 
     /**

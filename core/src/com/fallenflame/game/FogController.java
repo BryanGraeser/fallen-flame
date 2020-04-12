@@ -11,12 +11,14 @@ public class FogController {
     private ParticleEffectPool fogPool;
     private fogParticle[][] fog;
     private LevelModel levelModel;
+    private PlayerModel playerModel; //Needed for light radius :(
     private int tileGridW;
     private int tileGridH;
 
-    public void initialize(ParticleEffect fogTemplate, LevelModel lm) {
+    public void initialize(ParticleEffect fogTemplate, LevelModel lm, PlayerModel pm) {
         fogPool = new ParticleEffectPool(fogTemplate, 0, 100);
         levelModel = lm;
+        playerModel = pm;
         int[] n = levelModel.tileGridSize();
         tileGridW = n[0];
         tileGridH = n[1];
@@ -24,17 +26,14 @@ public class FogController {
     }
 
     public void updateFog(Vector2 scale) {
-//        for(ParticleEffectPool.PooledEffect effect: fog){
-//            if(effect.isComplete()){
-//                effect.free();
-//                fog.removeValue(effect, true);
-//            }
-//        }
-        Array<Integer> f;
         for (int x = 0; x < tileGridW; x++) {
             for (int y = 0; y < tileGridH; y++) {
                 if (levelModel.hasWall(x, y) || levelModel.hasPlayer(x, y)) continue;
-                if(fog[x][y] == null){
+                boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - playerModel.getX(), 2) +
+                        Math.pow((y*TILE_SIZE) - playerModel.getY(), 2)), 0.5))
+                        <= playerModel.getLightRadius();
+                if(withinLight) continue;
+                if(fog[x][y] == null) {
                     fog[x][y] = new fogParticle();
                 }
                 Array<ParticleEffectPool.PooledEffect> fogArr = fog[x][y].fogParticles;
@@ -53,15 +52,6 @@ public class FogController {
                 }
             }
         }
-//        for(EnemyModel enemy : enemies) {
-//            if(!enemy.isActivated()) {
-//                ParticleEffectPool.PooledEffect effect = fogPool.obtain();
-//                float randomVal = (float)(Math.random());
-//                effect.setPosition((enemy.getX()+randomVal)*scale.x,
-//                        (enemy.getY()+randomVal)*scale.y);
-//                fog.add(effect);
-//            }
-//        }
     }
 
     public void draw(GameCanvas canvas, float delta) {
@@ -75,6 +65,7 @@ public class FogController {
 
         public fogParticle(){
             fogParticles = new Array<>();
+
         }
 
     }
