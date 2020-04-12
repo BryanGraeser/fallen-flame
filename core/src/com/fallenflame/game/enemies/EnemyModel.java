@@ -131,6 +131,7 @@ public abstract class EnemyModel extends CharacterModel {
         this.state = ActivationStates.Aggressive;
     }
 
+
     /**
      * Gets light radius for enemy. MAY BE OVERWRITTEN BY CHILD for different light behavior
      * @return light radius

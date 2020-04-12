@@ -200,7 +200,6 @@ public class FlareModel extends WheelObstacle implements ILight {
         setRadius(radius);
         lightRadius = json.get("lighradius").asFloat();
         flareDuration = json.get("flareduration").asInt();
-
         isStuck = false;
 
         // TODO #2: Technically, we should do error checking here.
