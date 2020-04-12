@@ -4,8 +4,8 @@ active: true
 lowMin: 0.0
 lowMax: 0.0
 - Duration - 
-lowMin: 300.0
-lowMax: 300.0
+lowMin: 500.0
+lowMax: 500.0
 - Count - 
 min: 0
 max: 100
@@ -15,10 +15,14 @@ lowMax: 0.0
 highMin: 5.0
 highMax: 5.0
 relative: false
-scalingCount: 1
+scalingCount: 3
 scaling0: 0.21568628
-timelineCount: 1
+scaling1: 0.02247191
+scaling2: 0.21348314
+timelineCount: 3
 timeline0: 0.0
+timeline1: 0.4971537
+timeline2: 1.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
@@ -88,13 +92,13 @@ timelineCount: 1
 timeline0: 0.0
 - Velocity - 
 active: true
-lowMin: 50.0
-lowMax: 50.0
-highMin: 30.0
-highMax: 300.0
+lowMin: 1.0
+lowMax: 1.0
+highMin: 0.0
+highMax: 5.0
 relative: false
 scalingCount: 1
-scaling0: 0.7254902
+scaling0: 0.078431375
 timelineCount: 1
 timeline0: 0.0
 - Angle - 
