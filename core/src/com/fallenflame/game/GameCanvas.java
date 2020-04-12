@@ -864,22 +864,29 @@ public class GameCanvas {
         computeVertices(local,region.getVertices());
     }
 
-    /**@deprecated */
-
-    public void drawFog(ParticleEffectPool fogPool, Array<ParticleEffectPool.PooledEffect> fog, float delta){
-        drawFog(fog, delta);
-    }
+//    /**@deprecated */
+//
+//    public void drawFog(ParticleEffectPool fogPool, FogController.fogParticle[][] fog, float delta){
+//        drawFog(fog, delta);
+//    }
 
     /**Draw a swirling fog at a certain position (x, y)
-     * @param fog, a PooledEffect array with all fog that needs to be drawn
+     * @param fog, a PooledEffect 2D array with all fog that needs to be drawn
      * @param delta, frames per second*/
 
-    public void drawFog(Array<ParticleEffectPool.PooledEffect> fog, float delta){
-        System.out.println(fog.size);
-        for(ParticleEffectPool.PooledEffect f: fog){
-            f.draw(spriteBatch, delta);
+    public void drawFog(FogController.fogParticle[][] fog, float delta){
+            for(int r = 0; r<fog.length; r++){
+                for(int c = 0; c<fog[r].length; c++) {
+                    if (fog[r][c] != null) {
+                        Array<ParticleEffectPool.PooledEffect> fogArr = fog[r][c].fogParticles;
+                        for (ParticleEffectPool.PooledEffect f : fogArr) {
+                            f.draw(spriteBatch, delta);
+                        }
+                    }
+                }
+            }
+
         }
-    }
 
     /**
      * Transform the given vertices by the affine transform
