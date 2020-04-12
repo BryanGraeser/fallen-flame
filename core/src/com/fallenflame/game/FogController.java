@@ -18,7 +18,7 @@ public class FogController {
     public void initialize(ParticleEffect fogTemplate, LevelModel lm, PlayerModel pm) {
         /*Using a pool doesn't actually help much, as if the number of models is higher than the max it just makes a new
         object. However, it has a slight performance help in terms of reusing objects. 100 is a random value, can be changed*/
-        fogPool = new ParticleEffectPool(fogTemplate, 0, 100);
+        fogPool = new ParticleEffectPool(fogTemplate, 0, 150);
         levelModel = lm;
         playerModel = pm;
         int[] n = levelModel.tileGridSize();
@@ -35,8 +35,8 @@ public class FogController {
             for (int y = 0; y < tileGridH; y++) {
                 //To prevent drawing on tiles with the player or a wall as well as if its within the light radius
                 if (levelModel.hasWall(x, y) || levelModel.hasPlayer(x, y)) continue;
-                boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - playerModel.getX(), 2) +
-                        Math.pow((y*TILE_SIZE) - playerModel.getY(), 2)), 0.5))
+                boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (playerModel.getX()), 2) +
+                        Math.pow((y*TILE_SIZE) - (playerModel.getY()), 2)), 0.5))
                         <= playerModel.getLightRadius();
                 if(withinLight) continue;
                 if(fog[x][y] == null) {
@@ -52,7 +52,7 @@ public class FogController {
                 /*Only make a new fog particle if we do not have enough particles in the array for that tile*/
                 if (fogArr.size < 3|| (levelModel.hasEnemy(x, y) && fogArr.size < 5)) {
                     ParticleEffectPool.PooledEffect effect = fogPool.obtain();
-                    for (int i = 0; i < (1 + (levelModel.hasEnemy(x, y) ? 3 : 1)); i++) {
+                    for (int i = 0; i < (1 + (levelModel.hasEnemy(x, y) ? 4 : 2)); i++) {
                         float randomVal = (float) (Math.random() * TILE_SIZE);
                         effect.setPosition((x * TILE_SIZE + randomVal) * scale.x, (y * TILE_SIZE + randomVal) * scale.y);
                         fog[x][y].fogParticles.add(effect);
