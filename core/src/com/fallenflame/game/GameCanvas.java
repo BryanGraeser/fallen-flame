@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 public class GameCanvas {
     /**@author: Professor White */
@@ -54,6 +55,9 @@ public class GameCanvas {
     /** Camera for the underlying SpriteBatch */
     private OrthographicCamera camera;
 
+    /** Second camera, where it does not move at all. */
+    private OrthographicCamera fixedCamera;
+
     /** Value to cache window width (if we are currently full screen) */
     int width;
     /** Value to cache window height (if we are currently full screen) */
@@ -83,6 +87,9 @@ public class GameCanvas {
         // Set the projection matrix (for proper scaling)
         camera = new OrthographicCamera(getWidth(),getHeight());
         camera.setToOrtho(false);
+
+        fixedCamera = new OrthographicCamera(getWidth(),getHeight());
+        fixedCamera.setToOrtho(false);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         debugRender.setProjectionMatrix(camera.combined);
@@ -361,6 +368,18 @@ public class GameCanvas {
     public void begin() {
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+    }
+
+    /**
+     * Start a standard drawing sequence without camera.
+     *
+     * Nothing is flushed to the graphics card until the method end() is called.
+     */
+    public void beginWithoutCamera() {
+        fixedCamera.update();
+        spriteBatch.setProjectionMatrix(fixedCamera.combined);
         spriteBatch.begin();
         active = DrawPass.STANDARD;
     }
@@ -863,6 +882,24 @@ public class GameCanvas {
         computeVertices(local,region.getVertices());
     }
 
+    /**Draw a swirling fog at a certain position (x, y)
+     * @param fog, a PooledEffect 2D array with all fog that needs to be drawn
+     * @param delta, frames per second*/
+
+    public void drawFog(FogController.fogParticle[][] fog, float delta){
+            for(int r = 0; r<fog.length; r++){
+                for(int c = 0; c<fog[r].length; c++) {
+                    if (fog[r][c] != null) {
+                        Array<ParticleEffectPool.PooledEffect> fogArr = fog[r][c].fogParticles;
+                        for (ParticleEffectPool.PooledEffect f : fogArr) {
+                            f.draw(spriteBatch, delta);
+                        }
+                    }
+                }
+            }
+
+        }
+
     /**
      * Transform the given vertices by the affine transform
      */
@@ -1167,13 +1204,13 @@ public class GameCanvas {
     private static final Color GRID_DEBUG_SAFE_COLOR = Color.GREEN;
     private static final Color GRID_DEBUG_UNSAFE_COLOR = Color.RED;
 
-    public void drawGrid(float x, float y, LevelModel.Tile info, Vector2 drawScale, float size) {
+    public void drawGrid(float x, float y, boolean safe, Vector2 drawScale, float size) {
         if (active != DrawPass.DEBUG) {
             Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
             return;
         }
 
-        Color c = info.safe ? GRID_DEBUG_SAFE_COLOR : GRID_DEBUG_UNSAFE_COLOR;
+        Color c = safe ? GRID_DEBUG_SAFE_COLOR : GRID_DEBUG_UNSAFE_COLOR;
 
         float dx = drawScale.x, dy = drawScale.y;
         float x0 = x * size * dx, y0 = y * size * dy, x1 = (x + 1) * size * dx, y1 = (y + 1) * size * dy;

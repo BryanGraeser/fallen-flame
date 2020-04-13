@@ -4,15 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
+
+import java.util.Arrays;
 
 /**
  * This class' purpose is explained in detail in the Architecture specifciation.
@@ -36,6 +39,10 @@ public class GameEngine implements Screen, InputProcessor {
     /** How long the game should countdown */
     public static final int COUNTDOWN_TIME = 80;
 
+    // Sound constants
+    /** Player walk volume */
+    private static final float PLAYER_WALK_VOL = .3f;
+
     private JsonReader jsonReader;
     /** The JSON asset directory */
     private JsonValue assetJson;
@@ -58,7 +65,6 @@ public class GameEngine implements Screen, InputProcessor {
     private ScreenListener listener;
     /** Reference to the level controller */
     protected LevelController level;
-
     /**Boolean to keep track if the player won the level*/
     private boolean isSuccess;
     /** Boolean to prevent countdown from becoming infinite */
@@ -75,6 +81,11 @@ public class GameEngine implements Screen, InputProcessor {
     private Rectangle canvasBounds;
     /** Countdown active for winning or losing */
     private int countdown;
+
+    //Fog-related parameters
+    /**ParticleEffect that will be used as a template for the ParticleEffectPool. This is in GameEngine because it needs
+     * to load in the .p file, and file loading is done here*/
+    private ParticleEffect fogTemplate;
 
     /** User Input Management Fields */
     /** Whether the reset button was pressed. */
@@ -98,11 +109,15 @@ public class GameEngine implements Screen, InputProcessor {
     /** Whether the sneak button was pressed. */
     private boolean sneakPressed;
     private boolean sneakPrevious;
+    /** Whether 1-9 were pressed. */
+    private boolean[] numsPressed = new boolean[9];
+    private boolean[] numsPrevious = new boolean[9];
     /** How much did we move horizontally? */
     private float horizontal;
     /** How much did we move vertically? */
     private float vertical;
-
+    /** The ID of the last level played. */
+    private int lastLevelPlayed;
 
     /**
      * Preloads the assets for this controller.
@@ -125,6 +140,8 @@ public class GameEngine implements Screen, InputProcessor {
         assetJson = jsonReader.parse(Gdx.files.internal("jsons/assets.json"));
         saveJson = jsonReader.parse(Gdx.files.internal("jsons/save.json"));
         globalJson = jsonReader.parse(Gdx.files.internal("jsons/global.json"));
+        fogTemplate = new ParticleEffect();
+        fogTemplate.load(Gdx.files.internal("effects/fog.p"), Gdx.files.internal("textures"));
 
         JsonAssetManager.getInstance().loadDirectory(assetJson);
     }
@@ -229,6 +246,7 @@ public class GameEngine implements Screen, InputProcessor {
      */
     public void dispose() {
         level.dispose();
+        fogTemplate.dispose();
         level  = null;
         canvas = null;
     }
@@ -239,7 +257,11 @@ public class GameEngine implements Screen, InputProcessor {
      * This method disposes of the level and creates a new one. It will
      * reread from the JSON file, allowing us to make changes on the fly.
      */
-    public void reset() {
+    public void reset(int lid) {
+        if (lid < 0 || lid >= saveJson.get("levels").size) return;
+
+        lastLevelPlayed = lid;
+
         level.dispose();
         level = new LevelController();
 
@@ -250,11 +272,21 @@ public class GameEngine implements Screen, InputProcessor {
          countdown = -1;
 
         // Reload the json each time
-        String currentLevelPath = "jsons/" + saveJson.get("levels").get(0).getString("path"); // Currently just gets first level
+        String currentLevelPath = "jsons/" + saveJson.get("levels").get(lid).getString("path"); // Currently just gets first level
         levelJson = jsonReader.parse(Gdx.files.internal(currentLevelPath));
-        level.populate(levelJson, globalJson);
+        level.populate(levelJson, globalJson, fogTemplate);
         level.setLevelState(LevelController.LevelState.IN_PROGRESS);
         level.getWorld().setContactListener(level);
+    }
+
+    /**
+     * Resets the status of the game so that we can play again.
+     *
+     * This method disposes of the level and creates a new one. It will
+     * reread from the JSON file, allowing us to make changes on the fly.
+     */
+    public void reset() {
+        reset(0);
     }
 
     /**
@@ -283,6 +315,11 @@ public class GameEngine implements Screen, InputProcessor {
         if (resetPressed && !resetPrevious) {
             reset();
         }
+        for (int i = 0, j = numsPressed.length; i < j; i++) {
+            if (numsPressed[i] && !numsPrevious[i]) {
+                reset(i);
+            }
+        }
         if (exitPressed && !exitPrevious) {
             listener.exitScreen(this, EXIT_QUIT);
             return false;
@@ -292,7 +329,7 @@ public class GameEngine implements Screen, InputProcessor {
         else if (countdown > 0) {
             countdown--;
         } else if (countdown == 0) {
-            reset();
+            reset(lastLevelPlayed);
         }
 
         return true;
@@ -317,7 +354,7 @@ public class GameEngine implements Screen, InputProcessor {
         float angle = 0;
         if (tempAngle.len2() > 0.0f) {
             if (!level.getPlayer().isPlayingSound()) {
-                level.getPlayer().getWalkSound().loop(.3f);
+                level.getPlayer().getWalkSound().loop(PLAYER_WALK_VOL);
                 level.getPlayer().setPlayingSound(true);
             }
             angle = tempAngle.angle();
@@ -372,12 +409,12 @@ public class GameEngine implements Screen, InputProcessor {
         // Final message
         if (isSuccess) {
             displayFont.setColor(Color.YELLOW);
-            canvas.begin(); // DO NOT SCALE
-            canvas.drawText("VICTORY!", displayFont, 0, canvas.getHeight());
+            canvas.beginWithoutCamera(); // DO NOT SCALE
+            canvas.drawTextCentered("VICTORY!", displayFont, 0.0f);
             canvas.end();
         } else if (isFailed) {
             displayFont.setColor(Color.RED);
-            canvas.begin(); // DO NOT SCALE
+            canvas.beginWithoutCamera(); // DO NOT SCALE
             canvas.drawTextCentered("YOU DIED!", displayFont, 0.0f);
             canvas.end();
         }
@@ -485,6 +522,7 @@ public class GameEngine implements Screen, InputProcessor {
         flarePrevious = flarePressed;
         sprintPrevious = sprintPressed;
         sneakPrevious = sneakPressed;
+        numsPrevious = Arrays.copyOf(numsPressed, numsPressed.length);
 
         readKeyboard();
     }
@@ -506,6 +544,15 @@ public class GameEngine implements Screen, InputProcessor {
         flarePressed  = (Gdx.input.isButtonPressed(Input.Buttons.LEFT));
         sprintPressed = (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
         sneakPressed = (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT));
+        numsPressed[0] = (Gdx.input.isKeyPressed(Input.Keys.NUM_1) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_1));
+        numsPressed[1] = (Gdx.input.isKeyPressed(Input.Keys.NUM_2) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_2));
+        numsPressed[2] = (Gdx.input.isKeyPressed(Input.Keys.NUM_3) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_3));
+        numsPressed[3] = (Gdx.input.isKeyPressed(Input.Keys.NUM_4) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_4));
+        numsPressed[4] = (Gdx.input.isKeyPressed(Input.Keys.NUM_5) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_5));
+        numsPressed[5] = (Gdx.input.isKeyPressed(Input.Keys.NUM_6) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_6));
+        numsPressed[6] = (Gdx.input.isKeyPressed(Input.Keys.NUM_7) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_7));
+        numsPressed[7] = (Gdx.input.isKeyPressed(Input.Keys.NUM_8) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_8));
+        numsPressed[8] = (Gdx.input.isKeyPressed(Input.Keys.NUM_9) || Gdx.input.isKeyPressed(Input.Keys.NUMPAD_9));
 
         // Directional controls
         horizontal = 0.0f;
