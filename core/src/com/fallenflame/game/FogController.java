@@ -63,10 +63,10 @@ public class FogController {
                     fogArr.removeValue(effect, true);
                 }
                 /*Only make a new fog particle if we do not have enough particles in the array for that tile*/
-                if (fogArr.size < 2|| (levelModel.hasEnemy(x, y) && fogArr.size < 9)) {
+                if (fogArr.size < 2|| (levelModel.hasEnemy(x, y) && fogArr.size < 12)) {
                     ParticleEffectPool.PooledEffect effect = fogPool.obtain();
-                    for (int i = 0; i < (1 + (levelModel.hasEnemy(x, y) ? 8 : 1)); i++) {
-                        float randomVal = (float) (Math.random() * TILE_SIZE);
+                    for (int i = 0; i < (1 + (levelModel.hasEnemy(x, y) ? 11 : 1)); i++) {
+                        float randomVal = (float) ((Math.random()*3.0f-1.5f) * TILE_SIZE);
                         effect.setPosition((x * TILE_SIZE + randomVal) * scale.x, (y * TILE_SIZE + randomVal) * scale.y);
                         fog[x][y].fogParticles.add(effect);
                     }
