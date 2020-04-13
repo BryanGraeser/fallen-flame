@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.JsonAssetManager;
@@ -35,6 +34,10 @@ public class GameEngine implements Screen, InputProcessor {
 
     /** How long the game should countdown */
     public static final int COUNTDOWN_TIME = 80;
+
+    // Sound constants
+    /** Player walk volume */
+    private static final float PLAYER_WALK_VOL = .3f;
 
     private JsonReader jsonReader;
     /** The JSON asset directory */
@@ -312,9 +315,16 @@ public class GameEngine implements Screen, InputProcessor {
         tempAngle.setLength(1); // Fix diagonal too-fast issue.
         float angle = 0;
         if (tempAngle.len2() > 0.0f) {
+            if (!level.getPlayer().isPlayingSound()) {
+                level.getPlayer().getWalkSound().loop(PLAYER_WALK_VOL);
+                level.getPlayer().setPlayingSound(true);
+            }
             angle = tempAngle.angle();
             // Convert to radians with up as 0
             angle = (float)Math.PI*(angle-90.0f)/180.0f;
+        } else {
+            level.getPlayer().getWalkSound().stop();
+            level.getPlayer().setPlayingSound(false);
         }
         if (sprintPressed && !sprintPrevious) {
             // If player just started sprinting
