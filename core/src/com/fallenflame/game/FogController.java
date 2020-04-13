@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Iterator;
+import java.util.List;
+
 import static com.fallenflame.game.LevelModel.TILE_SIZE;
 
 public class FogController {
@@ -12,15 +15,17 @@ public class FogController {
     private fogParticle[][] fog;
     private LevelModel levelModel;
     private PlayerModel playerModel; //Needed for light radius
+    private List<FlareModel> flareModels;//Needed for flare light radius
     private int tileGridW;
     private int tileGridH;
 
-    public void initialize(ParticleEffect fogTemplate, LevelModel lm, PlayerModel pm) {
+    public void initialize(ParticleEffect fogTemplate, LevelModel lm, PlayerModel pm, List<FlareModel> fm) {
         /*Using a pool doesn't actually help much, as if the number of models is higher than the max it just makes a new
         object. However, it has a slight performance help in terms of reusing objects. 100 is a random value, can be changed*/
         fogPool = new ParticleEffectPool(fogTemplate, 0, 150);
         levelModel = lm;
         playerModel = pm;
+        flareModels = fm;
         int[] n = levelModel.tileGridSize();
         tileGridW = n[0];
         tileGridH = n[1];
@@ -38,6 +43,14 @@ public class FogController {
                 boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (playerModel.getX()), 2) +
                         Math.pow((y*TILE_SIZE) - (playerModel.getY()), 2)), 0.5))
                         <= playerModel.getLightRadius();
+                if(withinLight) continue;
+                Iterator<FlareModel> iterator = flareModels.iterator();
+                while(iterator.hasNext() && !withinLight){
+                    FlareModel flare = iterator.next();
+                    withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (flare.getX()), 2) +
+                            Math.pow((y*TILE_SIZE) - (flare.getY()), 2)), 0.5))
+                            <= flare.getLightRadius();
+                }
                 if(withinLight) continue;
                 if(fog[x][y] == null) {
                     fog[x][y] = new fogParticle();
