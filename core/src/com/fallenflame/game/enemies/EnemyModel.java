@@ -21,11 +21,17 @@ public abstract class EnemyModel extends CharacterModel {
     /**Enemy move sound (Acquired from https://freesound.org/people/000600/sounds/180015/)*/
     private Sound moveSound;
 
+    /**Enemy move sound 2 (Acquired from https://freesound.org/people/000600/sounds/180015/)*/
+    private Sound moveSound2;
+
     /**Enemy constant sound (Acquired from https://freesound.org/people/ecfike/sounds/132865/)*/
     private Sound constantSound;
 
     /**ID of enemy move sound*/
     protected long moveSoundID;
+
+    /**ID of enemy move sound 2*/
+    protected long moveSound2ID;
 
     /**ID of enemy constant sound*/
     protected long constantSoundID;
@@ -70,6 +76,10 @@ public abstract class EnemyModel extends CharacterModel {
         String moveSoundKey = json.get("movesound").asString();
         moveSound = JsonAssetManager.getInstance().getEntry(moveSoundKey, Sound.class);
         moveSoundID = -1;
+
+        String moveSound2Key = json.get("movesound2").asString();
+        moveSound2 = JsonAssetManager.getInstance().getEntry(moveSound2Key, Sound.class);
+        moveSound2ID = -1;
 
         String constantSoundKey = json.get("constantsound").asString();
         constantSound = JsonAssetManager.getInstance().getEntry(constantSoundKey, Sound.class);
@@ -161,6 +171,19 @@ public abstract class EnemyModel extends CharacterModel {
     public long getMoveSoundID() {return moveSoundID;}
 
     public void setMoveSoundID(long id) {moveSoundID = id;}
+
+    /**
+     * Returns the move sound 2
+     *
+     * @return the move sound 2
+     */
+    public Sound getMoveSound2() {
+        return moveSound2;
+    }
+
+    public long getMoveSound2ID() {return moveSound2ID;}
+
+    public void setMoveSound2ID(long id) {moveSound2ID = id;}
 
     /**
      * Returns the constant sound

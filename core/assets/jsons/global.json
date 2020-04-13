@@ -48,6 +48,7 @@
         "down": "enemy"
       },
       "movesound": "enemystep",
+      "movesound2": "enemystep2",
       "constantsound": "enemyconstant",
       "debugcolor": "white",
       "debugopacity": 192,
@@ -81,6 +82,7 @@
         "down": "enemy"
       },
       "movesound": "enemystep",
+      "movesound2": "enemystep2",
       "constantsound": "enemyconstant",
       "debugcolor": "white",
       "debugopacity": 192,
