@@ -425,7 +425,7 @@ public class LevelController implements ContactListener {
      */
     public void update(float dt) {
         if(fixedStep(dt)){
-            // Update player (and update levelModel) and exit
+            // Update player and exit
             player.update(dt);
             assert inBounds(player);
 
@@ -438,7 +438,7 @@ public class LevelController implements ContactListener {
                 AIController ctrl = ctrlI.next();
                 ctrlCodes.add(ctrl.getAction());
             }
-            // Execute Enemy Actions (and update levelModel)
+            // Execute Enemy Actions
             Iterator<EnemyModel> enemyI = enemies.iterator();
             Iterator<Integer> actionI = ctrlCodes.iterator();
             while(enemyI.hasNext()){
