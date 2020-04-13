@@ -219,6 +219,7 @@ public class LightController {
 
         // Update player light.
         playerLight.setDistance(player.getLightRadius());
+        //TODO: possible solution for fixing light offset with setDistance()?
 
         // Update flare lights.
         updateLightsForList(flares, flareLights);

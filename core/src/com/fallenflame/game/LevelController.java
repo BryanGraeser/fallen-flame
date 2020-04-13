@@ -3,12 +3,14 @@ package com.fallenflame.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
 import com.fallenflame.game.enemies.*;
 import com.fallenflame.game.physics.obstacle.Obstacle;
 import sun.awt.image.ImageWatched;
+import com.fallenflame.game.util.JsonAssetManager;
 
 import java.util.*;
 
@@ -77,6 +79,8 @@ public class LevelController implements ContactListener {
     protected Rectangle bounds;
     /** The world scale */
     protected Vector2 scale;
+    /** The world background */
+    protected TextureRegion background;
 
     // Controllers
     /** Light Controller */
@@ -313,6 +317,11 @@ public class LevelController implements ContactListener {
         scale.x = gSize[0]/pSize[0];
         scale.y = gSize[1]/pSize[1];
 
+        String key = globalJson.get("background").get("texture").asString();
+        if (levelJson.get("background").has("texture"))
+            levelJson.get("background").get("texture").asString(); // Get specific texture if available
+        background = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+
         // Compute the FPS
         int[] fps = levelJson.get("fpsRange").asIntArray();
         maxFPS = fps[1]; minFPS = fps[0];
@@ -335,7 +344,13 @@ public class LevelController implements ContactListener {
         // Create Walls
         for(JsonValue wallJSON : levelJson.get("walls")) {
             WallModel wall = new WallModel();
-            wall.initialize(globalJson.get("wall"), wallJSON);
+
+            if(wallJSON.get("texture").asString().equals("wall-side")) {
+                wall.initialize(globalJson.get("wall-side"), wallJSON);
+            } else {
+                wall.initialize(globalJson.get("wall-top"), wallJSON);
+            }
+
             wall.setDrawScale(scale);
             wall.activatePhysics(world);
             walls.add(wall);
@@ -667,9 +682,13 @@ public class LevelController implements ContactListener {
         canvas.clear();
         canvas.setCameraPosition(player.getPosition().x * scale.x, player.getPosition().y * scale.y);
 
-        // Draw all objects
         canvas.begin();
-        player.draw(canvas);
+        //draw background
+        if (background != null) {
+            canvas.draw(background, Color.WHITE, 0,0, (float) canvas.getWidth(), (float) canvas.getHeight());
+        }
+
+        // Draw all objects
         exit.draw(canvas);
         for(WallModel wall : walls) {
             wall.draw(canvas);
@@ -683,6 +702,7 @@ public class LevelController implements ContactListener {
         for(FireballModel fireball : fireballs){
             fireball.draw(canvas);
         }
+        player.draw(canvas);
         canvas.end();
 
         lightController.setDebug(debug2);
@@ -696,11 +716,11 @@ public class LevelController implements ContactListener {
             for(WallModel wall : walls) {
                 wall.drawDebug(canvas);
             }
-            for(EnemyModel enemy : enemies) {
-                enemy.drawDebug(canvas);
-            }
             for(FlareModel flare : flares) {
                 flare.drawDebug(canvas);
+            }
+            for(EnemyModel enemy : enemies) {
+                enemy.drawDebug(canvas);
             }
             for(FireballModel fireball: fireballs){
                 fireball.drawDebug(canvas);
