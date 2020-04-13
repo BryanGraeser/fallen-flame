@@ -592,9 +592,8 @@ public class LevelController implements ContactListener {
         fireball.initialize(fireballJSON);
         fireball.activatePhysics(world);
         Vector2 posDif = new Vector2(enemy.getFiringTarget().x - enemyPos.x, enemy.getFiringTarget().y- enemyPos.y);
-        float angleRad = posDif.angleRad(new Vector2(1, 0));
-        Vector2 force = (new Vector2(fireball.getInitialForce(), 0)).rotateRad(angleRad);
-        fireball.applyInitialForce(angleRad, posDif);
+        posDif.nor();  // Normalize vector
+        fireball.applyInitialForce(posDif);
         fireballs.add(fireball);
         enemy.coolDown(false);
         assert inBounds(fireball);

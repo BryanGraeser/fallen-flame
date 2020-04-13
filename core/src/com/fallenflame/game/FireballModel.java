@@ -105,7 +105,7 @@ public class FireballModel extends WheelObstacle implements ILight {
      *
      * This method should be called after the force attribute is set.
      */
-    public void applyInitialForce(float angle, Vector2 tempAngle) {
+    public void applyInitialForce(Vector2 tempAngle) {
         if (!isActive()) {
             return;
         }
@@ -113,7 +113,7 @@ public class FireballModel extends WheelObstacle implements ILight {
         // Apply force for movement
         tempAngle.scl(initialForce);
         body.applyForce(tempAngle, getPosition(),true);
-        setAngle(angle);
+        setAngle(tempAngle.angle());
         // TODO: when we have animated fireball
         // filmstrip.setFrame(startFrame);
     }
