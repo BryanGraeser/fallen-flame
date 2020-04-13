@@ -43,7 +43,7 @@
       "tintOpacity": 192
     },
     "typeB":  {
-      "cooldown": 3000,
+      "cooldown": 20,
       "radius": 0.4,
       "bodytype": "dynamic",
       "density": 1.0,
@@ -96,8 +96,8 @@
     "density":        1.0,
     "friction":       0.0,
     "restitution":    0.0,
-    "texture":        "fire",
-    "initialforce":   5.0,
+    "texture":        "fireball",
+    "initialforce":   3.0,
     "damping": 		 0.0,
     "tint": [1.0, 1.0, 1.0, 1.0],
     "startframe":       0

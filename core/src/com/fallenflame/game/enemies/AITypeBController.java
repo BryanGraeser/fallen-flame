@@ -63,7 +63,6 @@ public class AITypeBController extends AIController {
                 }
                 break;
             case DIRECT_FIRE:
-                System.out.println("Direct fire!");
                 enemy.makeAggressive();
                 enemy.setFiringTarget(player.getX(), player.getY());
                 // If player now out of range, switch to sustained fire at last known position
@@ -74,7 +73,6 @@ public class AITypeBController extends AIController {
                 }
                 break;
             case SUSTAINED_FIRE:
-                System.out.println("Sustained fire!");
                 enemy.makeAlert();
                 // Check for player target within range
                 if(withinRange()) {

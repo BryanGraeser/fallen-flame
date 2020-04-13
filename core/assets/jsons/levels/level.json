@@ -6,6 +6,10 @@
   "exitpos":          [ 1.5, 5.35],
   "enemies":          [
     {
+      "enemytype":    "typeA",
+      "enemypos":     [ 5, 5]
+    },
+    {
       "enemytype":    "typeB",
       "enemypos":     [ 7, 7]
     }

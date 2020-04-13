@@ -114,7 +114,8 @@ public class FireballModel extends WheelObstacle implements ILight {
         tempAngle.scl(initialForce);
         body.applyForce(tempAngle, getPosition(),true);
         setAngle(angle);
-        filmstrip.setFrame(startFrame);
+        // TODO: when we have animated fireball
+        // filmstrip.setFrame(startFrame);
     }
 
     /**
@@ -125,10 +126,11 @@ public class FireballModel extends WheelObstacle implements ILight {
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
-        if (filmstrip != null) {
-            int next = (filmstrip.getFrame()+1) % filmstrip.getSize();
-            filmstrip.setFrame(next);
-        }
+        //TODO: when we have animated fireball
+//        if (filmstrip != null) {
+//            int next = (filmstrip.getFrame()+1) % filmstrip.getSize();
+//            filmstrip.setFrame(next);
+//        }
 
         super.update(dt);
     }

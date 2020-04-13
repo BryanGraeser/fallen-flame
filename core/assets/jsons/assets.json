@@ -26,7 +26,7 @@
          },
 		"fire":   {
 			"file": 	"textures/fire.png",
-			"wrap": 	true
+			"wrap": 	true,
 			"strip":	{
 				"size":		4,
 				"rows":		1,
@@ -37,6 +37,10 @@
 		"earth": {
 			"file": 	"textures/earthtile.png",
 			"wrap": 	true
+		},
+		"fireball": {
+			"file":		"textures/fireball.png",
+			"wrap": 	false
 		}
   	},
   	"fonts": {

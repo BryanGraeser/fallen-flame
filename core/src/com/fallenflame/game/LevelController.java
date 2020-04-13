@@ -489,7 +489,7 @@ public class LevelController implements ContactListener {
             }
 
             // Update lights
-            lightController.updateLights(flares, enemies);
+            lightController.updateLights(flares, enemies, fireballs);
         }
     }
 
@@ -545,27 +545,18 @@ public class LevelController implements ContactListener {
      * Fires a bullet from an enemy
      */
     public void fireWeapon(EnemyTypeBModel enemy) {
-        System.out.println("firing 1");
         Vector2 enemyPos = enemy.getPosition();
-        System.out.println("firing 2");
         FireballModel fireball = new FireballModel(enemyPos);
-        System.out.println("firing 3");
         fireball.setDrawScale(scale);
-        System.out.println("firing 4");
         fireball.initialize(fireballJSON);
-        System.out.println("firing 5");
         fireball.activatePhysics(world);
-        System.out.println("firing 6");
-        System.out.println(enemy.getFiringTarget());
-        Vector2 posDif = new Vector2(enemy.getFiringTarget().x - enemyPos.x, enemy.getFiringTarget().y - enemyPos.y);
+        Vector2 posDif = new Vector2(enemy.getFiringTarget().x - enemyPos.x, enemy.getFiringTarget().y- enemyPos.y);
         float angleRad = posDif.angleRad(new Vector2(1, 0));
         Vector2 force = (new Vector2(fireball.getInitialForce(), 0)).rotateRad(angleRad);
-        System.out.println("firing 7");
-        fireball.applyInitialForce(angleRad, force);
-        System.out.println("firing 8");
+        fireball.applyInitialForce(angleRad, posDif);
         fireballs.add(fireball);
-        System.out.println("firing 9");
-        //assert inBounds(fireball);
+        enemy.coolDown(false);
+        assert inBounds(fireball);
     }
 
     /**
@@ -670,6 +661,9 @@ public class LevelController implements ContactListener {
             }
             for(FlareModel flare : flares) {
                 flare.drawDebug(canvas);
+            }
+            for(FireballModel fireball: fireballs){
+                fireball.drawDebug(canvas);
             }
             canvas.endDebug();
             if(ticks % 10 == 0){
