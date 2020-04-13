@@ -864,12 +864,6 @@ public class GameCanvas {
         computeVertices(local,region.getVertices());
     }
 
-//    /**@deprecated */
-//
-//    public void drawFog(ParticleEffectPool fogPool, FogController.fogParticle[][] fog, float delta){
-//        drawFog(fog, delta);
-//    }
-
     /**Draw a swirling fog at a certain position (x, y)
      * @param fog, a PooledEffect 2D array with all fog that needs to be drawn
      * @param delta, frames per second*/

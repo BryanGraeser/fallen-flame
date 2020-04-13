@@ -353,11 +353,10 @@ public class LevelController implements ContactListener {
         }
         flareJSON = globalJson.get("flare");
 
-        // Initialize levelModel
+        // Initialize levelModel, lightController, and fogController
         levelModel.initialize(bounds, walls, enemies);
 
         lightController.initialize(player, levelJson.get("lighting"), world, bounds);
-        //TODO: Update the initial capacity and max once full fog is implemented
         fogController.initialize(fogTemplate, levelModel, player);
     }
 
