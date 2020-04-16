@@ -319,8 +319,7 @@ public class LevelController implements ContactListener {
 
         world = new World(Vector2.Zero,false);
         bounds = new Rectangle(0,0,pSize[0],pSize[1]);
-        scale.x = gSize[0]/pSize[0];
-        scale.y = gSize[1]/pSize[1];
+        scale.x = scale.y = 50;
 
         String key = globalJson.get("background").get("texture").asString();
         if (levelJson.get("background").has("texture"))
