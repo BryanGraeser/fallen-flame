@@ -112,11 +112,20 @@ public class GDXRoot extends Game implements ScreenListener {
 			//engine.setCanvas(canvas);
 			//engine.reset();
 			//setScreen(engine);
-			setScreen(levelSelect);
+			Gdx.input.setInputProcessor(levelSelect);
 			levelSelect.setScreenListener(this);
+			setScreen(levelSelect);
 
 			loading.dispose();
 			loading = null;
+		} else if (screen == levelSelect) {
+			engine.setScreenListener(this);
+			engine.setCanvas(canvas);
+			engine.reset();
+			setScreen(engine);
+
+			levelSelect.dispose();
+			levelSelect = null;
 		} else if (exitCode == engine.EXIT_QUIT) {
 			// We quit the main application
 			Gdx.app.exit();
