@@ -31,12 +31,13 @@ public class FogController {
     }
 
     public void updateFog(Vector2 scale) {
+        float px = playerModel.getX(), py = playerModel.getY();
         for (int x = 0; x < tileGridW; x++) {
             for (int y = 0; y < tileGridH; y++) {
                 //To prevent drawing on tiles with the player or a wall as well as if its within the light radius
                 if (levelModel.hasWall(x, y) || levelModel.hasPlayer(x, y)) continue;
-                boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (playerModel.getX()), 2) +
-                        Math.pow((y*TILE_SIZE) - (playerModel.getY()), 2)), 0.5))
+                boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (px), 2) +
+                        Math.pow((y*TILE_SIZE) - (py), 2)), 0.5))
                         <= playerModel.getLightRadius();
                 if(withinLight) continue;
                 if(fog[x][y] == null) {

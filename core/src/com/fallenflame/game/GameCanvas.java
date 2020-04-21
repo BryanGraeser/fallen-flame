@@ -887,12 +887,21 @@ public class GameCanvas {
      * @param delta, frames per second*/
 
     public void drawFog(FogController.fogParticle[][] fog, float delta){
+            float cpx = camera.position.x, cpy = camera.position.y,
+                    cpw = camera.viewportWidth, cph = camera.viewportHeight;
+            float bl = cpx - cpw / 2, br = cpx + cpw / 2, bu = cpy + cph / 2, bb = cpy - cph / 2;
             for(int r = 0; r<fog.length; r++){
                 for(int c = 0; c<fog[r].length; c++) {
                     if (fog[r][c] != null) {
                         Array<ParticleEffectPool.PooledEffect> fogArr = fog[r][c].fogParticles;
                         for (ParticleEffectPool.PooledEffect f : fogArr) {
-                            f.draw(spriteBatch, delta);
+//                            f.draw(spriteBatch, delta);
+                            Array<ParticleEmitter> emitters = f.getEmitters();
+                            for (ParticleEmitter e : emitters) {
+                                if (e.getX() > bl && e.getX() < br && e.getY() > bb && e.getY() < bu) {
+                                    e.draw(spriteBatch, delta);
+                                }
+                            }
                         }
                     }
                 }
