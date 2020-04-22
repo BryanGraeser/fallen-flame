@@ -40,12 +40,15 @@ public class FogController {
         for (int x = 0; x < tileGridW; x++) {
             for (int y = 0; y < tileGridH; y++) {
                 //To prevent drawing on tiles with the player or a wall as well as if its within the light radius
-                if (levelModel.hasWall(x, y) || levelModel.hasPlayer(x, y)) continue;
-                if(y%5 == 0 && !levelModel.hasEnemy(x,y)) continue;
+                if (levelModel.hasWall(x, y)) continue;
+                if (levelModel.hasPlayer(x, y)) continue;
+                if((y%5 == 0 || x%5 == 0) && !levelModel.hasEnemy(x,y)) continue;
+
                 boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (playerModel.getX()), 2) +
                         Math.pow((y*TILE_SIZE) - (playerModel.getY()), 2)), 0.5))
                         <= playerModel.getLightRadius();
                 if(withinLight) continue;
+
                 Iterator<FlareModel> iterator = flareModels.iterator();
                 while(iterator.hasNext() && !withinLight){
                     FlareModel flare = iterator.next();
@@ -54,6 +57,7 @@ public class FogController {
                             <= flare.getLightRadius();
                 }
                 if(withinLight) continue;
+
                 if(fog[x][y] == null) {
                     fog[x][y] = new fogParticle();
                 }
@@ -66,17 +70,9 @@ public class FogController {
                 }
                 /*Only make a new fog particle if we do not have enough particles in the array for that tile*/
                 if (fogArr.size < 2|| (levelModel.hasEnemy(x, y) && fogArr.size < 12)) {
-                    int dir = 0;
-                    int toDir;
-                    float incX = 0;
-                    float incY = 0;
-                    if(levelModel.hasEnemy(x,y)){
-                        dir = DIRECTIONS[(int)(Math.random()+0.5)];
-                       toDir = (int)((Math.random())*4);
-                        incX = toDir%2 != 0 ? dir*TILE_SIZE: 0;
-                        incY = toDir %2 == 0 ? dir*TILE_SIZE: 0;
-                    }
                     ParticleEffectPool.PooledEffect effect = fogPool.obtain();
+                    float incX = (float) ((Math.random() - 0.5) * 2) * 3;
+                    float incY = (float) ((Math.random() - 0.5) * 2) * 3;
                     for (int i = 0; i < (1 + (levelModel.hasEnemy(x, y) ? 11 : 1)); i++) {
                         float randomVal = levelModel.hasEnemy(x,y) ? 2.0f : 1.0f;
                         float randomX = (float) (((Math.random()*randomVal)-0.5f) * TILE_SIZE);
