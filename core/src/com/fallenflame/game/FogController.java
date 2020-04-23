@@ -33,7 +33,7 @@ public class FogController {
 
     public void updateFogAndDraw(GameCanvas canvas, Vector2 scale, float delta) {
         // Cache values locally so we don't have to do expensive calculations each loop.
-        float px = playerModel.getX(), py = playerModel.getY();
+        float px = playerModel.getX(), py = playerModel.getY(), lightRadius = playerModel.getLightRadius();
         // Camera pos:
         Vector3 cameraPos = canvas.getCamera().position;
         // These are the ratio to translate camera pos to tile pos.
@@ -52,7 +52,6 @@ public class FogController {
                             effect.free();
                         }
                         fog[x][y].fogParticles.clear();
-                        fog[x][y] = null;
                     }
                     continue;
                 }
@@ -60,7 +59,7 @@ public class FogController {
                 if (levelModel.hasWall(x, y) || levelModel.hasPlayer(x, y)) continue;
                 boolean withinLight = (Math.pow((Math.pow((x*TILE_SIZE) - (px), 2) +
                         Math.pow((y*TILE_SIZE) - (py), 2)), 0.5))
-                        <= playerModel.getLightRadius();
+                        <= lightRadius;
                 if(withinLight) continue;
                 if(fog[x][y] == null) {
                     fog[x][y] = new fogParticle();
@@ -82,10 +81,6 @@ public class FogController {
                 }
             }
         }
-        draw(canvas, delta);
-    }
-
-    private void draw(GameCanvas canvas, float delta) {
         canvas.begin();
         canvas.drawFog(fog, delta);
         canvas.end();
