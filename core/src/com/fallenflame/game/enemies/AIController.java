@@ -167,7 +167,7 @@ public abstract class AIController {
 
     /** Returns whether an enemy is in the player's light radius */
     protected boolean withinPlayerLight(){
-        double distance = cartesianDistance(enemy.getX(),player.getTextureX(),enemy.getY(),player.getTextureY());
+        double distance = cartesianDistance(enemy.getTextureX(),player.getTextureX(),enemy.getTextureY(),player.getTextureY());
         return distance <= player.getLightRadius();
     }
 
