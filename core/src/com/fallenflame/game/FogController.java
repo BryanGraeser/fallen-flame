@@ -41,7 +41,7 @@ public class FogController {
                 highY = (int) Math.floor((cameraPos.y + canvas.getHeight() / 2f) / ratioY);
         for (int x = 0; x < tileGridW; x++) {
             for (int y = 0; y < tileGridH; y++) {
-                if (x < lowY || x >= highX || y < lowY || y >= highY) {
+                if (x < lowX || x >= highX || y < lowY || y >= highY) {
                     if (fog[x][y] != null) {
                         for(ParticleEffectPool.PooledEffect effect: fog[x][y].fogParticles){
                             effect.free();
