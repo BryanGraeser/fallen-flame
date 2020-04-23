@@ -568,9 +568,6 @@ public class LevelController implements ContactListener {
 
             // Update lights
             lightController.updateLights(flares, enemies, fireballs);
-
-            // Update fog.
-            fogController.updateFog(scale);
         }
     }
 
@@ -747,7 +744,7 @@ public class LevelController implements ContactListener {
 
         lightController.setDebug(debug2);
         lightController.draw();
-        fogController.draw(canvas, delta);
+        fogController.updateFogAndDraw(canvas, scale, delta);
 
         // Draw debugging on top of everything.
         if (debug == 1) {
