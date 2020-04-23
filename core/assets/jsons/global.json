@@ -115,6 +115,7 @@
       },
       "movesound": "enemystep",
       "constantsound": "enemyconstant",
+      "activesound": "enemystep",
       "debugcolor": "white",
       "debugopacity": 192,
       "stateTints": {
