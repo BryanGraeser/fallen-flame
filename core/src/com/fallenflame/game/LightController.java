@@ -199,13 +199,6 @@ public class LightController {
         if (player != null) raycamera.position.set(player.getX(), player.getY(), 0);
         raycamera.update();
         rayhandler.setCombinedMatrix(raycamera);
-//        Matrix4 matrix= raycamera.combined;
-//        matrix.scl(50);
-//        rayhandler.setCombinedMatrix(matrix,
-//                raycamera.position.x,
-//                raycamera.position.y,
-//                raycamera.viewportWidth,
-//                raycamera.viewportHeight);
     }
 
     /**
