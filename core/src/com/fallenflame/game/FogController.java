@@ -32,21 +32,27 @@ public class FogController {
     }
 
     public void updateFogAndDraw(GameCanvas canvas, Vector2 scale, float delta) {
+        // Cache values locally so we don't have to do expensive calculations each loop.
         float px = playerModel.getX(), py = playerModel.getY();
+        // Camera pos:
         Vector3 cameraPos = canvas.getCamera().position;
+        // These are the ratio to translate camera pos to tile pos.
         float ratioX = scale.x * TILE_SIZE, ratioY = scale.y * TILE_SIZE;
+        // Bounds of the camera in tile units. Could be out of bounds on tile map! (e.g. lowX could be -3)
         int lowX = (int) Math.floor((cameraPos.x - canvas.getWidth() / 2f) / ratioX),
                 highX = (int) Math.floor((cameraPos.x + canvas.getWidth() / 2f) / ratioX),
                 lowY = (int) Math.floor((cameraPos.y - canvas.getHeight() / 2f) / ratioY),
                 highY = (int) Math.floor((cameraPos.y + canvas.getHeight() / 2f) / ratioY);
         for (int x = 0; x < tileGridW; x++) {
             for (int y = 0; y < tileGridH; y++) {
+                // If this tile is not in camera, clear its content.
                 if (x < lowX || x >= highX || y < lowY || y >= highY) {
                     if (fog[x][y] != null) {
                         for(ParticleEffectPool.PooledEffect effect: fog[x][y].fogParticles){
                             effect.free();
                         }
                         fog[x][y].fogParticles.clear();
+                        fog[x][y] = null;
                     }
                     continue;
                 }
@@ -63,8 +69,8 @@ public class FogController {
                 /*Free up complete fog particles so new ones can hopefully use more of the pool's resources*/
                 for(ParticleEffectPool.PooledEffect effect: fogArr){
                     effect.free();
+                    fogArr.removeValue(effect, true);
                 }
-                fogArr.clear();
                 /*Only make a new fog particle if we do not have enough particles in the array for that tile*/
                 if (fogArr.size < 2|| (levelModel.hasEnemy(x, y) && fogArr.size < 9)) {
                     ParticleEffectPool.PooledEffect effect = fogPool.obtain();

@@ -318,7 +318,6 @@ public class LevelController implements ContactListener {
         populated = true;
 
         float[] pSize = levelJson.get("physicsSize").asFloatArray();
-        int[] gSize = levelJson.get("graphicSize").asIntArray();
 
         world = new World(Vector2.Zero,false);
         bounds = new Rectangle(0,0,pSize[0],pSize[1]);
