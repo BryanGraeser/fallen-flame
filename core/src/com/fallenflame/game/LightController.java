@@ -218,7 +218,6 @@ public class LightController {
         updateCamera();
 
         // Update player light.
-//        System.out.println(player.getLightRadius());
         playerLight.setDistance(player.getLightRadius());
         playerLight.setPosition(player.getTextureX(), player.getTextureY());
 
