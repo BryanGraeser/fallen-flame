@@ -108,10 +108,6 @@ public class GDXRoot extends Game implements ScreenListener {
 		if (screen == loading) {
 			//Still finish loading everything before shutting down
 			engine.loadContent();
-			//engine.setScreenListener(this);
-			//engine.setCanvas(canvas);
-			//engine.reset();
-			//setScreen(engine);
 			Gdx.input.setInputProcessor(levelSelect);
 			levelSelect.setScreenListener(this);
 			setScreen(levelSelect);
@@ -119,9 +115,10 @@ public class GDXRoot extends Game implements ScreenListener {
 			loading.dispose();
 			loading = null;
 		} else if (screen == levelSelect) {
+			Gdx.input.setInputProcessor(engine);
 			engine.setScreenListener(this);
 			engine.setCanvas(canvas);
-			engine.reset();
+			engine.reset(levelSelect.getLevelSelected());
 			setScreen(engine);
 
 			levelSelect.dispose();

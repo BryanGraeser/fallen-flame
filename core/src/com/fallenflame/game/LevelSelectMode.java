@@ -48,14 +48,24 @@ public class LevelSelectMode implements Screen, InputProcessor {
     /** Scaling factor for when the student changes the resolution. */
     private float scale;
 
-    /** The current state of the play button */
+    /** The current state of whether a level button has been pressed */
     private int   pressState;
+
+    /** The current state of whether any level buttons are being hovered over */
+    private int[] hoverState;
+
+    /** Level selected by the player */
+    private int levelSelected;
 
 
     public LevelSelectMode(GameCanvas canvas)
     {
         this.canvas  = canvas;
         pressState = 0;
+        hoverState = new int[posVec.length];
+        for (int i = 0; i < posVec.length; i++) {
+            hoverState[i] = 0;
+        }
     }
 
     @Override
@@ -67,10 +77,16 @@ public class LevelSelectMode implements Screen, InputProcessor {
     public void render(float delta) {
         canvas.begin();
         canvas.draw(background, 0, 0);
+        canvas.drawTextCentered("Level Select", displayFont, 250);
         for (int i = 0; i < posVec.length; i++) {
-            canvas.draw(levelButton, Color.WHITE, levelButton.getWidth()/2, levelButton.getHeight()/2,
-                    posVec[i].x, posVec[i].y, 0, 1, 1);
-            canvas.drawText("" + i, displayFont, posVec[i].x - 14, posVec[i].y + 80);
+            if (hoverState[i] != 1) {
+                canvas.draw(levelButton, Color.WHITE, levelButton.getWidth() / 2, levelButton.getHeight() / 2,
+                        posVec[i].x, posVec[i].y, 0, 1, 1);
+            } else {
+                canvas.draw(levelButton, Color.ORANGE, levelButton.getWidth() / 2, levelButton.getHeight() / 2,
+                        posVec[i].x, posVec[i].y, 0, 1, 1);
+            }
+            canvas.drawText("" + (i + 1), displayFont, posVec[i].x - 14, posVec[i].y + 80);
         }
         canvas.end();
         // We are are ready, notify our listener
@@ -124,10 +140,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
      * @return true if the player is ready to go
      */
     public boolean isReady() {
-        return pressState == 2;
+        return pressState == 1;
     }
 
     public void setScreenListener(ScreenListener listener) { this.listener = listener; }
+
+    public int getLevelSelected() {return levelSelected;}
 
     // PROCESSING PLAYER INPUT
 
@@ -147,20 +165,20 @@ public class LevelSelectMode implements Screen, InputProcessor {
     }
 
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (playButton == null || pressState == 2) {
+        if (playButton == null || pressState == 1) {
             return true;
         }
 
         // Flip to match graphics coordinates
         screenY = heightY-screenY;
 
-        // TODO: Fix scaling
-        // Play button is a circle.
+        // Level button is a circle.
         float radius = BUTTON_SCALE*scale*levelButton.getWidth()/2.0f;
-        for (Vector2 pos: posVec) {
-            float dist = (screenX-pos.x)*(screenX-pos.x)+(screenY-pos.y)*(screenY-pos.y);
+        for (int i = 0; i < posVec.length; i++) {
+            float dist = (screenX-posVec[i].x)*(screenX-posVec[i].x)+(screenY-posVec[i].y)*(screenY-posVec[i].y);
             if (dist < radius*radius) {
-                pressState = 2;
+                pressState = 1;
+                levelSelected = i;
             }
         }
         return false;
@@ -178,6 +196,19 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        // Flip to match graphics coordinates
+        screenY = heightY-screenY;
+
+        // Play button is a circle.
+        float radius = BUTTON_SCALE*scale*levelButton.getWidth()/2.0f;
+        for (int i = 0; i < posVec.length; i++) {
+            float dist = (screenX-posVec[i].x)*(screenX-posVec[i].x)+(screenY-posVec[i].y)*(screenY-posVec[i].y);
+            if (dist < radius*radius) {
+                hoverState[i] = 1;
+            } else {
+                hoverState[i] = 0;
+            }
+        }
         return false;
     }
 
