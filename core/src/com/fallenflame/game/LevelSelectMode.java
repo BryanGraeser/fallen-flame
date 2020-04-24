@@ -165,6 +165,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
     }
 
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
         if (playButton == null || pressState == 1) {
             return true;
         }
@@ -182,11 +188,8 @@ public class LevelSelectMode implements Screen, InputProcessor {
             }
         }
         return false;
-    }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+
     }
 
     @Override
