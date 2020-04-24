@@ -138,7 +138,7 @@
     "restitution":    0.0,
     "texture":       "goal",
     "tint":           [1.0, 1.0, 1.0, 1.0],
-    "mlightradius":   1,
+    "lightradius":   1,
     "debugcolor":    "yellow",
     "debugopacity":   200
   },
