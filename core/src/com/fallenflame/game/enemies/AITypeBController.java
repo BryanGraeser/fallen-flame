@@ -4,6 +4,7 @@ import com.fallenflame.game.FlareModel;
 import com.fallenflame.game.LevelModel;
 import com.fallenflame.game.PlayerModel;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class AITypeBController extends AIController {
@@ -37,6 +38,8 @@ public class AITypeBController extends AIController {
     private boolean firingAtFlare;
     /** Target flare */
     private FlareModel targetFlare;
+    /** True if already fired once at flare stuck to wall */
+    private boolean firedWall;
 
     /**
      * Creates an AIController for the enemy with the given id.
@@ -65,8 +68,9 @@ public class AITypeBController extends AIController {
                 enemy.makeCalm();
                 // Check for flare targets -- FIRST because flares are prioritized
                 for(FlareModel f : flares) {
-                    if(withinFlareRange(f)){
+                    if(withinFlareRange(f) && !f.isStuck()){
                         firingAtFlare = true;
+                        firedWall = false;
                         targetFlare = f;
                         enemy.setFiringTarget(f.getX(), f.getY());
                         state = FSMState.DIRECT_FIRE;
@@ -85,12 +89,16 @@ public class AITypeBController extends AIController {
                 enemy.makeAggressive();
                 if(firingAtFlare){
                     enemy.setFiringTarget(targetFlare.getX(), targetFlare.getY());
-                    // If flare now out of range, switch to sustained fire at last known position
-                    if(!withinFlareRange(targetFlare)){
-                        targetFlare = null;
-                        state = FSMState.SUSTAINED_FIRE;
-                        firingTime = 0;
-                        break;
+                    // If flare now out of stuck to wall, stop firing
+                    if(targetFlare.isStuck()){
+                        if(!firedWall)
+                            firedWall = true;
+                        else{
+                            // if already fired at wall once, stop firing
+                            targetFlare = null;
+                            state = FSMState.IDLE;
+                            break;
+                        }
                     }
                 }
                 else{
@@ -106,7 +114,7 @@ public class AITypeBController extends AIController {
                 enemy.makeAlert();
                 // Check for flare targets -- FIRST because flares are prioritized
                 for(FlareModel f : flares) {
-                    if(withinFlareRange(f)){
+                    if(withinFlareRange(f) && !f.isStuck()){
                         firingAtFlare = true;
                         targetFlare = f;
                         enemy.setFiringTarget(f.getX(), f.getY());
