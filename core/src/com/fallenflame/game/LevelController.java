@@ -9,10 +9,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.*;
 import com.fallenflame.game.enemies.*;
 import com.fallenflame.game.physics.obstacle.Obstacle;
-import sun.awt.image.ImageWatched;
 import com.fallenflame.game.util.JsonAssetManager;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class LevelController implements ContactListener {
      * Value of 1 means drop-off rate is exactly equivalent to 1/distance */
     public static final float ENEMY_CONS_VOL_SCL = 1f;
     /** Pitch for enemy constant sounds */
-    public static final float ENEMY_CONS_PITCH = .5f;
+    public static final float ENEMY_CONS_PITCH = 1f;
     /** Volume scaling for panning
      * Must be in range [0,1]. 1 is maximum panning, 0 is no panning. */
     public static final float PAN_SCL = .4f;
@@ -64,10 +62,17 @@ public class LevelController implements ContactListener {
     private List<FireballModel> fireballs;
     /** Level Model for AI Pathfinding */
     private LevelModel levelModel;
+
+    // JSON data (for objects created after population)
     /** Flare JSONValue */
     private JsonValue flareJSON;
     /** Fireball JSONValue */
     private JsonValue fireballJSON;
+    /** Ghost Enemy JSONValue */
+    private JsonValue ghostJSON;
+
+    /** Player starting position (for use by ghost) */
+    private float[] startPos;
 
     /** Whether or not the level is in debug mode (showing off physics) */
     private int debug;
@@ -85,9 +90,7 @@ public class LevelController implements ContactListener {
     protected TextureRegion background;
 
     // Controllers
-    /** Light Controller */
     private final LightController lightController;
-    /** AI Controllers */
     private final List<AIController> AIControllers;
     private final FogController fogController;
 
@@ -336,10 +339,14 @@ public class LevelController implements ContactListener {
 
         // Create player
         player = new PlayerModel();
-        player.initialize(globalJson.get("player"), levelJson.get("playerpos").asFloatArray());
+        if(levelJson.has("startSneakVal"))
+            player.initialize(globalJson.get("player"), levelJson.get("playerpos").asFloatArray(), levelJson.get("startSneakVal").asInt());
+        else
+            player.initialize(globalJson.get("player"), levelJson.get("playerpos").asFloatArray());
         player.setDrawScale(scale);
         player.activatePhysics(world);
         assert inBounds(player);
+        startPos = levelJson.get("playerpos").asFloatArray();
         // Create Exit
         exit = new ExitModel();
         exit.initialize(globalJson.get("exit"), levelJson.get("exitpos").asFloatArray());
@@ -385,7 +392,11 @@ public class LevelController implements ContactListener {
             enemies.add(enemy);
             // Initialize AIController
             if(enemyType.equals("typeA")) {
-                AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares));
+                // If subtype pathing, give pathCoors as input as well
+                if(enemyJSON.has("subtype") && enemyJSON.get("subtype").asString().equals("pathing"))
+                    AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares, enemyJSON.get("pathCoors")));
+                else
+                    AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares));
             }
             else if(enemyType.equals("typeB")) {
                 AIControllers.add(new AITypeBController(enemyID, levelModel, enemies, player));
@@ -398,9 +409,10 @@ public class LevelController implements ContactListener {
             enemyID++;
             assert inBounds(enemy);
         }
-        // Prepare flare and fireball jsons
+        // Prepare flare, fireball, and ghost jsons
         flareJSON = globalJson.get("flare");
         fireballJSON = globalJson.get("fireball");
+        ghostJSON = globalEnemies.get("ghost");
 
         // Initialize levelModel, lightController, and fogController
         levelModel.initialize(bounds, walls, enemies);
@@ -483,7 +495,14 @@ public class LevelController implements ContactListener {
             player.update(dt);
             assert inBounds(player);
 
-            // TODO: handle enemy placement in levelmodel
+            // Decrement sneak value if player is sneaking
+            if(player.isSneaking()){
+                player.decSneakVal();
+                // Add ghost enemy if player has used all their sneak
+                if(player.getSneakVal() == 0)
+                    addGhost();
+            }
+
 
             // Get Enemy Actions
             Iterator<AIController> ctrlI = AIControllers.iterator();
@@ -509,16 +528,16 @@ public class LevelController implements ContactListener {
                 }
                 // Play enemy sounds
                 float pan = (enemy.getX() - player.getX()) * PAN_SCL;
-                if (enemy.isActivated() && (enemy.getMoveSoundID() == -1)) {
+                if (enemy.isActivated() && (enemy.getActiveSoundID() == -1)) {
                     //start sound
-                    enemy.setMoveSoundID(enemy.getMoveSound().loop(ENEMY_MOV_BASE_VOL, ENEMY_MOV_PITCH, pan));
+                    enemy.setActiveSoundID(enemy.getActiveSound().loop(ENEMY_MOV_BASE_VOL, ENEMY_MOV_PITCH, pan));
                 } else if (!enemy.isActivated()) {
                     //end sound
-                    enemy.getMoveSound().stop();
-                    enemy.setMoveSoundID(-1);
+                    enemy.getActiveSound().stop();
+                    enemy.setActiveSoundID(-1);
                 } else {
                     //modify sound
-                    enemy.getMoveSound().setPan(enemy.getMoveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
+                    enemy.getActiveSound().setPan(enemy.getActiveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
                 }
                 enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)));
                 assert inBounds(enemy);
@@ -530,7 +549,7 @@ public class LevelController implements ContactListener {
                 FlareModel flare = i.next();
                 if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
                     flare.deactivatePhysics(world);
-                    flare.getBurnoutSound().play();
+                    System.out.println(flare.getBurnoutSound().play());
                     flare.dispose();
                     i.remove();
                 }
@@ -584,6 +603,20 @@ public class LevelController implements ContactListener {
         return stepped;
     }
 
+    /**
+     * Adds the ghost enemy
+     */
+    public void addGhost() {
+        // Create ghost model
+        EnemyModel ghost = new EnemyGhostModel();
+        ghost.initialize(ghostJSON, startPos);
+        ghost.setConstantSoundID(ghost.getConstantSound().loop(0, ENEMY_CONS_PITCH, 0));
+        ghost.setDrawScale(scale);
+        ghost.activatePhysics(world);
+        enemies.add(ghost);
+        // Create ghost controller
+        AIControllers.add(new AIGhostController(enemies.size()-1, levelModel, enemies, player));
+    }
 
     /**
      * Launch a flare from the player towards the mouse position based on preset flareJSON data, or does nothing if the
@@ -634,7 +667,7 @@ public class LevelController implements ContactListener {
     public void makeSprint(){
         player.setLightRadiusSaved(player.getLightRadius());
         player.setLightRadius(player.getLightRadiusSprint());
-        player.setWalking(false);
+        player.setSprinting();
         player.setForce(player.getForceSprint());
     }
 
@@ -645,7 +678,7 @@ public class LevelController implements ContactListener {
      */
     public void makeWalk(){
         player.setLightRadius(player.getLightRadiusSaved());
-        player.setWalking(true);
+        player.setWalking();
         player.setForce(player.getForceWalk());
     }
 
@@ -657,7 +690,7 @@ public class LevelController implements ContactListener {
     public void makeSneak(){
         player.setLightRadiusSaved(player.getLightRadius());
         player.setLightRadiusSneak();
-        player.setWalking(false);
+        player.setSneaking();
         player.setForce(player.getForceSneak());
     }
 
