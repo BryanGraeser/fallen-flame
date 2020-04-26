@@ -143,6 +143,10 @@
 		"fireball": {
 			"file": "textures/fireball.png",
 			"wrap": false
+		},
+		"flare": {
+			"file": "textures/flare.png",
+			"wrap": false
 		}
 	},
 	"fonts": {
