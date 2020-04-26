@@ -42,10 +42,10 @@
       "startframe": 0,
       "walklimit": 4,
       "texture":     	{
-        "left": "enemy",
-        "right": "enemy",
-        "up": "enemy",
-        "down": "enemy"
+        "left": "enemy-a-left",
+        "right": "enemy-a-right",
+        "up": "enemy-a-up",
+        "down": "enemy-a-down"
       },
       "movesound": "enemystep",
       "constantsound": "enemyconstant",
@@ -58,7 +58,7 @@
         },
       "textureoffset" : {
         "x": 0,
-        "y": 0
+        "y": -0.65
       },
       "tintOpacity": 192
     },
@@ -72,13 +72,10 @@
       "force": 80.0,
       "damping": 10.0,
       "maxspeed": 5.0,
-      "startframe": 0,
+      "startframe": 9,
       "walklimit": 4,
       "texture":     	{
-        "left": "enemyb",
-        "right": "enemyb",
-        "up": "enemyb",
-        "down": "enemyb"
+        "shoot": "enemy-b-throwing"
       },
       "movesound": "enemystep",
       "constantsound": "enemyconstant",
@@ -90,8 +87,8 @@
         "aggressive": [1.0, 0.0, 0.0, 1.0]
       },
       "textureoffset" : {
-        "x": 0,
-        "y": 0
+        "x": 5.0,
+        "y": -10.0
       },
       "tintOpacity": 192
     }

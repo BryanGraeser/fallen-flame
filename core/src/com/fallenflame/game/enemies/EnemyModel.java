@@ -83,6 +83,11 @@ public abstract class EnemyModel extends CharacterModel {
         }
     }
 
+    @Override
+    public void initializeTextures(JsonValue json){
+        super.initializeTextures(json);
+    }
+
     /**
      * @return whether enemy is aggressive
      */

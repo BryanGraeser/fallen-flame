@@ -60,6 +60,56 @@
 				"first": 0
 			}
 		},
+		"enemy-a-left": {
+			"file": "textures/enemy-a-walk-left.png",
+			"wrap": false,
+			"strip": {
+				"size": 5,
+				"rows": 1,
+				"cols": 5,
+				"first": 0
+			}
+		},
+		"enemy-a-right": {
+			"file": "textures/enemy-a-walk-right.png",
+			"wrap": false,
+			"strip": {
+				"size": 5,
+				"rows": 1,
+				"cols": 5,
+				"first": 0
+			}
+		},
+		"enemy-a-up": {
+			"file": "textures/enemy-a-walk-right.png",
+			"wrap": false,
+			"strip": {
+				"size": 5,
+				"rows": 1,
+				"cols": 5,
+				"first": 0
+			}
+		},
+		"enemy-a-down": {
+			"file": "textures/enemy-a-walk-right.png",
+			"wrap": false,
+			"strip": {
+				"size": 5,
+				"rows": 1,
+				"cols": 5,
+				"first": 0
+			}
+		},
+		"enemy-b-throwing": {
+			"file": "textures/enemy-b-throwing.png",
+			"wrap": false,
+			"strip": {
+				"size": 10,
+				"rows": 1,
+				"cols": 10,
+				"first": 0
+			}
+		},
 		"goal": {
 			"file": "textures/helicopter.png",
 			"wrap": false

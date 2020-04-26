@@ -337,6 +337,7 @@ public class LevelController implements ContactListener {
         // Create player
         player = new PlayerModel();
         player.initialize(globalJson.get("player"), levelJson.get("playerpos").asFloatArray());
+        player.initializeTextures(globalJson.get("player"));
         player.setDrawScale(scale);
         player.activatePhysics(world);
         assert inBounds(player);
@@ -379,6 +380,7 @@ public class LevelController implements ContactListener {
                 return;
             }
             enemy.initialize(globalEnemies.get(enemyType), enemyJSON.get("enemypos").asFloatArray());
+            enemy.initializeTextures(globalEnemies.get(enemyType));
             enemy.setConstantSoundID(enemy.getConstantSound().loop(0, ENEMY_CONS_PITCH, 0));
             enemy.setDrawScale(scale);
             enemy.activatePhysics(world);
@@ -506,6 +508,11 @@ public class LevelController implements ContactListener {
                         fireWeapon((EnemyTypeBModel)enemy);
                     else
                         ((EnemyTypeBModel)enemy).coolDown(true);
+                }
+                if(enemy.getClass() == EnemyTypeBModel.class){
+                    ((EnemyTypeBModel)enemy).update(dt);
+                } else {
+                    enemy.update(dt);
                 }
                 // Play enemy sounds
                 float pan = (enemy.getX() - player.getX()) * PAN_SCL;
