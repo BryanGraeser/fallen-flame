@@ -549,7 +549,6 @@ public class LevelController implements ContactListener {
                 FlareModel flare = i.next();
                 if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
                     flare.deactivatePhysics(world);
-                    System.out.println(flare.getBurnoutSound().play());
                     flare.dispose();
                     i.remove();
                 }
