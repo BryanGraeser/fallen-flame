@@ -556,7 +556,6 @@ public class LevelController implements ContactListener {
                 FlareModel flare = i.next();
                 if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
                     flare.deactivatePhysics(world);
-                    System.out.println(flare.getBurnoutSound().play());
                     flare.dispose();
                     i.remove();
                 }
@@ -617,6 +616,7 @@ public class LevelController implements ContactListener {
         // Create ghost model
         EnemyModel ghost = new EnemyGhostModel();
         ghost.initialize(ghostJSON, startPos);
+        ghost.initializeTextures(ghostJSON);
         ghost.setConstantSoundID(ghost.getConstantSound().loop(0, ENEMY_CONS_PITCH, 0));
         ghost.setDrawScale(scale);
         ghost.activatePhysics(world);

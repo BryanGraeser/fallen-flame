@@ -396,6 +396,11 @@ public abstract class CharacterModel extends WheelObstacle implements ILight {
             filmstrip = filmstripWalkRight;
         }
 
+        System.out.println(filmstripWalkDown);
+        System.out.println(filmstripWalkUp);
+        System.out.println(filmstripWalkLeft);
+        System.out.println(filmstripWalkRight);
+
         setTexture(filmstrip, textureOffset.x, textureOffset.y);
 
         // Animate if necessary
