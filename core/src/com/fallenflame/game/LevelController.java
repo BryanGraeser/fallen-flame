@@ -390,10 +390,14 @@ public class LevelController implements ContactListener {
             enemies.add(enemy);
             // Initialize AIController
             if(enemyType.equals("typeA")) {
-                AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares));
+                // If subtype pathing, give pathCoors as input as well
+                if(enemyJSON.has("subtype") && enemyJSON.get("subtype").asString().equals("pathing"))
+                    AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares, enemyJSON.get("pathCoors")));
+                else
+                    AIControllers.add(new AITypeAController(enemyID, levelModel, enemies, player, flares));
             }
             else if(enemyType.equals("typeB")) {
-                AIControllers.add(new AITypeBController(enemyID, levelModel, enemies, player));
+                AIControllers.add(new AITypeBController(enemyID, levelModel, enemies, player, flares));
             }
             else{
                 Gdx.app.error("LevelController", "Enemy type without AIController", new IllegalArgumentException());
@@ -410,9 +414,9 @@ public class LevelController implements ContactListener {
 
         // Initialize levelModel, lightController, and fogController
         levelModel.initialize(bounds, walls, enemies);
+        lightController.initialize(player, exit, levelJson.get("lighting"), world, bounds, scale);
+        fogController.initialize(fogTemplate, levelModel, player, flares);
 
-        lightController.initialize(player, levelJson.get("lighting"), world, scale);
-        fogController.initialize(fogTemplate, levelModel, player);
     }
 
     /**
@@ -543,7 +547,6 @@ public class LevelController implements ContactListener {
                 FlareModel flare = i.next();
                 if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
                     flare.deactivatePhysics(world);
-                    System.out.println(flare.getBurnoutSound().play());
                     flare.dispose();
                     i.remove();
                 }
