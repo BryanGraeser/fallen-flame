@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.JsonValue;
@@ -13,9 +12,10 @@ import com.fallenflame.game.enemies.EnemyModel;
 import com.fallenflame.game.physics.lights.PointSource;
 import com.fallenflame.game.physics.obstacle.Obstacle;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -85,6 +85,9 @@ public class LightController {
      */
     protected RayHandler rayhandler;
 
+    protected Map<PointSource, Float> animateIn;
+    protected Map<PointSource, Float> animateOut;
+
     protected boolean debug;
 
     /**
@@ -97,6 +100,9 @@ public class LightController {
      */
     public void initialize(PlayerModel player, ExitModel exit,
                            JsonValue levelLighting, World world, Rectangle bounds) {
+        animateIn = new HashMap<>();
+        animateOut = new HashMap<>();
+
         // Set up camera first.
         raycamera = new OrthographicCamera(bounds.width, bounds.height);
 
@@ -178,8 +184,8 @@ public class LightController {
         entrySet.removeIf(i -> {
             if (!list.contains(i.getKey())) {
                 PointSource l = i.getValue();
-                l.setActive(false);
-                l.remove();
+                animateIn.remove(l);
+                animateOut.put(l, 1f);
                 return true;
             }
             return false;
@@ -197,6 +203,34 @@ public class LightController {
             PointSource f = createPointLight(i.getLightRadius(), i.getX(), i.getY());
             f.setColor(i.getLightColor());
             lightMap.put(i, f);
+            animateIn.put(f, 0f);
+        });
+    }
+
+    protected void doAnimation() {
+        float i = 0.05f;
+        for (Map.Entry<PointSource, Float> e : animateIn.entrySet()) {
+            e.getKey().setDistance(e.getValue() * e.getKey().getDistance());
+            animateIn.put(e.getKey(), e.getValue() + i);
+        }
+        animateIn.values().removeIf((e) -> e >= 1);
+        for (Map.Entry<PointSource, Float> e : animateOut.entrySet()) {
+            e.getKey().setDistance(e.getKey().getDistance() / e.getValue() * (e.getValue() - i));
+            if (e.getValue() <= i) {
+                e.getKey().setActive(false);
+                e.getKey().dispose();
+                animateOut.remove(e.getKey());
+                continue;
+            }
+            animateOut.put(e.getKey(), e.getValue() - i);
+        }
+        animateOut.entrySet().removeIf((e) -> {
+            if (e.getValue() <= i) {
+                e.getKey().setActive(false);
+                e.getKey().dispose();
+                return true;
+            }
+            return false;
         });
     }
 
@@ -232,6 +266,7 @@ public class LightController {
                 enemies.stream().filter(EnemyModel::isActivated).collect(Collectors.toList()),
                 enemyLights);
 
+        doAnimation();
         rayhandler.update();
     }
 
