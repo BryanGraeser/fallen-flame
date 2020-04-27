@@ -573,7 +573,7 @@ public class LevelController implements ContactListener {
                 }
             }
 
-            if (bgm != null) {
+            if (bgm != null && !bgm.equals("")) {
                 BGMController.startBGM(bgm);
             } else {
                 BGMController.stopBGM();
