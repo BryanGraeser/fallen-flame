@@ -418,9 +418,9 @@ public class LevelController implements ContactListener {
 
         // Initialize levelModel, lightController, and fogController
         levelModel.initialize(bounds, walls, enemies);
-
         lightController.initialize(player, exit, levelJson.get("lighting"), world, bounds);
-        fogController.initialize(fogTemplate, levelModel, player);
+        fogController.initialize(fogTemplate, levelModel, player, flares);
+
     }
 
     /**
