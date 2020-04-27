@@ -526,11 +526,7 @@ public class LevelController implements ContactListener {
                     else
                         ((EnemyTypeBModel)enemy).coolDown(true);
                 }
-                if(enemy.getClass() == EnemyTypeBModel.class){
-                    ((EnemyTypeBModel)enemy).update(dt);
-                } else {
-                    enemy.update(dt);
-                }
+                enemy.update(dt);
                 // Play enemy sounds
                 float pan = (enemy.getX() - player.getX()) * PAN_SCL;
                 if (enemy.isActivated() && (enemy.getActiveSoundID() == -1)) {
