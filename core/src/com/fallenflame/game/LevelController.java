@@ -386,10 +386,10 @@ public class LevelController implements ContactListener {
                 Gdx.app.error("LevelController", "Enemy type without model", new IllegalArgumentException());
                 return;
             }
+            enemy.setDrawScale(scale);
             enemy.initialize(globalEnemies.get(enemyType), enemyJSON.get("enemypos").asFloatArray());
             enemy.initializeTextures(globalEnemies.get(enemyType));
             enemy.setConstantSoundID(enemy.getConstantSound().loop(0, ENEMY_CONS_PITCH, 0));
-            enemy.setDrawScale(scale);
             enemy.activatePhysics(world);
             enemies.add(enemy);
             // Initialize AIController

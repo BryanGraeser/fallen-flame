@@ -100,8 +100,8 @@
         "aggressive": [1.0, 0.0, 0.0, 1.0]
       },
       "textureoffset" : {
-        "x": 4,
-        "y": -8
+        "x": 0.1,
+        "y": -0.2
       },
       "tintOpacity": 192
     },
