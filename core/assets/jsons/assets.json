@@ -110,6 +110,46 @@
 				"first": 0
 			}
 		},
+		"fire-buddy-left": {
+			"file": "textures/firebuddyleft.png",
+			"wrap": false,
+			"strip": {
+				"size": 4,
+				"rows": 1,
+				"cols": 4,
+				"first": 0
+			}
+		},
+		"fire-buddy-right": {
+			"file": "textures/firebuddyright.png",
+			"wrap": false,
+			"strip": {
+				"size": 4,
+				"rows": 1,
+				"cols": 4,
+				"first": 0
+			}
+		},
+		"fire-buddy-up": {
+			"file": "textures/firebuddyup.png",
+			"wrap": false,
+			"strip": {
+				"size": 4,
+				"rows": 1,
+				"cols": 4,
+				"first": 0
+			}
+		},
+		"fire-buddy-down": {
+			"file": "textures/firebuddydown.png",
+			"wrap": false,
+			"strip": {
+				"size": 4,
+				"rows": 1,
+				"cols": 4,
+				"first": 0
+			}
+		},
 		"goal": {
 			"file": "textures/helicopter.png",
 			"wrap": false

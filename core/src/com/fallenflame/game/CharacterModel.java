@@ -21,12 +21,12 @@ public abstract class CharacterModel extends WheelObstacle implements ILight {
     /** The current horizontal movement of the character */
     private Vector2 movement = new Vector2();
     /** Whether or not to animate the current frame */
-    private boolean animate = false;
+    protected boolean animate = false;
 
     /** How many frames until we can walk again */
-    private int walkCool;
+    protected int walkCool;
     /** The standard number of frames to wait until we can walk again */
-    private int walkLimit;
+    protected int walkLimit;
 
     /** FilmStrip pointers to the texture regions */
     protected FilmStrip filmstrip;
@@ -395,11 +395,6 @@ public abstract class CharacterModel extends WheelObstacle implements ILight {
         } else {
             filmstrip = filmstripWalkRight;
         }
-
-        System.out.println(filmstripWalkDown);
-        System.out.println(filmstripWalkUp);
-        System.out.println(filmstripWalkLeft);
-        System.out.println(filmstripWalkRight);
 
         setTexture(filmstrip, textureOffset.x, textureOffset.y);
 
