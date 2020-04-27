@@ -87,6 +87,7 @@ public class LightController {
 
     protected Map<PointSource, Float> animateIn;
     protected Map<PointSource, Float> animateOut;
+    protected int animateTicks;
 
     protected boolean debug;
 
@@ -102,6 +103,7 @@ public class LightController {
                            JsonValue levelLighting, World world, Rectangle bounds) {
         animateIn = new HashMap<>();
         animateOut = new HashMap<>();
+        animateTicks = levelLighting.has("animateTicks") ? levelLighting.get("animateTicks").asInt() : 20;
 
         // Set up camera first.
         raycamera = new OrthographicCamera(bounds.width, bounds.height);
@@ -208,7 +210,7 @@ public class LightController {
     }
 
     protected void doAnimation() {
-        float i = 0.05f;
+        float i = 1f / animateTicks;
         for (Map.Entry<PointSource, Float> e : animateIn.entrySet()) {
             e.getKey().setDistance(e.getValue() * e.getKey().getDistance());
             animateIn.put(e.getKey(), e.getValue() + i);
