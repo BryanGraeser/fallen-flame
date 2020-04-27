@@ -9,7 +9,7 @@ import com.fallenflame.game.physics.obstacle.WheelObstacle;
 import com.fallenflame.game.util.FilmStrip;
 import com.fallenflame.game.util.JsonAssetManager;
 
-public abstract class CharacterModel extends WheelObstacle implements ILightRadius {
+public abstract class CharacterModel extends WheelObstacle implements ILight {
     // Physics constants
     /** The factor to multiply by the input */
     private float force;
@@ -28,8 +28,15 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
     /** The standard number of frames to wait until we can walk again */
     private int walkLimit;
 
-    /** FilmStrip pointer to the texture region */
-    protected FilmStrip filmstrip;
+    /** FilmStrip pointers to the texture regions */
+    protected FilmStrip filmstripWalkRight;
+    protected FilmStrip filmstripWalkLeft;
+    protected FilmStrip filmstripWalkUp;
+    protected FilmStrip filmstripWalkDown;
+
+    /** Offset of textures from Physics Body */
+    protected Vector2 textureOffset = new Vector2();
+
     /** The current animation frame of the avatar */
     private int startFrame;
 
@@ -64,7 +71,7 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
      * This is the result of input times character force.
      *
      * @param dx the horizontal movement of this character.
-     * @param dy the horizontal movement of this character.
+     * @param dy the vertical movement of this character.
      */
     public void setMovement(float dx, float dy) {
         movement.set(dx,dy);
@@ -169,10 +176,76 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
     }
 
     /**
+     * @return the offset of the texture from the physics body
+     * as a Vector 2
+     */
+    public Vector2 getTextureOffset() {
+        return new Vector2(textureOffset);
+    }
+
+    /**
+     * Sets the offset of the texture from the physics body
+     * as a Vector 2
+     *
+     * @param x the offset of the texture on the x-axis
+     * @param y the offset of the texture on the y-axis
+     */
+    public void setTextureOffset(float x , float y){
+        textureOffset = new Vector2(x, y);
+    }
+
+    /**
+     * @param m and n are CharacterModel objects
+     * @return the absolute distance from CharacterModel m to CharacterModel n
+     */
+    public float getDistanceBetween(CharacterModel n) {
+        float dx = this.getX() - n.getX();
+        float dy = this.getY() - n.getY();
+        float dist = (float) Math.pow((Math.pow(dx , 2) + Math.pow(dy, 2)), 0.5);
+        return dist;
+    }
+
+    /**
+     * getAngleBetween(m, n) returns the angle at which CharacterModel n
+     * is at relative to the origin CharacterModel m. The method
+     * returns the angle in radians in the range [0, 2pi) as if
+     * viewed on a unit circle. If n is directly right of m, the angle
+     * is 0
+     *
+     * @param m and n are CharacterModel objects
+     * @return angle from CharacterModel m to CharacterModel n in radians
+     */
+    public float getAngleBetween(CharacterModel n){
+        float adj = n.getX() - this.getX();
+        float opp = n.getY() - this.getY();
+        float hyp = getDistanceBetween(n);
+
+        double ratio, angle;
+
+        //n is located in Quadrant I or II
+        if(opp > 0) {
+            ratio = (double) adj / hyp;
+            angle = Math.acos(ratio);
+
+        } else { //Quadrant III or IV
+            ratio = (double) -1 * adj / hyp;
+            angle = Math.acos(ratio) + Math.PI;
+        }
+
+        return (float) angle;
+    }
+
+    /**
      * Gets light radius for character
      * @return light radius
      */
     public abstract float getLightRadius();
+
+    /**
+     * Gets light color for color
+     * @return light color
+     */
+    public abstract Color getLightColor();
 
     /**
      * Creates a new character with degenerate settings
@@ -187,16 +260,14 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
     /**
      * Initializes the character via the given JSON value
      *
-     * The JSON value has been parsed and is part of a bigger level file.  However,
-     * this JSON value is limited to the player subtree
+     * The JSON value has been parsed and is part of a bigger level file.
      *
      * @param json	the JSON subtree defining the player
      */
-    public void initialize(JsonValue json){
+    public void initialize(JsonValue json, float[] pos) {
         setName(json.name());
-        float[] pos  = json.get("pos").asFloatArray();
-        float radius = 0.4f;//json.get("radius").asFloat();
-        setPosition(pos[0],pos[1]);
+        float radius = json.get("radius").asFloat();
+        setPosition(pos[0], pos[1]);
         setRadius(radius);
 
         // Technically, we should do error checking here.
@@ -210,6 +281,8 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
         setMaxSpeed(json.get("maxspeed").asFloat());
         setStartFrame(json.get("startframe").asInt());
         setWalkLimit(json.get("walklimit").asInt());
+        setTextureOffset(json.get("textureoffset").get("x").asFloat(),
+                        json.get("textureoffset").get("y").asFloat());
 
         // Reflection is best way to convert name to color
 //        Color debugColor;
@@ -224,16 +297,59 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
 //        debugColor.mul(opacity/255.0f);
 //        setDebugColor(debugColor);
 
-        // Now get the texture from the AssetManager singleton
-        String key = json.get("texture").asString();
+        //Now get the texture from the AssetManager singleton
+        textureHelper(json);
+    }
+
+    /**
+     * Intializes the CharacterModel texture using the JSON file
+     *
+     * The JSON value has been parsed and is part of a bigger level file.
+     *
+     * @param json	the JSON subtree defining the player has a "texture" key
+     *              that has the fields "walk-right", "walk-left", "left",
+     *              "right", "up", "down"
+     */
+    private void textureHelper(JsonValue json){
+        JsonValue textureJson = json.get("texture");
+
+        String key = textureJson.get("right").asString();
         TextureRegion texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         try {
-            filmstrip = (FilmStrip)texture;
+            filmstripWalkRight = (FilmStrip) texture;
         } catch (Exception e) {
-            filmstrip = null;
+            filmstripWalkRight = null;
         }
-        setTexture(texture);
+
+        key = textureJson.get("left").asString();
+        texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        try {
+            filmstripWalkLeft = (FilmStrip) texture;
+        } catch (Exception e) {
+            filmstripWalkLeft = null;
+        }
+
+        key = textureJson.get("up").asString();
+        texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        try {
+            filmstripWalkUp = (FilmStrip) texture;
+        } catch (Exception e) {
+            filmstripWalkUp = null;
+        }
+
+        key = textureJson.get("down").asString();
+        texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        try {
+            filmstripWalkDown = (FilmStrip) texture;
+        } catch (Exception e) {
+            filmstripWalkDown = null;
+        }
+
+        //pick default direction
+        FilmStrip filmstrip = filmstripWalkRight;
+        setTexture(filmstrip, textureOffset.x, textureOffset.y);
     }
+
 
     /**
      * Applies the force to the body of this character
@@ -267,6 +383,26 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
      * @param dt Number of seconds since last animation frame
      */
     public void update(float dt) {
+        //getAngle has up as 0 radians, down as pi radians, pi/2 is left, -pi/2 is right.
+        double angle = getAngle();
+        if(angle < 0) angle = angle + 2 * Math.PI;
+        int angle100 = (int) (angle * 100);
+
+
+        FilmStrip filmstrip;
+
+        if(angle100 == 0){
+            filmstrip = filmstripWalkUp;
+        } else if (angle100 > 0 && angle100 < 314){
+            filmstrip =filmstripWalkLeft;
+        } else if (angle100 == 314){
+            filmstrip = filmstripWalkDown;
+        } else {
+            filmstrip = filmstripWalkRight;
+        }
+
+        setTexture(filmstrip, textureOffset.x, textureOffset.y);
+
         // Animate if necessary
         if (animate && walkCool == 0) {
             if (filmstrip != null) {
@@ -287,13 +423,27 @@ public abstract class CharacterModel extends WheelObstacle implements ILightRadi
     }
 
     /**
+     * @return The X coordinate of the center of texture of the CharacterModel
+     */
+    public float getTextureX(){
+        return super.getX() - textureOffset.x;
+    }
+
+    /**
+     * @return The Y coordinate of the center of texture of the CharacterModel
+     */
+    public float getTextureY(){
+        return super.getY() - textureOffset.y;
+    }
+
+    /**
      * Draws the physics object.
      *
      * @param canvas Drawing context
      */
     public void draw(GameCanvas canvas) {
         if (texture != null) {
-            canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,getAngle(),1.0f,1.0f);
+            canvas.draw(texture, Color.WHITE,origin.x,origin.y,getX()*drawScale.x,getY()*drawScale.y,0 ,1.0f,1.0f);
         }
     }
 }

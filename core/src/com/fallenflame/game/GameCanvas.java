@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 public class GameCanvas {
     /**@author: Professor White */
@@ -54,6 +55,9 @@ public class GameCanvas {
     /** Camera for the underlying SpriteBatch */
     private OrthographicCamera camera;
 
+    /** Second camera, where it does not move at all. */
+    private OrthographicCamera fixedCamera;
+
     /** Value to cache window width (if we are currently full screen) */
     int width;
     /** Value to cache window height (if we are currently full screen) */
@@ -83,6 +87,9 @@ public class GameCanvas {
         // Set the projection matrix (for proper scaling)
         camera = new OrthographicCamera(getWidth(),getHeight());
         camera.setToOrtho(false);
+
+        fixedCamera = new OrthographicCamera(getWidth(),getHeight());
+        fixedCamera.setToOrtho(false);
 
         spriteBatch.setProjectionMatrix(camera.combined);
         debugRender.setProjectionMatrix(camera.combined);
@@ -361,6 +368,18 @@ public class GameCanvas {
     public void begin() {
         camera.update();
         spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
+        active = DrawPass.STANDARD;
+    }
+
+    /**
+     * Start a standard drawing sequence without camera.
+     *
+     * Nothing is flushed to the graphics card until the method end() is called.
+     */
+    public void beginWithoutCamera() {
+        fixedCamera.update();
+        spriteBatch.setProjectionMatrix(fixedCamera.combined);
         spriteBatch.begin();
         active = DrawPass.STANDARD;
     }
@@ -863,6 +882,24 @@ public class GameCanvas {
         computeVertices(local,region.getVertices());
     }
 
+    /**Draw a swirling fog at a certain position (x, y)
+     * @param fog, a PooledEffect 2D array with all fog that needs to be drawn
+     * @param delta, frames per second*/
+
+    public void drawFog(FogController.fogParticle[][] fog, float delta){
+            for(int r = 0; r<fog.length; r++){
+                for(int c = 0; c<fog[r].length; c++) {
+                    if (fog[r][c] != null) {
+                        Array<ParticleEffectPool.PooledEffect> fogArr = fog[r][c].fogParticles;
+                        for (ParticleEffectPool.PooledEffect f : fogArr) {
+                            f.draw(spriteBatch, delta);
+                        }
+                    }
+                }
+            }
+
+        }
+
     /**
      * Transform the given vertices by the affine transform
      */
@@ -919,12 +956,27 @@ public class GameCanvas {
      * @param affine the global transform apply to the camera
      */
     public void beginDebug(Affine2 affine) {
+        _beginDebug(affine);
+
+    }
+
+    public void beginDebugFilled(Affine2 affine) {
+        _beginDebugFilledBlend();
+        _beginDebug(affine);
+        debugRender.begin(ShapeRenderer.ShapeType.Filled);
+    }
+
+    private void _beginDebugFilledBlend() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private void _beginDebug(Affine2 affine) {
         camera.update();
         global.setAsAffine(affine);
         global.mulLeft(camera.combined);
         debugRender.setProjectionMatrix(global);
 
-        debugRender.begin(ShapeRenderer.ShapeType.Line);
         active = DrawPass.DEBUG;
     }
 
@@ -937,12 +989,22 @@ public class GameCanvas {
      * @param sy the amount to scale the y-axis
      */
     public void beginDebug(float sx, float sy) {
+        _beginDebug(sx, sy);
+        debugRender.begin(ShapeRenderer.ShapeType.Line);
+    }
+
+    public void beginDebugFilled(float sx, float sy) {
+        _beginDebugFilledBlend();
+        _beginDebug(sx, sy);
+        debugRender.begin(ShapeRenderer.ShapeType.Filled);
+    }
+
+    private void _beginDebug(float sx, float sy) {
         global.idt();
         global.scl(sx,sy,1.0f);
         global.mulLeft(camera.combined);
         debugRender.setProjectionMatrix(global);
 
-        debugRender.begin(ShapeRenderer.ShapeType.Line);
         active = DrawPass.DEBUG;
     }
 
@@ -952,9 +1014,19 @@ public class GameCanvas {
      * Nothing is flushed to the graphics card until the method end() is called.
      */
     public void beginDebug() {
+        _beginDebug();
+        debugRender.begin(ShapeRenderer.ShapeType.Line);
+    }
+
+    public void beginDebugFilled() {
+        _beginDebugFilledBlend();
+        _beginDebug();
+        debugRender.begin(ShapeRenderer.ShapeType.Filled);
+    }
+
+    private void _beginDebug() {
         debugRender.setProjectionMatrix(camera.combined);
 
-        debugRender.begin(ShapeRenderer.ShapeType.Line);
         active = DrawPass.DEBUG;
     }
 
@@ -963,6 +1035,7 @@ public class GameCanvas {
      */
     public void endDebug() {
         debugRender.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
         active = DrawPass.INACTIVE;
     }
 
@@ -1124,6 +1197,33 @@ public class GameCanvas {
         float h = shape.getRadius()*sy;
         debugRender.setColor(color);
         debugRender.ellipse(x0-w, y0-h, 2*w, 2*h, 12);
+    }
+
+    private static final Color GRID_DEBUG_LINE = Color.WHITE.cpy().mul(1, 1, 1, .1f);
+    private static final float GRID_DEBUG_FILLED_ALPHA = .2f;
+    private static final Color GRID_DEBUG_SAFE_COLOR = Color.GREEN;
+    private static final Color GRID_DEBUG_UNSAFE_COLOR = Color.RED;
+
+    public void drawGrid(float x, float y, boolean safe, Vector2 drawScale, float size) {
+        if (active != DrawPass.DEBUG) {
+            Gdx.app.error("GameCanvas", "Cannot draw without active beginDebug()", new IllegalStateException());
+            return;
+        }
+
+        Color c = safe ? GRID_DEBUG_SAFE_COLOR : GRID_DEBUG_UNSAFE_COLOR;
+
+        float dx = drawScale.x, dy = drawScale.y;
+        float x0 = x * size * dx, y0 = y * size * dy, x1 = (x + 1) * size * dx, y1 = (y + 1) * size * dy;
+        float w = dx * size, h = dy * size;
+
+        debugRender.setColor(GRID_DEBUG_LINE);
+        debugRender.rect(x0, y0, 1, h);
+        debugRender.rect(x0, y0, h, 1);
+        debugRender.rect(x0, y1, w, 1);
+        debugRender.rect(x1, y0, 1, h);
+
+        debugRender.setColor(c.cpy().mul(1, 1, 1, GRID_DEBUG_FILLED_ALPHA));
+        debugRender.rect(x0, y0, w, h);
     }
 
     /**

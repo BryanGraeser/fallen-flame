@@ -27,8 +27,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	private LoadingMode loading;
 	/** Player mode for the the game */
 	private GameEngine engine;
-	/**Input Processor for the game itself */
-	private LightInputProcessor lightInputProcessor;
+	/** Level select for the game */
+	private LevelSelectMode levelSelect;
 
 	/**
 	 * Creates a new game from the configuration settings.
@@ -44,13 +44,13 @@ public class GDXRoot extends Game implements ScreenListener {
 	public void create() {
 		canvas  = new GameCanvas();
 		loading = new LoadingMode(canvas,1);
+		levelSelect = new LevelSelectMode(canvas);
 		engine = new GameEngine();
-		lightInputProcessor = new LightInputProcessor(engine);
 		InputMultiplexer multiplexer = new InputMultiplexer(); //Allows for multiple InputProcessors
-		//Multiplexer is an ordered list, so when an event occurs, it'll check loadingMode first, and then
-		// LightInputProcessor
+		//Multiplexer is an ordered list, so when an event occurs, it'll check loadingMode first, and then GameEngine
 		multiplexer.addProcessor(loading);
-		multiplexer.addProcessor(lightInputProcessor);
+		multiplexer.addProcessor(levelSelect);
+		multiplexer.addProcessor(engine);
 		Gdx.input.setInputProcessor(multiplexer);
 
 		// Initialize the three game worlds
@@ -69,7 +69,6 @@ public class GDXRoot extends Game implements ScreenListener {
 		setScreen(null);
 		engine.unloadContent();
 		engine.dispose();
-
 		canvas.dispose();
 		canvas = null;
 
@@ -110,13 +109,21 @@ public class GDXRoot extends Game implements ScreenListener {
 		if (screen == loading) {
 			//Still finish loading everything before shutting down
 			engine.loadContent();
-			engine.setScreenListener(this);
-			engine.setCanvas(canvas);
-			engine.reset();
-			setScreen(engine);
+			Gdx.input.setInputProcessor(levelSelect);
+			levelSelect.setScreenListener(this);
+			setScreen(levelSelect);
 
 			loading.dispose();
 			loading = null;
+		} else if (screen == levelSelect) {
+			Gdx.input.setInputProcessor(engine);
+			engine.setScreenListener(this);
+			engine.setCanvas(canvas);
+			engine.reset(levelSelect.getLevelSelected());
+			setScreen(engine);
+
+			levelSelect.dispose();
+			levelSelect = null;
 		} else if (exitCode == engine.EXIT_QUIT) {
 			// We quit the main application
 			Gdx.app.exit();

@@ -9,7 +9,28 @@ import com.fallenflame.game.util.JsonAssetManager;
 import java.lang.reflect.*;
 
 /** Credit to Walker White for code from the B2LightsDemo */
-public class ExitModel extends BoxObstacle {
+public class ExitModel extends BoxObstacle implements ILight {
+    /**Tint of exit light */
+    protected Color tint;
+    /** Radius of exit light */
+    protected float lightRadius;
+
+    /**
+     * Gets exit color tint
+     * @return light color
+     */
+    public Color getLightColor() {
+        return tint;
+    }
+
+    /**
+     * Gets exit light radius
+     * @return light radius
+     */
+    public float getLightRadius() {
+        return lightRadius;
+    }
+
     /**
      * Create a new ExitModel with degenerate settings
      */
@@ -26,9 +47,8 @@ public class ExitModel extends BoxObstacle {
      *
      * @param json	the JSON subtree defining the dude
      */
-    public void initialize(JsonValue json) {
+    public void initialize(JsonValue json, float[] pos) {
         setName(json.name());
-        float[] pos  = json.get("pos").asFloatArray();
         float[] size = json.get("size").asFloatArray();
         setPosition(pos[0],pos[1]);
         setDimension(size[0],size[1]);
@@ -39,6 +59,10 @@ public class ExitModel extends BoxObstacle {
         setDensity(json.get("density").asFloat());
         setFriction(json.get("friction").asFloat());
         setRestitution(json.get("restitution").asFloat());
+
+        lightRadius = json.get("lightradius").asInt();
+        float[] tintValues = json.get("tint").asFloatArray();//RGBA
+        tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
 
         // Reflection is best way to convert name to color
         Color debugColor;
