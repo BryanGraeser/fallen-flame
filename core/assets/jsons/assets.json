@@ -120,6 +120,27 @@
 		},
 		"enemyconstant": {
 			"file": "sounds/growl.wav"
+		},
+		"new-walk": {
+			"file": "sounds/new-sounds/walk.mp3"
+		},
+		"new-monster-low": {
+			"file": "sounds/new-sounds/monster-low.mp3"
+		},
+		"new-monster-high": {
+			"file": "sounds/new-sounds/monster-high.mp3"
+		},
+		"new-flame": {
+			"file": "sounds/new-sounds/flame.mp3"
+		},
+		"menu-music": {
+			"file": "sounds/new-sounds/deep-dark-well.mp3"
+		},
+		"level-music-1": {
+			"file": "sounds/new-sounds/the-doll-thrown-away-in-rain.mp3"
+		},
+		"level-music-2": {
+			"file": "sounds/new-sounds/soul-of-a-girl.mp3"
 		}
 	}
 }

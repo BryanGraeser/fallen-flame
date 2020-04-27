@@ -21,7 +21,7 @@
       "up": "player-up",
       "down": "player-down"
     },
-    "walksound":    "walk",
+    "walksound":    "new-walk",
     "debugcolor":  	"white",
     "debugopacity":	192,
     "tint": [1.0, 1.0, 1.0, 1.0],
@@ -48,8 +48,8 @@
         "up": "enemy",
         "down": "enemy"
       },
-      "activesound": "enemystep",
-      "constantsound": "enemyconstant",
+      "activesound": "new-monster-high",
+      "constantsound": "new-monster-low",
       "debugcolor": "white",
       "debugopacity": 192,
       "statetints": {
@@ -81,8 +81,8 @@
         "up": "enemyb",
         "down": "enemyb"
       },
-      "activesound": "enemystep",
-      "constantsound": "enemyconstant",
+      "activesound": "new-flame",
+      "constantsound": "new-monster-low",
       "debugcolor": "white",
       "debugopacity": 192,
       "stateTints": {
