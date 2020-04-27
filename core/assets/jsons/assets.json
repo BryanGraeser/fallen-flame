@@ -91,12 +91,12 @@
 			}
 		},
 		"enemy-a-down": {
-			"file": "textures/enemy-a-walk-right.png",
+			"file": "textures/enemy-a-walk-down.png",
 			"wrap": false,
 			"strip": {
-				"size": 5,
+				"size": 6,
 				"rows": 1,
-				"cols": 5,
+				"cols": 6,
 				"first": 0
 			}
 		},
@@ -147,6 +147,46 @@
 				"size": 4,
 				"rows": 1,
 				"cols": 4,
+				"first": 0
+			}
+		},
+		"ghost-left": {
+			"file": "textures/ghost-left.png",
+			"wrap": false,
+			"strip": {
+				"size": 3,
+				"rows": 1,
+				"cols": 3,
+				"first": 0
+			}
+		},
+		"ghost-right": {
+			"file": "textures/ghost-right.png",
+			"wrap": false,
+			"strip": {
+				"size": 3,
+				"rows": 1,
+				"cols": 3,
+				"first": 0
+			}
+		},
+		"ghost-up": {
+			"file": "textures/ghost-up.png",
+			"wrap": false,
+			"strip": {
+				"size": 3,
+				"rows": 1,
+				"cols": 3,
+				"first": 0
+			}
+		},
+		"ghost-down": {
+			"file": "textures/ghost-down.png",
+			"wrap": false,
+			"strip": {
+				"size": 3,
+				"rows": 1,
+				"cols": 3,
 				"first": 0
 			}
 		},

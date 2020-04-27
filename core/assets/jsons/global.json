@@ -117,10 +117,10 @@
       "startframe": 0,
       "walklimit": 4,
       "texture":     	{
-        "left": "enemyb",
-        "right": "enemyb",
-        "up": "enemyb",
-        "down": "enemyb"
+        "left": "ghost-left",
+        "right": "ghost-right",
+        "up": "ghost-up",
+        "down": "ghost-down"
       },
       "movesound": "enemystep",
       "constantsound": "enemyconstant",
@@ -133,8 +133,8 @@
         "aggressive": [1.0, 0.0, 0.0, 1.0]
       },
       "textureoffset" : {
-        "x": 0,
-        "y": 0
+        "x": 0.1,
+        "y": -0.55
       },
       "tintOpacity": 192
     }
