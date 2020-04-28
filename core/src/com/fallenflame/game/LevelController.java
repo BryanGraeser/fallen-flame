@@ -576,11 +576,12 @@ public class LevelController implements ContactListener {
                 enemy.executeMovementAction(action);
                 // Check if enemy is firing, for now only supports EnemyTypeBModel. TODO: Will need to rework if more firing enemies
                 boolean firing = (action & EnemyModel.CONTROL_FIRE) != 0;
-                if (enemy.getClass() == EnemyTypeBModel.class && firing) {
-                    if(((EnemyTypeBModel)enemy).canFire())
-                        fireWeapon((EnemyTypeBModel)enemy);
-                    else
-                        ((EnemyTypeBModel)enemy).coolDown(true);
+                if (enemy.getClass() == EnemyTypeBModel.class) {
+                    if(firing && ((EnemyTypeBModel) enemy).canFire()) {
+                        fireWeapon((EnemyTypeBModel) enemy);
+                    } else {
+                        ((EnemyTypeBModel) enemy).coolDown(true);
+                    }
                 }
                 enemy.update(dt);
                 // Play enemy sounds
