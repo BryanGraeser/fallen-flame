@@ -2,6 +2,9 @@ package com.fallenflame.game.util;
 
 import com.badlogic.gdx.audio.Sound;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BGMController {
     private static Sound activeBGM;
 
@@ -9,10 +12,12 @@ public class BGMController {
 
     private static long activeBGMID = -1;
 
+    private static Map<String, Sound> soundMap = new HashMap<>();
+
     public static void stopBGM() {
+        if (activeBGMID >= 0) activeBGM.stop(activeBGMID);
         activeBGMID = -1;
         currentAssetName = null;
-        activeBGM.dispose();
         activeBGM = null;
     }
 
@@ -20,11 +25,18 @@ public class BGMController {
         if (assetName.equals(currentAssetName)) stopBGM();
     }
 
+    private static Sound getFromSoundMap(String assetName) {
+        if (soundMap.containsKey(assetName)) return soundMap.get(assetName);
+        Sound n = JsonAssetManager.getInstance().getEntry(assetName, Sound.class);
+        soundMap.put(assetName, n);
+        return n;
+    }
+
     public static void startBGM(String assetName) {
         if (assetName.equals(currentAssetName)) return;
         if (activeBGM != null) stopBGM();
         currentAssetName = assetName;
-        activeBGM = JsonAssetManager.getInstance().getEntry(assetName, Sound.class);
+        activeBGM = getFromSoundMap(assetName);
         activeBGMID = -1;
         resumeBGM();
     }
@@ -36,6 +48,6 @@ public class BGMController {
 
     public static void resumeBGM() {
         if (activeBGMID >= 0) return;
-        activeBGMID = activeBGM.loop();
+        activeBGMID = activeBGM.loop(0.2f);
     }
 }

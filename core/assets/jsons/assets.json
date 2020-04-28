@@ -130,6 +130,9 @@
 		"new-monster-high": {
 			"file": "sounds/new-sounds/monster-high.mp3"
 		},
+		"new-monster-weird": {
+			"file": "sounds/new-sounds/monster-weird.mp3"
+		},
 		"new-flame": {
 			"file": "sounds/new-sounds/flame.mp3"
 		},
@@ -143,31 +146,37 @@
 			"file": "sounds/new-sounds/soul-of-a-girl.mp3"
 		},
 		"another-planet": {
-			"file":"sounds/new-sounds/another-planet.mp3"
+			"file": "sounds/new-sounds/another-planet.mp3"
 		},
 		"cursed-piano": {
-			"file":"sounds/new-sounds/cursed-piano.mp3"
+			"file": "sounds/new-sounds/cursed-piano.mp3"
 		},
 		"disturbing-haze": {
-			"file":"sounds/new-sounds/disturbing-haze.mp3"
+			"file": "sounds/new-sounds/disturbing-haze.mp3"
 		},
 		"hazy-moon": {
-			"file":"sounds/new-sounds/hazy-moon.mp3"
+			"file": "sounds/new-sounds/hazy-moon.mp3"
 		},
 		"peaceful-early-evening": {
-			"file":"sounds/new-sounds/peaceful-early-evening.mp3"
+			"file": "sounds/new-sounds/peaceful-early-evening.mp3"
 		},
 		"ruins": {
-			"file":"sounds/new-sounds/ruins.mp3"
+			"file": "sounds/new-sounds/ruins.mp3"
 		},
 		"silence1": {
-			"file":"sounds/new-sounds/silence1.mp3"
+			"file": "sounds/new-sounds/silence1.mp3"
 		},
 		"silence2": {
-			"file":"sounds/new-sounds/silence2.mp3"
+			"file": "sounds/new-sounds/silence2.mp3"
 		},
 		"the-deep-long-tunnel": {
-			"file":"sounds/new-sounds/the-deep-long-tunnel.mp3"
+			"file": "sounds/new-sounds/the-deep-long-tunnel.mp3"
+		},
+		"chess": {
+			"file": "sounds/new-sounds/chess.mp3"
+		},
+		"feud-of-nora-dog-and-nora-cat": {
+			"file": "sounds/new-sounds/feud-of-nora-dog-and-nora-cat.mp3"
 		}
 	}
 }

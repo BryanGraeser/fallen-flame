@@ -446,6 +446,7 @@ public class LevelController implements ContactListener {
         walls.clear();
         for(EnemyModel enemy : enemies) {
             enemy.getConstantSound().stop();
+            enemy.getActiveSound().stop();
             enemy.deactivatePhysics(world);
             enemy.dispose();
         }
@@ -573,10 +574,14 @@ public class LevelController implements ContactListener {
                 }
             }
 
-            if (bgm != null && !bgm.equals("")) {
-                BGMController.startBGM(bgm);
+            if (player.getSneakVal() > 0 || !ghostJSON.has("bgm") || ghostJSON.get("bgm").asString().equals("")) {
+                if (bgm != null && !bgm.equals("")) {
+                    BGMController.startBGM(bgm);
+                } else {
+                    BGMController.stopBGM();
+                }
             } else {
-                BGMController.stopBGM();
+                BGMController.startBGM(ghostJSON.get("bgm").asString());
             }
 
             // Update level model.
