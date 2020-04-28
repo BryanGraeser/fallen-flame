@@ -47,6 +47,8 @@ public class LevelController implements ContactListener {
 
     /** Whether or not the level has been populated */
     private boolean populated;
+    /** Whether ot not the ghost has been added to the level*/
+    private boolean ghostAdded = false;
 
     // Physics objects for the level
     /** Reference to the player character */
@@ -565,8 +567,10 @@ public class LevelController implements ContactListener {
                     player.decSneakVal();
                 }
                 // Add ghost enemy if player has used all their sneak
-                else if(player.getSneakVal() == 0)
+                else if(player.getSneakVal() == 0 && ghostAdded == false) {
                     addGhost();
+                    ghostAdded = true;
+                }
             }
 
 
