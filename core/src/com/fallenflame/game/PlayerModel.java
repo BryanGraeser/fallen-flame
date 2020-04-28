@@ -56,6 +56,7 @@ public class PlayerModel extends CharacterModel {
         lightRadiusSneak = json.get("sneaklightrad").asInt();
         minLightRadius = json.get("minlightradius").asInt();
         sneakVal = startSneakVal;
+        System.out.println(sneakVal);
         lightRadius = minLightRadius;
         move = MovementState.WALK;
 

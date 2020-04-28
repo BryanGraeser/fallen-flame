@@ -89,6 +89,20 @@ public class LevelController implements ContactListener {
     /** The world background */
     protected TextureRegion background;
 
+    // Sneak Bar
+    /** The texture used for the sneakbar */
+    protected TextureRegion sneakBarTexture;
+    /** The color used to tint the sneakbar */
+    protected Color sneakBarColor;
+    /** The offset of the sneakbar from the player*/
+    protected Vector2 sneakBarOffset;
+    /** The width of the sneak bar */
+    protected float sneakBarWidth;
+    /** The height of the sneak bar */
+    protected float sneakBarHeight;
+    /** The maximum sneak value allowed in the game */
+    protected float maxSneakValue;
+
     // Controllers
     private final LightController lightController;
     private final List<AIController> AIControllers;
@@ -329,6 +343,15 @@ public class LevelController implements ContactListener {
         if (levelJson.get("background").has("texture"))
             levelJson.get("background").get("texture").asString(); // Get specific texture if available
         background = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+
+        sneakBarTexture = background;
+        float[] sneakBarRGB = globalJson.get("sneakmeter").get("color").asFloatArray();
+        sneakBarColor = new Color(sneakBarRGB[0], sneakBarRGB[1], sneakBarRGB[2], sneakBarRGB[3]);
+        sneakBarOffset = new Vector2 (globalJson.get("sneakmeter").get("xoffset").asFloat(),
+                                        globalJson.get("sneakmeter").get("yoffset").asFloat());
+        maxSneakValue = globalJson.get("sneakmeter").get("maxsneak").asFloat();
+        sneakBarWidth = globalJson.get("sneakmeter").get("width").asFloat();
+        sneakBarHeight = globalJson.get("sneakmeter").get("height").asFloat();
 
         // Compute the FPS
         int[] fps = levelJson.get("fpsRange").asIntArray();
@@ -753,6 +776,9 @@ public class LevelController implements ContactListener {
         lightController.draw();
         fogController.draw(canvas, delta);
 
+        drawSneakMeter(canvas);
+        drawFlares(canvas);
+
         // Draw debugging on top of everything.
         if (debug == 1) {
             canvas.beginDebug();
@@ -784,6 +810,49 @@ public class LevelController implements ContactListener {
             levelModel.drawDebug(canvas, scale);
             canvas.endDebug();
         }
+    }
+
+    /**
+     * Draws the number of flares the player has left,
+     * a helper method for LevelController.draw()
+     *
+     * PlayerModel player must not be null
+     *
+     * @param canvas the drawing context
+     */
+    private void drawFlares(GameCanvas canvas){
+        canvas.begin();
+        player.getFlareCount();
+        canvas.end();
+    }
+
+    /**
+     * Draws sneak meter, a helper method for LevelController.draw()
+     *
+     * PlayerModel player and Vector2 scale must not be null
+     *
+     * @param canvas the drawing context
+     */
+    private void drawSneakMeter(GameCanvas canvas){
+        canvas.begin();
+
+        System.out.println(scale.toString());
+        float ox = scale.x * (player.getX() + sneakBarOffset.x);
+        float oy = scale.y * (player.getY() + sneakBarOffset.y);
+        float aW = Math.max(0, (player.getSneakVal() / maxSneakValue) * sneakBarWidth * scale.x);
+        float aH = scale.y * sneakBarHeight;
+        System.out.println(sneakBarTexture);
+        System.out.println(sneakBarColor);
+        System.out.println(ox);
+        System.out.println(oy);
+        System.out.println(aW);
+        System.out.println(aH);
+        System.out.println("");
+
+        if(background != null) {
+            canvas.draw(sneakBarTexture, sneakBarColor, ox, oy, aW, aH);
+        }
+        canvas.end();
     }
 
     /**
