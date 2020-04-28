@@ -221,10 +221,10 @@
       "active": "activeflarecounter",
       "inactive": "inactiveflarecounter"
     },
-    "xoffset": 4.875,
-    "yoffset": 4.75,
-    "maxflares": 5,
-    "color": [0.0, 0.0, 0.0, 0.0],
+    "textureoffset": {
+      "x": 4.875,
+      "y": 4.875
+    },
     "flare-split": 0.15
   }
 }

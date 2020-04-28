@@ -112,8 +112,6 @@ public class LevelController implements ContactListener {
     protected Color flareCountColor;
     /** The offset of the leftmost flarecount from the player */
     protected Vector2 flareCountOffset;
-    /** The maximum flare count allowed in game */
-    protected float maxFlareCount;
     /** The distance between each counter */
     protected float flareCountSplit;
 
@@ -372,13 +370,9 @@ public class LevelController implements ContactListener {
         activeFlareCountTexture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         key = globalJson.get("flarecount").get("texture").get("inactive").asString();
         inactiveFlareCountTexture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        float[] flareCountRGB = globalJson.get("flarecount").get("color").asFloatArray();
-        flareCountColor = new Color(flareCountRGB[0], flareCountRGB[1], flareCountRGB[2], flareCountRGB[3]);
         flareCountSplit = globalJson.get("flarecount").get("flare-split").asFloat();
-        flareCountOffset = new Vector2 (globalJson.get("flarecount").get("xoffset").asFloat(),
-                globalJson.get("flarecount").get("yoffset").asFloat());
-        maxFlareCount = globalJson.get("flarecount").get("maxflares").asFloat();
-
+        flareCountOffset = new Vector2 (globalJson.get("flarecount").get("textureoffset").get("x").asFloat(),
+                globalJson.get("flarecount").get("textureoffset").get("y").asFloat());
 
         // Compute the FPS
         int[] fps = levelJson.get("fpsRange").asIntArray();
