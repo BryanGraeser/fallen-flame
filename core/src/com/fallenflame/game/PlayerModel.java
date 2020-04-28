@@ -34,7 +34,7 @@ public class PlayerModel extends CharacterModel {
     protected float lightRadiusSaved;
     protected float lightRadiusSprint;
     protected float lightRadiusSneak;
-    /** Player sneak left (once hits 0, player cannot sneak) */
+    /** Player sneak left (once hits 0, a ghost is deployed on the map) Sneakval must be greater than 0 */
     protected int sneakVal;
 
     /**Tint of player light */
