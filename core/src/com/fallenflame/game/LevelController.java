@@ -104,16 +104,14 @@ public class LevelController implements ContactListener {
     /** The maximum sneak value allowed in the game */
     protected float maxSneakValue;
 
-    /** The texture used for the flarecount */
-    protected TextureRegion flareCountTexture;
+    /** The texture used for the flarecount when you have available flares */
+    protected TextureRegion activeFlareCountTexture;
+    /** The texture used for the flarecount when you have unavailable flares */
+    protected TextureRegion inactiveFlareCountTexture;
     /** The color used to tint the flarecount */
     protected Color flareCountColor;
     /** The offset of the leftmost flarecount from the player */
     protected Vector2 flareCountOffset;
-    /** The width of the total flare count */
-    protected float flareCountWidth;
-    /** The height of the flare count */
-    protected float flareCountHeight;
     /** The maximum flare count allowed in game */
     protected float maxFlareCount;
     /** The distance between each counter */
@@ -370,12 +368,13 @@ public class LevelController implements ContactListener {
         sneakBarWidth = globalJson.get("sneakmeter").get("width").asFloat();
         sneakBarHeight = globalJson.get("sneakmeter").get("height").asFloat();
 
-        flareCountTexture = background;
+        key = globalJson.get("flarecount").get("texture").get("active").asString();
+        activeFlareCountTexture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        key = globalJson.get("flarecount").get("texture").get("inactive").asString();
+        inactiveFlareCountTexture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         float[] flareCountRGB = globalJson.get("flarecount").get("color").asFloatArray();
         flareCountColor = new Color(flareCountRGB[0], flareCountRGB[1], flareCountRGB[2], flareCountRGB[3]);
         flareCountSplit = globalJson.get("flarecount").get("flare-split").asFloat();
-        flareCountWidth = globalJson.get("flarecount").get("width").asFloat();
-        flareCountHeight = globalJson.get("flarecount").get("height").asFloat();
         flareCountOffset = new Vector2 (globalJson.get("flarecount").get("xoffset").asFloat(),
                 globalJson.get("flarecount").get("yoffset").asFloat());
         maxFlareCount = globalJson.get("flarecount").get("maxflares").asFloat();
@@ -869,23 +868,25 @@ public class LevelController implements ContactListener {
      *
      * @param canvas the drawing context
      */
-    private void drawFlares(GameCanvas canvas){
+    private void drawFlares(GameCanvas canvas) {
         canvas.begin();
 
         float ox = scale.x * (player.getX() + flareCountOffset.x);
         float oy = scale.y * (player.getY() + flareCountOffset.y);
 
-        //float aW = scale.x * flareCountWidth
-        float flareWidth = scale.x * ((flareCountWidth / maxFlareCount) - flareCountSplit);  //width of one flare
+        float flareWidth = activeFlareCountTexture.getRegionWidth() + flareCountSplit * scale.x;
 
-        float aH = scale.y * flareCountHeight;
-
-        if(sneakBarTexture != null) {
-            for(int i = 0; i <= player.getFlareCount() - flares.size() - 1; i++){
-                float flareX = ox + i * (flareWidth + flareCountSplit * scale.x);
-                canvas.draw(flareCountTexture, flareCountColor, flareX, oy, flareWidth, aH);
+        if (activeFlareCountTexture != null && inactiveFlareCountTexture != null) {
+            for (int i = 0; i <= player.getFlareCount() - flares.size() - 1; i++) {
+                float activeFlareX = ox + i * flareWidth;
+                canvas.draw(activeFlareCountTexture, activeFlareX, oy);
+            }
+            for (int j = player.getFlareCount() - flares.size(); j < player.getFlareCount(); j++){
+                float inactiveFlareX = ox + j * flareWidth;
+                canvas.draw(inactiveFlareCountTexture, inactiveFlareX, oy);
             }
         }
+
         canvas.end();
     }
 

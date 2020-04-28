@@ -227,6 +227,14 @@
 		"flare": {
 			"file": "textures/flare.png",
 			"wrap": false
+		},
+		"activeflarecounter": {
+			"file": "textures/r_active_flare.png",
+			"wrap": false
+		},
+		"inactiveflarecounter": {
+			"file": "textures/r_inactive_flare.png",
+			"wrap": false
 		}
 	},
 	"fonts": {
