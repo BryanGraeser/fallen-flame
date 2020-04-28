@@ -863,7 +863,7 @@ public class LevelController implements ContactListener {
         float aH = scale.y * flareCountHeight;
 
         if(sneakBarTexture != null) {
-            for(int i = 0; i <= player.getFlareCount() - 1; i++){
+            for(int i = 0; i <= player.getFlareCount() - flares.size() - 1; i++){
                 float flareX = ox + i * (flareWidth + flareCountSplit * scale.x);
                 canvas.draw(flareCountTexture, flareCountColor, flareX, oy, flareWidth, aH);
             }
