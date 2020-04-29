@@ -76,6 +76,9 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        if(displayFont.getColor() != Color.WHITE){
+            displayFont.setColor(Color.WHITE);
+        }
         canvas.begin();
         canvas.draw(background, 0, 0);
         canvas.drawTextCentered("Level Select", displayFont, 250);
