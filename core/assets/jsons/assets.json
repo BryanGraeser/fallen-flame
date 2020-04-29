@@ -81,7 +81,7 @@
 			}
 		},
 		"enemy-a-up": {
-			"file": "textures/enemy-a-walk-right.png",
+			"file": "textures/enemy-a-walk-up.png",
 			"wrap": false,
 			"strip": {
 				"size": 5,
