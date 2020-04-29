@@ -63,6 +63,8 @@ public class LevelController implements ContactListener {
     private List<FlareModel> flares;
     /** Reference to all fireballs */
     private List<FireballModel> fireballs;
+    /** Reference to all items */
+    private List<ItemModel> items;
     /** Level Model for AI Pathfinding */
     private LevelModel levelModel;
 
@@ -474,6 +476,18 @@ public class LevelController implements ContactListener {
         fireballJSON = globalJson.get("fireball");
         ghostJSON = globalEnemies.get("ghost");
 
+        // Create items (if any exist)
+        if(levelJson.has("items")){
+            items = new LinkedList();
+            JsonValue globalItemJson = levelJson.get("item");
+            for(JsonValue levelItemJson : levelJson.get("items")){
+                ItemModel item = new ItemModel();
+                item.initialize(globalItemJson, levelItemJson);
+                items.add(item);
+            }
+        }
+
+        // Set background music
         bgm = levelJson.has("bgm") ? levelJson.get("bgm").asString() : null;
 
         // Initialize levelModel, lightController, and fogController
@@ -517,6 +531,11 @@ public class LevelController implements ContactListener {
             fireball.dispose();
         }
         fireballs.clear();
+        for(ItemModel item : items) {
+            item.deactivatePhysics(world);
+            item.dispose();
+        }
+        items.clear();
         exit.deactivatePhysics(world);
         exit.dispose();
         player.deactivatePhysics(world);
@@ -569,7 +588,6 @@ public class LevelController implements ContactListener {
                     ghostAdded = true;
                 }
             }
-
 
             // Get Enemy Actions
             Iterator<AIController> ctrlI = AIControllers.iterator();
@@ -636,6 +654,18 @@ public class LevelController implements ContactListener {
                 }
             }
 
+            // Remove old items
+            Iterator<ItemModel> iii = items.iterator();
+            while(iii.hasNext()){
+                ItemModel it = iii.next();
+                if(!it.isActive()){
+                    it.deactivatePhysics(world);
+                    it.dispose();
+                    iii.remove();
+                }
+            }
+
+            // Update background music
             if (player.getSneakVal() > 0 || !ghostJSON.has("bgm") || ghostJSON.get("bgm").asString().equals("")) {
                 if (bgm != null && !bgm.equals("")) {
                     BGMController.startBGM(bgm);
@@ -830,6 +860,9 @@ public class LevelController implements ContactListener {
         for(FireballModel fireball : fireballs){
             fireball.draw(canvas);
         }
+        for(ItemModel item : items) {
+            item.draw(canvas);
+        }
         player.draw(canvas);
         canvas.end();
 
@@ -994,6 +1027,20 @@ public class LevelController implements ContactListener {
                 }
                 else{
                     ((FireballModel) bd2).deactivate();
+                }
+            }
+            // Check for item pick-up
+            if((bd1 instanceof ItemModel && bd2 instanceof PlayerModel
+                    || bd1 instanceof PlayerModel && bd2 instanceof ItemModel)) {
+                // Ensure bd1 is item, bd2 is player
+                if(bd2 instanceof ItemModel) {
+                    Obstacle temp = bd2;
+                    bd2 = bd1;
+                    bd1 = temp;
+                }
+                // If item is a flare try to increment flare count (will return false if player is at max)
+                if(((ItemModel) bd1).isFlare() && player.incFlareCount()) {
+                    ((ItemModel) bd1).deactivate();
                 }
             }
         } catch (Exception e) {
