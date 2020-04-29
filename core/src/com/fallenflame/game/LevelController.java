@@ -65,6 +65,8 @@ public class LevelController implements ContactListener {
     private List<FireballModel> fireballs;
     /** Reference to all items */
     private List<ItemModel> items;
+    /** Reference to continuing player-item contacts */
+    private List<Contact> itemContacts;
     /** Level Model for AI Pathfinding */
     private LevelModel levelModel;
 
@@ -477,12 +479,16 @@ public class LevelController implements ContactListener {
         ghostJSON = globalEnemies.get("ghost");
 
         // Create items (if any exist)
+        items = new LinkedList();
+        itemContacts = new LinkedList();
         if(levelJson.has("items")){
-            items = new LinkedList();
-            JsonValue globalItemJson = levelJson.get("item");
+            JsonValue globalItemJson = globalJson.get("items");
             for(JsonValue levelItemJson : levelJson.get("items")){
-                ItemModel item = new ItemModel();
-                item.initialize(globalItemJson, levelItemJson);
+                ItemModel item = new ItemModel(levelItemJson.get("itemPos").asFloatArray());
+                item.initialize(globalItemJson, levelItemJson.get("itemType").asString());
+                item.setDrawScale(scale);
+                item.activatePhysics(world);
+                assert inBounds(item);
                 items.add(item);
             }
         }
@@ -654,6 +660,24 @@ public class LevelController implements ContactListener {
                 }
             }
 
+            // Check for continuing contact items' usability
+            Iterator<Contact> i3 = itemContacts.iterator();
+            while(i3.hasNext()){
+                Contact contact = i3.next();
+                Obstacle bd1 = (Obstacle)contact.getFixtureA().getBody().getUserData();
+                Obstacle bd2 = (Obstacle)contact.getFixtureB().getBody().getUserData();
+                // Ensure bd1 is item
+                if(bd2 instanceof ItemModel) {
+                    Obstacle temp = bd2;
+                    bd2 = bd1;
+                    bd1 = temp;
+                }
+                // If item is a flare try to increment flare count (will return false if player is at max)
+                if(((ItemModel) bd1).isFlare() && player.incFlareCount()) {
+                    ((ItemModel) bd1).deactivate();
+                    i3.remove();
+                }
+            }
             // Remove old items
             Iterator<ItemModel> iii = items.iterator();
             while(iii.hasNext()){
@@ -680,7 +704,7 @@ public class LevelController implements ContactListener {
             levelModel.update(player, enemies);
 
             // Update lights
-            lightController.updateLights(flares, enemies, fireballs);
+            lightController.updateLights(flares, enemies, fireballs, items);
         }
     }
 
@@ -890,6 +914,9 @@ public class LevelController implements ContactListener {
             for(FireballModel fireball: fireballs){
                 fireball.drawDebug(canvas);
             }
+            for(ItemModel item : items) {
+                item.drawDebug(canvas);
+            }
             canvas.endDebug();
             if(ticks % 10 == 0){
                 fps = 1/delta;
@@ -1041,6 +1068,9 @@ public class LevelController implements ContactListener {
                 // If item is a flare try to increment flare count (will return false if player is at max)
                 if(((ItemModel) bd1).isFlare() && player.incFlareCount()) {
                     ((ItemModel) bd1).deactivate();
+                }
+                else {
+                    itemContacts.add(contact);
                 }
             }
         } catch (Exception e) {
