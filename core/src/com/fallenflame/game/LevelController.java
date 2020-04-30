@@ -66,7 +66,7 @@ public class LevelController implements ContactListener {
     /** Reference to all items */
     private List<ItemModel> items;
     /** Reference to continuing player-item contacts */
-    private List<Contact> itemContacts;
+    private HashSet<ItemModel> itemContacts;
     /** Level Model for AI Pathfinding */
     private LevelModel levelModel;
 
@@ -480,7 +480,7 @@ public class LevelController implements ContactListener {
 
         // Create items (if any exist)
         items = new LinkedList();
-        itemContacts = new LinkedList();
+        itemContacts = new HashSet();
         if(levelJson.has("items")){
             JsonValue globalItemJson = globalJson.get("items");
             for(JsonValue levelItemJson : levelJson.get("items")){
@@ -660,21 +660,13 @@ public class LevelController implements ContactListener {
                 }
             }
 
-            // Check for continuing contact items' usability
-            Iterator<Contact> i3 = itemContacts.iterator();
+            // Check for contact items' usability
+            Iterator<ItemModel> i3 = itemContacts.iterator();
             while(i3.hasNext()){
-                Contact contact = i3.next();
-                Obstacle bd1 = (Obstacle)contact.getFixtureA().getBody().getUserData();
-                Obstacle bd2 = (Obstacle)contact.getFixtureB().getBody().getUserData();
-                // Ensure bd1 is item
-                if(bd2 instanceof ItemModel) {
-                    Obstacle temp = bd2;
-                    bd2 = bd1;
-                    bd1 = temp;
-                }
+                ItemModel item = i3.next();
                 // If item is a flare try to increment flare count (will return false if player is at max)
-                if(((ItemModel) bd1).isFlare() && player.incFlareCount()) {
-                    ((ItemModel) bd1).deactivate();
+                if(item.isFlare() && player.incFlareCount()) {
+                    item.deactivate();
                     i3.remove();
                 }
             }
@@ -1059,26 +1051,42 @@ public class LevelController implements ContactListener {
             // Check for item pick-up
             if((bd1 instanceof ItemModel && bd2 instanceof PlayerModel
                     || bd1 instanceof PlayerModel && bd2 instanceof ItemModel)) {
-                // Ensure bd1 is item, bd2 is player
+                // Ensure bd1 is item
                 if(bd2 instanceof ItemModel) {
                     Obstacle temp = bd2;
                     bd2 = bd1;
                     bd1 = temp;
                 }
-                // If item is a flare try to increment flare count (will return false if player is at max)
-                if(((ItemModel) bd1).isFlare() && player.incFlareCount()) {
-                    ((ItemModel) bd1).deactivate();
-                }
-                else {
-                    itemContacts.add(contact);
-                }
+                // Add contact to be handled later (not handled here, so we can handle potentially
+                // after beginContact is finished)
+                itemContacts.add((ItemModel)bd1);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     /** Unused ContactListener method */
-    public void endContact(Contact contact) {}
+    public void endContact(Contact contact) {
+        Fixture fix1 = contact.getFixtureA();
+        Fixture fix2 = contact.getFixtureB();
+        Body body1 = fix1.getBody();
+        Body body2 = fix2.getBody();
+        Obstacle bd1 = (Obstacle)body1.getUserData();
+        Obstacle bd2 = (Obstacle)body2.getUserData();
+
+        // Check if need to remove contact from itemContacts
+        if(bd1 instanceof ItemModel || bd2 instanceof ItemModel) {
+            // Ensure bd1 is item
+            if (bd2 instanceof ItemModel) {
+                Obstacle temp = bd2;
+                bd2 = bd1;
+                bd1 = temp;
+            }
+            if(itemContacts.contains(bd1))
+                itemContacts.remove(bd1);
+        }
+
+    }
     /** Unused ContactListener method */
     public void postSolve(Contact contact, ContactImpulse impulse) {}
     /** Unused ContactListener method */
