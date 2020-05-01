@@ -99,6 +99,7 @@ public class AITypeAController extends AIController {
     protected void changeStateIfApplicable() {
         switch(state) {
             case IDLE:
+                enemy.setSneaking(); // walk slower when pathing
                 enemy.makeCalm();
                 // Check for flares in range
                 checkFlares();
@@ -118,6 +119,7 @@ public class AITypeAController extends AIController {
                 break;
 
             case CHASE:
+                enemy.setWalking(); // walk normally when chasing
                 enemy.makeAggressive();
                 // Check for flares in range <-- we check this here because the enemy can be "distracted" by flares
                 checkFlares();
@@ -129,6 +131,7 @@ public class AITypeAController extends AIController {
                 break;
 
             case INVESTIGATE:
+                enemy.setWalking(); // walk normally when investigating
                 enemy.makeAlert();
                 assert enemy.getInvestigatePosition() != null;
                 // Check if investigating flare
