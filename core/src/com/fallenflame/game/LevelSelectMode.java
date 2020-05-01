@@ -194,7 +194,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
         for (int i = 0; i < posVec.length; i++) {
             if ((Math.pow(screenX-posVec[i].x,2) / (w*w)) + (Math.pow(screenY-posVec[i].y,2) / (h*h)) <= 1) {
                 //TODO: temporary disable of levels 6-10
-                if(i < 5) {
+                if(i < 6) {
                     pressState = 1;
                     levelSelected = i;
                 }

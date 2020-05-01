@@ -27,6 +27,12 @@
       "unlocked":   true,
       "completed":  true,
       "path":       "levels/medium.json"
+    },
+    {
+      "name":       "enemySurrounding",
+      "unlocked":   true,
+      "completed":  true,
+      "path":       "levels/enemySurroundingPlayer.json"
     }
   ]
 }

@@ -1,0 +1,199 @@
+{
+  "name": "level5",
+  "physicsSize": [
+    26.88,
+    23.04
+  ],
+  "fpsRange": [
+    20,
+    60
+  ],
+  "playerpos": [
+    3.08,
+    12.04
+  ],
+  "exitpos": [
+    25.135,
+    11.39
+  ],
+  "background": {
+    "texture": "floor-tile"
+  },
+  "enemies": [
+    {
+      "enemypos": [
+        5.36,
+        15.2
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        10.16,
+        13.66
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        4.98,
+        7.72
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        7.48,
+        13.54
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        7.74,
+        10.08
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        12.5,
+        13.58
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        14.96,
+        13.9
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        17.26,
+        13.74
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        19.56,
+        13.7
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        21.94,
+        14.94
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        10.2,
+        10.16
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        12.66,
+        10.24
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        15.2,
+        10.22
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        17.18,
+        10.18
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        19.58,
+        9.98
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        21.94,
+        8.86
+      ],
+      "enemytype": "typeA"
+    }
+  ],
+  "items": [],
+  "lighting": {
+    "color": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "gamma": true,
+    "diffuse": true,
+    "blur": 1
+  },
+  "walls": [
+    {
+      "pos": [
+        16,
+        22.4
+      ],
+      "size": [
+        32,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        0.64,
+        11.52
+      ],
+      "size": [
+        1.28,
+        23.04
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        26.24,
+        11.52
+      ],
+      "size": [
+        1.28,
+        23.04
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        16,
+        0.64
+      ],
+      "size": [
+        32,
+        1.28
+      ],
+      "texture": "wall-side"
+    }
+  ],
+  "startSneakVal": 982,
+  "graphicSize": [
+    800,
+    600
+  ]
+}
