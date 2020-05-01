@@ -1,21 +1,20 @@
 {
-  "name": "exMediumLevel",
+  "name": "level7",
   "physicsSize": [
-    33.28,
-    25.6
+    32,
+    24.32
   ],
   "fpsRange": [
     20,
     60
   ],
   "playerpos": [
-    2.96,
-    3.6
+    3,
+    3
   ],
-  "bgm": "the-doll-thrown-away-in-rain",
   "exitpos": [
-    30.08,
-    21.75
+    28.16,
+    19.99
   ],
   "background": {
     "texture": "floor-tile"
@@ -23,56 +22,46 @@
   "enemies": [
     {
       "enemypos": [
-        26.44,
-        8.5
-      ],
-      "enemytype": "typeA",
-      "subtype": "pathing",
-      "pathCoors": [
-        [
-          26.42,
-          6.98
-        ],
-        [
-          31.16,
-          6.96
-        ],
-        [
-          31.18,
-          8.42
-        ]
-      ]
-    },
-    {
-      "enemypos": [
-        2.24,
-        18.86
-      ],
-      "enemytype": "typeA",
-      "subtype": "pathing",
-      "pathCoors": [
-        [
-          2.2,
-          17.18
-        ],
-        [
-          7,
-          17.2
-        ],
-        [
-          6.98,
-          18.88
-        ]
-      ]
-    },
-    {
-      "enemypos": [
-        14.04,
-        13.1
+        21.04,
+        3.16
       ],
       "enemytype": "typeB"
+    },
+    {
+      "enemypos": [
+        28.12,
+        11.92
+      ],
+      "enemytype": "typeB"
+    },
+    {
+      "enemypos": [
+        15.44,
+        17.52
+      ],
+      "enemytype": "typeA",
+      "subtype": "pathing",
+      "pathCoors": [
+        [
+          11.94,
+          17.48
+        ],
+        [
+          12.04,
+          14.02
+        ],
+        [
+          18.92,
+          13.84
+        ],
+        [
+          18.92,
+          17.54
+        ]
+      ]
     }
   ],
+  "items": [],
   "lighting": {
     "color": [
       0,
@@ -87,11 +76,11 @@
   "walls": [
     {
       "pos": [
-        16.64,
-        24.96
+        16,
+        23.68
       ],
       "size": [
-        33.28,
+        32,
         1.28
       ],
       "texture": "wall-side"
@@ -99,43 +88,32 @@
     {
       "pos": [
         0.64,
-        12.8
+        12.16
       ],
       "size": [
         1.28,
-        25.6
+        24.32
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        32.64,
-        12.8
+        31.36,
+        12.16
       ],
       "size": [
         1.28,
-        25.6
+        24.32
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        16.64,
+        16,
         0.64
       ],
       "size": [
-        33.28,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        13.44,
-        7.04
-      ],
-      "size": [
-        24.32,
+        32,
         1.28
       ],
       "texture": "wall-side"
@@ -143,37 +121,38 @@
     {
       "pos": [
         19.84,
-        17.28
+        6.4
       ],
       "size": [
-        24.32,
-        1.28
+        11.52,
+        2.56
       ],
       "texture": "wall-side"
     },
     {
       "pos": [
-        19.84,
-        18.56
+        22.4,
+        15.36
       ],
       "size": [
-        24.32,
-        1.28
+        6.4,
+        2.56
       ],
-      "texture": "wall-top"
+      "texture": "wall-side"
     },
     {
       "pos": [
-        13.44,
-        8.32
+        6.4,
+        15.36
       ],
       "size": [
-        24.32,
-        1.28
+        10.24,
+        2.56
       ],
-      "texture": "wall-top"
+      "texture": "wall-side"
     }
   ],
+  "startSneakVal": 345,
   "graphicSize": [
     800,
     600
