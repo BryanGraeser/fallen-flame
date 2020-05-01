@@ -145,11 +145,10 @@ public class AITypeAController extends AIController {
                     enemy.clearInvestigateFlare();
                     break;
                 }
-
-                // If we reached investigation position AND we were investigating player OR we were investigating a flare
-                // that has stopped moving OR we are chasing a flare that has burned out then we can clear and move on
+                
+                // if flare died, or we reached investigation position and it wasn't a flare stop
                 if((enemy.isInvestigatingFlare() && (enemy.getInvestigateFlare().timeToBurnout() <= 0)) ||
-                        (investigateReached() && (!enemy.isInvestigatingFlare() || enemy.getInvestigateFlare().isStuck()))){
+                        (investigateReached() && !enemy.isInvestigatingFlare())){
                     enemy.setInvestigatePosition(null);
                     enemy.clearInvestigateFlare();
                     state = FSMState.IDLE;
