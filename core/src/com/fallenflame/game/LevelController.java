@@ -751,7 +751,6 @@ public class LevelController implements ContactListener {
         player.setLightRadiusSaved(player.getLightRadius());
         player.setLightRadius(player.getLightRadiusSprint());
         player.setSprinting();
-        player.setForce(player.getForceSprint());
     }
 
     /**
@@ -762,7 +761,6 @@ public class LevelController implements ContactListener {
     public void makeWalk(){
         player.setLightRadius(player.getLightRadiusSaved());
         player.setWalking();
-        player.setForce(player.getForceWalk());
     }
 
     /**
@@ -774,19 +772,6 @@ public class LevelController implements ContactListener {
         player.setLightRadiusSaved(player.getLightRadius());
         player.setLightRadiusSneak();
         player.setSneaking();
-        player.setForce(player.getForceSneak());
-    }
-
-    /**
-     * Moves the player. (Called by GameEngine)
-     * @param angle angle player is facing
-     * @param tempAngle movement angle of player (to be scaled by player force)
-     */
-    public void movePlayer(float angle, Vector2 tempAngle) {
-        tempAngle.scl(player.getForce());
-        player.setMovement(tempAngle.x, tempAngle.y);
-        if (!tempAngle.isZero()) player.setAngle(angle);
-        player.applyForce();
     }
 
     /**
