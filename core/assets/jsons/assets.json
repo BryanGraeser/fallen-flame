@@ -191,7 +191,7 @@
 			}
 		},
 		"goal": {
-			"file": "textures/helicopter.png",
+			"file": "textures/exit.png",
 			"wrap": false
 		},
 		"fire": {
@@ -283,6 +283,6 @@
 		},
 		"menu-music": {
 			"file": "sounds/new-sounds/deep-dark-well.mp3"
-		},
+		}
 	}
 }
