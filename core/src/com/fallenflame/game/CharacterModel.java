@@ -239,7 +239,7 @@ public abstract class CharacterModel extends WheelObstacle implements ILight {
                 json.get("textureoffset").get("y").asFloat());
 
         walkSpeed = json.get("walkspeed").asFloat();
-        sprintSpeed = json.get("walkspeed").asFloat();
+        sprintSpeed = json.get("sprintspeed").asFloat();
         sneakSpeed = json.get("sneakspeed").asFloat();
         move = MovementState.WALK;
     }

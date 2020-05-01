@@ -62,8 +62,8 @@ public class PlayerModel extends CharacterModel {
         // Global json data
         lightRadiusSprint = globalJson.get("sprintlightrad").asInt();
         lightRadiusSneak = globalJson.get("sneaklightrad").asInt();
-        lightRadius = minLightRadius;
         minLightRadius = globalJson.get("minlightradius").asInt();
+        lightRadius = minLightRadius;
         float[] tintValues = globalJson.get("tint").asFloatArray();//RGBA
         tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
 
