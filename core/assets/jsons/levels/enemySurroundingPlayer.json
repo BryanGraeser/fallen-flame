@@ -1,8 +1,9 @@
 {
   "name": "level5",
+  "startSneakVal": 982,
   "physicsSize": [
     26.88,
-    23.04
+    20.48
   ],
   "fpsRange": [
     20,
@@ -13,8 +14,8 @@
     12.04
   ],
   "exitpos": [
-    25.135,
-    11.39
+    23.895,
+    11.21
   ],
   "background": {
     "texture": "floor-tile"
@@ -22,113 +23,127 @@
   "enemies": [
     {
       "enemypos": [
-        5.36,
-        15.2
+        4.64,
+        14.72
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        10.16,
-        13.66
-      ],
-      "enemytype": "typeA"
-    },
-    {
-      "enemypos": [
-        4.98,
-        7.72
-      ],
-      "enemytype": "typeA"
-    },
-    {
-      "enemypos": [
-        7.48,
-        13.54
-      ],
-      "enemytype": "typeA"
-    },
-    {
-      "enemypos": [
-        7.74,
-        10.08
-      ],
-      "enemytype": "typeA"
-    },
-    {
-      "enemypos": [
-        12.5,
+        9.22,
         13.58
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        14.96,
-        13.9
+        4.32,
+        8.3
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        17.26,
-        13.74
+        6.64,
+        13.58
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        19.56,
-        13.7
+        6.28,
+        10
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        21.94,
-        14.94
+        11.8,
+        13.54
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        10.2,
+        14.14,
+        13.62
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        16.58,
+        13.58
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        18.9,
+        13.5
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        20.74,
+        14.88
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        8.68,
         10.16
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        12.66,
-        10.24
+        11.44,
+        10.08
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        15.2,
-        10.22
+        14.3,
+        10.06
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        17.18,
-        10.18
+        16.12,
+        9.94
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        19.58,
-        9.98
+        18.66,
+        9.78
       ],
       "enemytype": "typeA"
     },
     {
       "enemypos": [
-        21.94,
-        8.86
+        21.44,
+        8.6
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        2.5,
+        15.28
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        2.36,
+        7.54
       ],
       "enemytype": "typeA"
     }
@@ -148,8 +163,8 @@
   "walls": [
     {
       "pos": [
-        16,
-        22.4
+        10.88,
+        19.84
       ],
       "size": [
         32,
@@ -171,7 +186,7 @@
     {
       "pos": [
         26.24,
-        11.52
+        8.96
       ],
       "size": [
         1.28,
@@ -181,17 +196,16 @@
     },
     {
       "pos": [
-        16,
+        13.44,
         0.64
       ],
       "size": [
-        32,
+        26.88,
         1.28
       ],
       "texture": "wall-side"
     }
   ],
-  "startSneakVal": 982,
   "graphicSize": [
     800,
     600
