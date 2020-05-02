@@ -845,7 +845,7 @@ public class LevelController implements ContactListener {
         //draw background
         if (background != null) {
             canvas.draw(background, Color.WHITE, 0,0,
-                    bounds.width * scale.x, bounds.width * scale.y);
+                    bounds.width * scale.x, bounds.height * scale.y);
         }
 
         // Draw all objects
