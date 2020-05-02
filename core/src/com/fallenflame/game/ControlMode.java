@@ -59,7 +59,7 @@ public class ControlMode implements Screen, InputProcessor {
         int totalControls = InputBindings.Control.values().length;
         int ind = 0;
         for (InputBindings.Control i : InputBindings.Control.values()) {
-            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 160) + 100);
+            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 160) + 80);
             displayFont.setColor(Color.WHITE);
             canvas.drawText(InputBindings.controlToString(i), displayFont,
                     20 ,ry);
@@ -72,6 +72,14 @@ public class ControlMode implements Screen, InputProcessor {
             canvas.drawText(str, displayFont,
                     rx ,ry);
             ind ++;
+        }
+        displayFont.getData().setScale(0.4f);
+        if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) {
+            canvas.drawTextFromCenter("Input new key. Press ESC or click anywhere to cancel.", displayFont,
+                    screenWidth / 2, 20);
+        } else {
+            canvas.drawTextFromCenter("Click on a key to change it.", displayFont,
+                    screenWidth / 2, 20);
         }
         displayFont.setColor(backHover ? Color.YELLOW : Color.WHITE);
         displayFont.getData().setScale(0.5f);
