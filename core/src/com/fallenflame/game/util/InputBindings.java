@@ -125,7 +125,7 @@ public class InputBindings {
             case GO_RIGHT: return "Go right";
             case RESET_LEVEL: return "Reset level";
             case SNEAKING: return "Sneaking";
-            case SPRINTING: return "Springing";
+            case SPRINTING: return "Sprinting";
             case INCREASE_LIGHT: return "Increase light radius (alternative)";
             case DECREASE_LIGHT: return "Decrease light radius (alternative)";
         }
