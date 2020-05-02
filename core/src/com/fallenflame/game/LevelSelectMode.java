@@ -54,6 +54,11 @@ public class LevelSelectMode implements Screen, InputProcessor {
     /** The current state of whether any level buttons are being hovered over */
     private int[] hoverState;
 
+    private static final int BACK_BTN_WIDTH = 60;
+    private static final int BACK_BTN_HEIGHT = 30;
+    private static final int BACK_BTN_X = 10;
+    private static final int BACK_BTN_Y = 10;
+
     /** Level selected by the player */
     private int levelSelected;
 
@@ -65,11 +70,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
         pressState = 0;
         numberUnlocked = 8;
         posVec = new Vector2[posVecRel.length];
-        hoverState = new int[posVecRel.length];
+        hoverState = new int[posVecRel.length + 1]; // Plus one for back button
         for (int i = 0; i < posVecRel.length; i++) {
             posVec[i] = new Vector2(0f,0f);
             hoverState[i] = 0;
         }
+        hoverState[posVecRel.length] = 0;
     }
 
     @Override
@@ -80,7 +86,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        canvas.begin();
+        canvas.beginWithoutCamera();
         canvas.draw(background, 0, 0);
         displayFont.setColor(Color.BLACK);
         displayFont.getData().setScale(.5f);
@@ -98,6 +104,8 @@ public class LevelSelectMode implements Screen, InputProcessor {
             }
             canvas.drawTextFromCenter("" + (i + 1), displayFont, posVec[i].x, posVec[i].y - levelButton.getHeight()/5);
         }
+        displayFont.setColor(hoverState[posVec.length] == 1 ? Color.YELLOW : Color.WHITE);
+        canvas.drawText("Back", displayFont,BACK_BTN_X, heightY - BACK_BTN_Y);
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1f);
         canvas.end();
@@ -144,12 +152,16 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-        BGMController.stopBGMIfPlaying("menu-music");
+        if (levelSelected >= 0) BGMController.stopBGMIfPlaying("menu-music");
+        this.pressState = 0;
+        for (int i = 0, j = hoverState.length; i < j; i++ ) {
+            hoverState[i] = 0;
+        }
     }
 
     @Override
     public void dispose() {
-        BGMController.stopBGMIfPlaying("menu-music");
+        if (levelSelected >= 0) BGMController.stopBGMIfPlaying("menu-music");
     }
 
     /**
@@ -193,6 +205,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
             return true;
         }
 
+        int origScreenY = screenY;
         // Flip to match graphics coordinates
         screenY = heightY-screenY;
 
@@ -208,6 +221,11 @@ public class LevelSelectMode implements Screen, InputProcessor {
                 }
             }
         }
+        if (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
+                origScreenY >= BACK_BTN_Y && origScreenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) {
+            pressState = 1;
+            levelSelected = -1;
+        }
         return false;
 
 
@@ -220,6 +238,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        int origScreenY = screenY;
         // Flip to match graphics coordinates
         screenY = heightY-screenY;
 
@@ -233,6 +252,9 @@ public class LevelSelectMode implements Screen, InputProcessor {
                 hoverState[i] = 0;
             }
         }
+        hoverState[posVec.length] =
+                (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
+                        origScreenY >= BACK_BTN_Y && origScreenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) ? 1 : 0;
         return false;
     }
 

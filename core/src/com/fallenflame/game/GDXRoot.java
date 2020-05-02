@@ -27,6 +27,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	private GameCanvas levelCanvas;
 	/** Asset Loading Screen. What will show  */
 	private LoadingMode loading;
+	/** Asset Control Screen. What will show  */
+	private ControlMode control;
 	/** Player mode for the the game */
 	private GameEngine engine;
 	/** Level select for the game */
@@ -47,6 +49,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		canvas  = new GameCanvas();
 		levelCanvas = new GameCanvas();
 		loading = new LoadingMode(canvas,1);
+		control = new ControlMode(levelCanvas);
 		levelSelect = new LevelSelectMode(levelCanvas);
 		engine = new GameEngine();
 		InputMultiplexer multiplexer = new InputMultiplexer(); //Allows for multiple InputProcessors
@@ -74,6 +77,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		engine.dispose();
 		canvas.dispose();
 		levelCanvas.dispose();
+		control.dispose();
 		canvas = null;
 
 		// Unload all of the resources
@@ -111,27 +115,47 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void exitScreen(Screen screen, int exitCode) {
 		if (screen == loading) {
-			//Still finish loading everything before shutting down
-			engine.loadContent();
-			Gdx.input.setInputProcessor(levelSelect);
-			levelSelect.setScreenListener(this);
-			setScreen(levelSelect);
+			if (exitCode == 420) {
+				engine.loadContent();
+			} else {
+				if (loading.toControl) {
+					Gdx.input.setInputProcessor(control);
+					control.setScreenListener(this);
+					setScreen(control);
+				} else {
+					Gdx.input.setInputProcessor(levelSelect);
+					levelSelect.setScreenListener(this);
+					setScreen(levelSelect);
+				}
+			}
 
-			loading.dispose();
-			loading = null;
+//			loading.dispose();
+//			loading = null;
 		} else if (screen == levelSelect) {
 			engine.resume();
-			Gdx.input.setInputProcessor(engine);
-			engine.setScreenListener(this);
-			engine.setCanvas(canvas);
-			engine.reset(levelSelect.getLevelSelected());
-			setScreen(engine);
+			if (levelSelect.getLevelSelected() >= 0) {
+				Gdx.input.setInputProcessor(engine);
+				engine.setScreenListener(this);
+				engine.setCanvas(canvas);
+				engine.reset(levelSelect.getLevelSelected());
+				setScreen(engine);
+			} else { // Level select = -1 means go back.
+				Gdx.input.setInputProcessor(loading);
+				loading.setScreenListener(this);
+				loading.setScreenListener(this);
+				setScreen(loading);
+			}
 		} else if (screen == engine) {
 			Gdx.input.setInputProcessor(levelSelect);
 			levelSelect.setScreenListener(this);
 			setScreen(levelSelect);
 			engine.pause();
 			levelSelect.reset();
+		} else if (screen == control) {
+			Gdx.input.setInputProcessor(loading);
+			loading.setScreenListener(this);
+			loading.setScreenListener(this);
+			setScreen(loading);
 		} else if (exitCode == engine.EXIT_QUIT) {
 			// We quit the main application
 			Gdx.app.exit();

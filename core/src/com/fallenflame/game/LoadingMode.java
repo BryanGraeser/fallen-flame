@@ -241,6 +241,9 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     private FreeTypeFontGenerator generator;
     private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
+    /** Is the next screen control? */
+    public boolean toControl = false;
+
     /**
      * Returns the budget for the asset loader.
      * <p>
@@ -385,11 +388,17 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
      * @param delta Number of seconds since last animation frame
      */
     private void update(float delta) {
+        if (progress >= 1) {
+            BGMController.startBGM("menu-music", true);
+        }
         if (playButton == null) {
             manager.update(budget);
             this.progress = manager.getProgress();
             if (progress >= 1.0f) {
                 this.progress = 1.0f;
+                // Right now assets don't load until the user clicks play button.
+                // This sends asignal to GDXRoot to load assets.
+                listener.exitScreen(this, 420);
                 playButton = new Texture(PLAY_BTN_FILE);
                 playButton.setFilter(TextureFilter.Linear, TextureFilter.Linear);
                 generator = new FreeTypeFontGenerator(Gdx.files.internal(FONT_FILE));
@@ -427,7 +436,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
      * prefer this in lecture.
      */
     private void draw() {
-        canvas.begin();
+        canvas.beginWithoutCamera();
         if (playButton == null) {
             canvas.draw(background, 0, 0);
             canvas.draw(fireBuddy, centerX / 1.20f, centerY / .15f);
@@ -549,6 +558,10 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
     public void hide() {
         // Useless if called in outside animation loop
         active = false;
+        pressState = 0;
+        for (MenuText mt : menuTextArray) {
+            mt.isHovered = false;
+        }
     }
 
     /**
@@ -587,6 +600,7 @@ public class LoadingMode implements Screen, InputProcessor, ControllerListener {
                 break;
             }
         }
+        toControl = (menuTextArray.get(2).rect.contains(screenX, screenY));
         return false;
     }
 
