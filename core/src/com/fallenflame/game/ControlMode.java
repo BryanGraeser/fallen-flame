@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.fallenflame.game.util.InputBindings;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
+import org.w3c.dom.css.Rect;
 
 import java.util.Arrays;
 import java.util.OptionalInt;
@@ -20,7 +21,7 @@ public class ControlMode implements Screen, InputProcessor {
     private final Texture background = new Texture(BACKGROUND_FILE);
     private final GameCanvas canvas;
     private final int[] controlStates;
-    private final Rectangle[] controlRects;
+    private final Rectangle[][] controlRects;
     private int screenWidth;
     private int screenHeight;
     private BitmapFont displayFont;
@@ -40,7 +41,7 @@ public class ControlMode implements Screen, InputProcessor {
     {
         this.canvas = canvas;
         controlStates = new int[InputBindings.Control.values().length];
-        controlRects = new Rectangle[InputBindings.Control.values().length];
+        controlRects = new Rectangle[InputBindings.Control.values().length][2];
         backHover = false;
         resetHover = false;
         Arrays.fill(controlStates, 0);
@@ -60,20 +61,25 @@ public class ControlMode implements Screen, InputProcessor {
         int ind = 0;
         for (InputBindings.Control i : InputBindings.Control.values()) {
             float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 160) + 80);
-            displayFont.setColor(Color.WHITE);
-            canvas.drawText(InputBindings.controlToString(i), displayFont,
+            displayFont.setColor(controlStates[ind] == 1 ? Color.YELLOW :
+                    (controlStates[ind] == 2 ? Color.RED : Color.WHITE));
+            String str2 = InputBindings.controlToString(i);
+            GlyphLayout box2 = new GlyphLayout(displayFont, str2);
+            canvas.drawText(str2, displayFont,
                     20 ,ry);
             String str = InputBindings.keyToString(InputBindings.getBindingOf(i));
             GlyphLayout box = new GlyphLayout(displayFont, str);
             float rx = screenWidth - 20 - box.width;
-            displayFont.setColor(controlStates[ind] == 1 ? Color.YELLOW :
-                    (controlStates[ind] == 2 ? Color.RED : Color.WHITE));
-            controlRects[ind] = new Rectangle(rx, screenHeight - ry, box.width, box.height + 10);
+            controlRects[ind] = new Rectangle[]{
+                    new Rectangle(20, screenHeight - ry, box2.width, box2.height + 10),
+                    new Rectangle(rx, screenHeight - ry, box.width, box.height + 10)
+            };
             canvas.drawText(str, displayFont,
                     rx ,ry);
             ind ++;
         }
         displayFont.getData().setScale(0.4f);
+        displayFont.setColor(Color.WHITE);
         if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) {
             canvas.drawTextFromCenter("Input new key. Press ESC or click anywhere to cancel.", displayFont,
                     screenWidth / 2, 20);
@@ -130,11 +136,13 @@ public class ControlMode implements Screen, InputProcessor {
             return false;
         } else {
             for (int i = 0, j = controlRects.length; i < j; i++) {
-                if (controlRects[i].contains(screenX, screenY)) {
-                    controlStates[i] = 2;
-                    return true;
-                } else {
-                    controlStates[i] = 0;
+                for (Rectangle rec: controlRects[i]) {
+                    if (rec.contains(screenX, screenY)) {
+                        controlStates[i] = 2;
+                        return true;
+                    } else {
+                        controlStates[i] = 0;
+                    }
                 }
             }
             if (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
@@ -159,10 +167,13 @@ public class ControlMode implements Screen, InputProcessor {
     public boolean mouseMoved(int screenX, int screenY) {
         if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) return false;
         for (int i = 0, j = controlRects.length; i < j; i++) {
-            if (controlRects[i].contains(screenX, screenY)) {
-                controlStates[i] = 1;
-            } else {
-                controlStates[i] = 0;
+            for (Rectangle rec: controlRects[i]) {
+                if (rec.contains(screenX, screenY)) {
+                    controlStates[i] = 1;
+                    return true;
+                } else {
+                    controlStates[i] = 0;
+                }
             }
         }
         backHover = (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
