@@ -186,6 +186,11 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Input.Keys.ESCAPE) {
+            pressState = 1;
+            levelSelected = -1;
+            return true;
+        }
         return false;
     }
 

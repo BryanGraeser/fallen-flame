@@ -1,5 +1,6 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -109,7 +110,13 @@ public class ControlMode implements Screen, InputProcessor {
         OptionalInt ind = IntStream.range(0, controlStates.length)
                 .filter(i -> controlStates[i] == 2)
                 .findFirst();
-        if (!ind.isPresent()) return false;
+        if (!ind.isPresent()) {
+            if (keycode == Input.Keys.ESCAPE) {
+                listener.exitScreen(this, 0);
+                return true;
+            }
+            return false;
+        }
         InputBindings.setBindingOf(InputBindings.Control.values()[ind.getAsInt()], keycode);
         for (int i = 0, j = controlRects.length; i < j; i++) {
             controlStates[i] = 0;
