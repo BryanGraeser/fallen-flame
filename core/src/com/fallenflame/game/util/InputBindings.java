@@ -83,7 +83,7 @@ public class InputBindings {
         for (Control c : Control.values()) {
             String id = controlToID(c);
             if (prefs.contains(id)) {
-                setBindingOf(c, prefs.getInteger(id), false, false);
+                setBindingOf(c, prefs.getInteger(id), false, false, false);
             }
         }
     }
@@ -97,7 +97,7 @@ public class InputBindings {
             }
         }
         if (con != null) {
-            setBindingOf(con, getBindingOf(c), false);
+            setBindingOf(con, getBindingOf(c), false, false);
         }
     }
     public static void reset(boolean resetPrefs) {
@@ -145,17 +145,61 @@ public class InputBindings {
                 return Input.Keys.toString(k);
         }
     }
-    private static void setBindingOf(Control c, int i, boolean doCheck, boolean saveToPref) {
+    private static void setBindingOf(Control c, int i, boolean shortcutCheck, boolean swapCheck, boolean saveToPref) {
         if (!allowed(i)) return;
-        if (doCheck) switchControlIfNeeded(c, i);
+        if (swapCheck) switchControlIfNeeded(c, i);
         bindings.put(c, i);
+        if (shortcutCheck && (c == Control.GO_UP && i == Input.Keys.UP
+                && getBindingOf(Control.GO_DOWN) == Input.Keys.S
+                && getBindingOf(Control.GO_LEFT) == Input.Keys.A
+                && getBindingOf(Control.GO_RIGHT) == Input.Keys.D) ||
+                (c == Control.GO_DOWN && i == Input.Keys.DOWN
+                        && getBindingOf(Control.GO_UP) == Input.Keys.W
+                        && getBindingOf(Control.GO_LEFT) == Input.Keys.A
+                        && getBindingOf(Control.GO_RIGHT) == Input.Keys.D) ||
+                (c == Control.GO_LEFT && i == Input.Keys.LEFT
+                        && getBindingOf(Control.GO_DOWN) == Input.Keys.S
+                        && getBindingOf(Control.GO_UP) == Input.Keys.W
+                        && getBindingOf(Control.GO_RIGHT) == Input.Keys.D) ||
+                (c == Control.GO_RIGHT && i == Input.Keys.RIGHT
+                        && getBindingOf(Control.GO_DOWN) == Input.Keys.S
+                        && getBindingOf(Control.GO_LEFT) == Input.Keys.A
+                        && getBindingOf(Control.GO_UP) == Input.Keys.W)) {
+            setBindingOf(Control.GO_UP, Input.Keys.UP, false);
+            setBindingOf(Control.GO_LEFT, Input.Keys.LEFT, false);
+            setBindingOf(Control.GO_RIGHT, Input.Keys.RIGHT, false);
+            setBindingOf(Control.GO_DOWN, Input.Keys.DOWN, false);
+        } else if (shortcutCheck && (c == Control.GO_UP && i == Input.Keys.W
+                && getBindingOf(Control.GO_DOWN) == Input.Keys.DOWN
+                && getBindingOf(Control.GO_LEFT) == Input.Keys.LEFT
+                && getBindingOf(Control.GO_RIGHT) == Input.Keys.RIGHT) ||
+                (c == Control.GO_DOWN && i == Input.Keys.S
+                        && getBindingOf(Control.GO_UP) == Input.Keys.UP
+                        && getBindingOf(Control.GO_LEFT) == Input.Keys.LEFT
+                        && getBindingOf(Control.GO_RIGHT) == Input.Keys.RIGHT) ||
+                (c == Control.GO_LEFT && i == Input.Keys.A
+                        && getBindingOf(Control.GO_DOWN) == Input.Keys.DOWN
+                        && getBindingOf(Control.GO_UP) == Input.Keys.UP
+                        && getBindingOf(Control.GO_RIGHT) == Input.Keys.RIGHT) ||
+                (c == Control.GO_RIGHT && i == Input.Keys.D
+                        && getBindingOf(Control.GO_DOWN) == Input.Keys.DOWN
+                        && getBindingOf(Control.GO_LEFT) == Input.Keys.LEFT
+                        && getBindingOf(Control.GO_UP) == Input.Keys.UP)) {
+            setBindingOf(Control.GO_UP, Input.Keys.W, false);
+            setBindingOf(Control.GO_LEFT, Input.Keys.A, false);
+            setBindingOf(Control.GO_RIGHT, Input.Keys.D, false);
+            setBindingOf(Control.GO_DOWN, Input.Keys.S, false);
+        }
         if (saveToPref) {
             prefs.putInteger(controlToID(c), i);
             prefs.flush();
         }
     }
-    private static void setBindingOf(Control c, int i, boolean doCheck) {
-        setBindingOf(c, i, doCheck, true);
+    private static void setBindingOf(Control c, int i, boolean shortcutCheck, boolean swapCheck) {
+        setBindingOf(c, i, shortcutCheck, swapCheck, true);
+    }
+    private static void setBindingOf(Control c, int i, boolean shortcutCheck) {
+        setBindingOf(c, i, shortcutCheck, true);
     }
     public static void setBindingOf(Control c, int i) {
         setBindingOf(c, i, true);
