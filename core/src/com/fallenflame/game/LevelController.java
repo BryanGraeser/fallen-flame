@@ -128,6 +128,7 @@ public class LevelController implements ContactListener {
     private final LightController lightController;
     private final List<AIController> AIControllers;
     private final FogController fogController;
+    private final TextController textController;
 
     // BGM
     private String bgm;
@@ -336,6 +337,7 @@ public class LevelController implements ContactListener {
         lightController = new LightController();
         AIControllers = new LinkedList<>();
         fogController = new FogController();
+        textController = new TextController();
         // Models
         walls = new LinkedList<>();
         enemies = new LinkedList<>();
@@ -493,6 +495,8 @@ public class LevelController implements ContactListener {
             }
         }
 
+        textController.initialize(levelJson.has("texts") ? levelJson.get("texts") : null);
+
         // Set background music
         bgm = levelJson.has("bgm") ? levelJson.get("bgm").asString() : null;
 
@@ -514,6 +518,7 @@ public class LevelController implements ContactListener {
             return;
 
         lightController.dispose();
+        textController.dispose();
 
         for(WallModel wall : walls) {
             wall.deactivatePhysics(world);
@@ -582,6 +587,8 @@ public class LevelController implements ContactListener {
             // Update player and exit
             player.update(dt);
             assert inBounds(player);
+
+            textController.update(player);
 
             // Decrement sneak value if player is sneaking
             if(player.isSneaking()){
@@ -874,6 +881,7 @@ public class LevelController implements ContactListener {
 
         drawSneakMeter(canvas);
         drawFlares(canvas);
+        textController.draw(canvas);
 
         // Draw debugging on top of everything.
         if (debug == 1) {
