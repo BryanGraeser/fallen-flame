@@ -83,7 +83,7 @@ public class InputBindings {
         for (Control c : Control.values()) {
             String id = controlToID(c);
             if (prefs.contains(id)) {
-                setBindingOfWithoutCheck(c, prefs.getInteger(id));
+                setBindingOf(c, prefs.getInteger(id), false, false);
             }
         }
     }
@@ -97,7 +97,7 @@ public class InputBindings {
             }
         }
         if (con != null) {
-            bindings.put(con, getBindingOf(c));
+            setBindingOf(con, getBindingOf(c), false);
         }
     }
     public static void reset(boolean resetPrefs) {
@@ -145,16 +145,20 @@ public class InputBindings {
                 return Input.Keys.toString(k);
         }
     }
-    private static void setBindingOfWithoutCheck(Control c, int i) {
+    private static void setBindingOf(Control c, int i, boolean doCheck, boolean saveToPref) {
         if (!allowed(i)) return;
+        if (doCheck) switchControlIfNeeded(c, i);
         bindings.put(c, i);
+        if (saveToPref) {
+            prefs.putInteger(controlToID(c), i);
+            prefs.flush();
+        }
+    }
+    private static void setBindingOf(Control c, int i, boolean doCheck) {
+        setBindingOf(c, i, doCheck, true);
     }
     public static void setBindingOf(Control c, int i) {
-        if (!allowed(i)) return;
-        switchControlIfNeeded(c, i);
-        bindings.put(c, i);
-        prefs.putInteger(controlToID(c), i);
-        prefs.flush();
+        setBindingOf(c, i, true);
     }
     public static String controlToID(Control c) {
         switch (c) {
