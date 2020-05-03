@@ -7,11 +7,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.fallenflame.game.util.InputBindings;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
-import org.w3c.dom.css.Rect;
 
 import java.util.Arrays;
 import java.util.OptionalInt;
@@ -20,6 +21,9 @@ import java.util.stream.IntStream;
 public class ControlMode implements Screen, InputProcessor {
     private static final String BACKGROUND_FILE = "textures/control_background.png";
     private final Texture background = new Texture(BACKGROUND_FILE);
+    private static final String MODAL = "textures/modal.png";
+    private final Texture modal = new Texture(MODAL);
+    private TextureRegion screenshotTexture;
     private final GameCanvas canvas;
     private final int[] controlStates;
     private final Rectangle[][] controlRects;
@@ -53,7 +57,12 @@ public class ControlMode implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         canvas.beginWithoutCamera();
-        canvas.draw(background, 0, 0);
+        if (hasScreenshot()) {
+            canvas.draw(screenshotTexture, 0, 0);
+            canvas.draw(new TextureRegion(modal, screenWidth, screenHeight), 0, 0);
+        } else {
+            canvas.draw(background, 0, 0);
+        }
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1);
         canvas.drawTextFromCenter("Controls", displayFont, screenWidth / 2 ,screenHeight - 50);
@@ -98,6 +107,14 @@ public class ControlMode implements Screen, InputProcessor {
                 screenHeight - RESET_BTN_Y);
         displayFont.getData().setScale(1);
         canvas.end();
+    }
+
+    public void screenshot() {
+        screenshotTexture = ScreenUtils.getFrameBufferTexture();
+    }
+
+    public boolean hasScreenshot() {
+        return screenshotTexture != null;
     }
 
     @Override
@@ -219,7 +236,7 @@ public class ControlMode implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-
+        screenshotTexture = null;
     }
 
     @Override

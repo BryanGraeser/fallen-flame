@@ -33,6 +33,8 @@ public class GDXRoot extends Game implements ScreenListener {
 	private GameEngine engine;
 	/** Level select for the game */
 	private LevelSelectMode levelSelect;
+	/** Pause for the game */
+	private PauseMode pauseMode;
 
 	/**
 	 * Creates a new game from the configuration settings.
@@ -51,6 +53,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		loading = new LoadingMode(canvas,1);
 		control = new ControlMode(levelCanvas);
 		levelSelect = new LevelSelectMode(levelCanvas);
+		pauseMode = new PauseMode(levelCanvas);
 		engine = new GameEngine();
 		InputMultiplexer multiplexer = new InputMultiplexer(); //Allows for multiple InputProcessors
 		//Multiplexer is an ordered list, so when an event occurs, it'll check loadingMode first, and then GameEngine
@@ -132,12 +135,12 @@ public class GDXRoot extends Game implements ScreenListener {
 //			loading.dispose();
 //			loading = null;
 		} else if (screen == levelSelect) {
-			engine.resume();
 			if (levelSelect.getLevelSelected() >= 0) {
 				Gdx.input.setInputProcessor(engine);
 				engine.setScreenListener(this);
 				engine.setCanvas(canvas);
 				engine.reset(levelSelect.getLevelSelected());
+				engine.resume();
 				setScreen(engine);
 			} else { // Level select = -1 means go back.
 				Gdx.input.setInputProcessor(loading);
@@ -146,16 +149,53 @@ public class GDXRoot extends Game implements ScreenListener {
 				setScreen(loading);
 			}
 		} else if (screen == engine) {
-			Gdx.input.setInputProcessor(levelSelect);
-			levelSelect.setScreenListener(this);
-			setScreen(levelSelect);
+			Gdx.input.setInputProcessor(pauseMode);
+			pauseMode.setScreenListener(this);
+			pauseMode.screenshot();
+			setScreen(pauseMode);
 			engine.pause();
-			levelSelect.reset();
+//			levelSelect.reset();
+		} else if (screen == pauseMode) {
+			switch (exitCode) {
+				case 0:
+					Gdx.input.setInputProcessor(engine);
+					engine.setScreenListener(this);
+					setScreen(engine);
+					engine.resume();
+					break;
+				case 1:
+					Gdx.input.setInputProcessor(engine);
+					engine.setScreenListener(this);
+					engine.reset();
+					setScreen(engine);
+					engine.resume();
+					break;
+				case 2:
+					Gdx.input.setInputProcessor(levelSelect);
+					levelSelect.setScreenListener(this);
+					setScreen(levelSelect);
+					engine.pause();
+					break;
+				case 3:
+					Gdx.input.setInputProcessor(control);
+					control.setScreenListener(this);
+					control.screenshot();
+					setScreen(control);
+					engine.pause();
+					break;
+			}
 		} else if (screen == control) {
-			Gdx.input.setInputProcessor(loading);
-			loading.setScreenListener(this);
-			loading.setScreenListener(this);
-			setScreen(loading);
+			if (control.hasScreenshot()) {
+				Gdx.input.setInputProcessor(pauseMode);
+				pauseMode.setScreenListener(this);
+				setScreen(pauseMode);
+				engine.pause();
+			} else {
+				Gdx.input.setInputProcessor(loading);
+				loading.setScreenListener(this);
+				loading.setScreenListener(this);
+				setScreen(loading);
+			}
 		} else if (exitCode == engine.EXIT_QUIT) {
 			// We quit the main application
 			Gdx.app.exit();

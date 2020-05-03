@@ -544,6 +544,8 @@ public class LevelController implements ContactListener {
         items.clear();
         exit.deactivatePhysics(world);
         exit.dispose();
+        player.getWalkSound().stop();
+        player.setPlayingSound(false);
         player.deactivatePhysics(world);
         player.dispose();
 
@@ -701,7 +703,10 @@ public class LevelController implements ContactListener {
     }
 
     public void stopAllSounds(){
+        player.getWalkSound().stop();
+        player.setPlayingSound(false);
         for(EnemyModel e : enemies){
+            e.getConstantSound().stop();
             e.getActiveSound().stop();
         }
     }
