@@ -904,7 +904,7 @@ public class LevelController implements ContactListener {
             if(ticks % 10 == 0){
                 fps = 1/delta;
             }
-            displayFont.setColor(Color.YELLOW);
+            displayFont.setColor(Color.CYAN);
             canvas.begin();
             canvas.drawText(Float.toString(fps), displayFont, 0, canvas.getHeight()/2);
             canvas.end();

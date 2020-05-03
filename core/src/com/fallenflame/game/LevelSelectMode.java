@@ -104,7 +104,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
             }
             canvas.drawTextFromCenter("" + (i + 1), displayFont, posVec[i].x, posVec[i].y - levelButton.getHeight()/5);
         }
-        displayFont.setColor(hoverState[posVec.length] == 1 ? Color.YELLOW : Color.WHITE);
+        displayFont.setColor(hoverState[posVec.length] == 1 ? Color.CYAN : Color.WHITE);
         canvas.drawText("Back", displayFont,BACK_BTN_X, heightY - BACK_BTN_Y);
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1f);

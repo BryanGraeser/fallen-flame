@@ -404,7 +404,7 @@ public class GameEngine implements Screen, InputProcessor {
 
         // Final message
         if (isSuccess) {
-            displayFont.setColor(Color.YELLOW);
+            displayFont.setColor(Color.CYAN);
             canvas.beginWithoutCamera(); // DO NOT SCALE
             canvas.drawTextCentered("VICTORY!", displayFont, 0.0f);
             canvas.end();

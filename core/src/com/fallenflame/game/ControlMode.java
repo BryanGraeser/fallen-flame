@@ -69,10 +69,12 @@ public class ControlMode implements Screen, InputProcessor {
         displayFont.getData().setScale(0.4f);
         int totalControls = InputBindings.Control.values().length;
         int ind = 0;
+        boolean bindingInProgress = Arrays.stream(controlStates).anyMatch(i -> i == 2);
         for (InputBindings.Control i : InputBindings.Control.values()) {
             float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 160) + 80);
-            displayFont.setColor(controlStates[ind] == 1 ? Color.YELLOW :
-                    (controlStates[ind] == 2 ? Color.RED : Color.WHITE));
+            displayFont.setColor(controlStates[ind] == 1 ? Color.CYAN :
+                    (controlStates[ind] == 2 ? Color.YELLOW :
+                            (bindingInProgress ? new Color(1, 1, 1, .4f) : Color.WHITE)));
             String str2 = InputBindings.controlToString(i);
             GlyphLayout box2 = new GlyphLayout(displayFont, str2);
             canvas.drawText(str2, displayFont,
@@ -97,11 +99,11 @@ public class ControlMode implements Screen, InputProcessor {
             canvas.drawTextFromCenter("Click on a key to change it.", displayFont,
                     screenWidth / 2, 20);
         }
-        displayFont.setColor(backHover ? Color.YELLOW : Color.WHITE);
+        displayFont.setColor(backHover ? Color.CYAN : Color.WHITE);
         displayFont.getData().setScale(0.5f);
         canvas.drawText("Back", displayFont,BACK_BTN_X, screenHeight - BACK_BTN_Y);
         String s = "Reset to Default";
-        displayFont.setColor(resetHover ? Color.YELLOW : Color.WHITE);
+        displayFont.setColor(resetHover ? Color.CYAN : Color.WHITE);
         canvas.drawText(s, displayFont,
                 screenWidth - new GlyphLayout(displayFont, s).width - RESET_BTN_RIGHT,
                 screenHeight - RESET_BTN_Y);
