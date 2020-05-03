@@ -121,12 +121,26 @@ public class InputBindings {
     public static String keyToString(int k) {
         switch(k) {
             case Input.Keys.COMMA: return "Comma";
-            case Input.Keys.PERIOD: return "Period";
+            case Input.Keys.PERIOD: return "Full Stop/Period";
             case Input.Keys.SLASH: return "Slash";
             case Input.Keys.BACKSLASH: return "Backslash";
             case Input.Keys.LEFT_BRACKET: return "L-Bracket";
             case Input.Keys.RIGHT_BRACKET: return "R-Bracket";
             case Input.Keys.COLON: return "Colon";
+            case Input.Keys.ALT_LEFT: {
+                try {
+                    return System.getProperty("os.name").toLowerCase().contains("mac") ? "L-Option" : "L-Alt";
+                } catch (Exception ignored) {
+                    return "L-Alt";
+                }
+            }
+            case Input.Keys.ALT_RIGHT: {
+                try {
+                    return System.getProperty("os.name").toLowerCase().contains("mac") ? "R-Option" : "R-Alt";
+                } catch (Exception ignored) {
+                    return "R-Alt";
+                }
+            }
             default:
                 return Input.Keys.toString(k);
         }
