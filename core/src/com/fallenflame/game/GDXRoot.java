@@ -1,7 +1,10 @@
 package com.fallenflame.game;
 
-import com.badlogic.gdx.*;
-import com.fallenflame.game.util.*;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Screen;
+import com.fallenflame.game.util.ScreenListener;
 
 /*
  * GDXRoot.java

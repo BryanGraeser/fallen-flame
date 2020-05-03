@@ -1,7 +1,6 @@
 package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -11,14 +10,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.fallenflame.game.util.InputBindings;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
-import org.w3c.dom.Text;
 
 import java.util.Arrays;
-import java.util.OptionalInt;
-import java.util.stream.IntStream;
 
 public class PauseMode implements Screen, InputProcessor {
     private TextureRegion backgroundTexture;
