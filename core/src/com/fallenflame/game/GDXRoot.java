@@ -60,7 +60,6 @@ public class GDXRoot extends Game implements ScreenListener {
 		engine.preLoadContent();
 		loading.setScreenListener(this);
 		setScreen(loading);
-		Gdx.graphics.setTitle("Fallen Flame");
 	}
 
 	/**
