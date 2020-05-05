@@ -74,6 +74,7 @@ public class InputBindings {
             case Input.Keys.LEFT:
             case Input.Keys.DOWN:
             case Input.Keys.RIGHT:
+            case Input.Keys.SPACE:
                 return true;
             default:
                 return false;
