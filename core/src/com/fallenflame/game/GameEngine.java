@@ -4,17 +4,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.InputBindings;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -47,6 +51,9 @@ public class GameEngine implements Screen, InputProcessor {
      * Note: MUST BE FALSE WHEN MAKING A JAR! */
     private static final boolean ALLOW_DEBUG = false;
 
+    private static final String SAVE_PATH = "jsons/save.json";
+
+    private Json json;
     private JsonReader jsonReader;
     /** The JSON asset directory */
     private JsonValue assetJson;
@@ -246,6 +253,7 @@ public class GameEngine implements Screen, InputProcessor {
         isPaused = false;
         canvasBounds = new Rectangle();
         countdown = -1;
+        json = new Json();
     }
 
     /**
@@ -332,11 +340,14 @@ public class GameEngine implements Screen, InputProcessor {
             return false;
         }
         //If countdown is > -1, then the player must have won or lost. Either continue to show the win condition message
-        //Or reset, if the countdown is up.
+        //Or if the countdown is up: reset on loss and progress to next level on victory
         else if (countdown > 0) {
             countdown--;
         } else if (countdown == 0) {
-            reset(lastLevelPlayed);
+//            if(isSuccess && lastLevelPlayed < saveJson.get("levels").size)
+//                reset(lastLevelPlayed+1);
+//            else
+                reset(lastLevelPlayed);
         }
 
         return true;
@@ -385,6 +396,25 @@ public class GameEngine implements Screen, InputProcessor {
         // Get new victory state
         isSuccess = level.getLevelState() == LevelController.LevelState.WIN || prevSuccess;
         isFailed = level.getLevelState() == LevelController.LevelState.LOSS || prevFailed;
+        // If new win, mark level complete in save json and ensure next level is unlocked
+        if(isSuccess && !prevSuccess) {
+            FileHandle file = Gdx.files.local(SAVE_PATH);
+            //Level[] levels = json.fromJson(Level[].class, file.readString());
+            Level[] levels = json.readValue("levels", Level[].class, saveJson); //json.fromJson(Level[].class, saveJson.toString());
+            levels[lastLevelPlayed].completed = true;
+            if(lastLevelPlayed + 1 < levels.length){
+                levels[lastLevelPlayed + 1].unlocked = true;
+            }
+            json.prettyPrint(levels);
+            //Write JSON file
+            file.writeString(json.toJson(levels), false);
+//            try (FileWriter file = new FileWriter(SAVE_PATH)) {
+//                file.write(json.prettyPrint(levels));
+//                file.flush();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
         // If new win or loss, start countdown
         if((isSuccess && !prevSuccess) || (isFailed && !prevFailed)){
             countdown = COUNTDOWN_TIME;
@@ -668,3 +698,11 @@ public class GameEngine implements Screen, InputProcessor {
     }
 
 }
+
+class Level {
+    protected String name;
+    protected boolean unlocked;
+    protected boolean completed;
+    protected String path;
+}
+
