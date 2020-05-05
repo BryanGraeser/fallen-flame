@@ -1,6 +1,5 @@
 package com.fallenflame.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -76,7 +75,6 @@ public class LevelSelectMode implements Screen, InputProcessor {
     {
         this.canvas  = canvas;
         pressState = 0;
-        numberUnlocked = 8;
         posVec = new Vector2[posVecRel.length];
         hoverState = new int[posVecRel.length + 1]; // Plus one for back button
         for (int i = 0; i < posVecRel.length; i++) {
@@ -88,9 +86,19 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     /**
      * Initializes saveJson (to be called by GDXRoot after GameEngine has finished preloading content)
+     * and number level unlocked (assumes sequential unlocking)
      * @param saveJson
      */
-    public void initialize(JsonValue saveJson) { this.saveJson = saveJson; }
+    public void initialize(JsonValue saveJson) {
+        this.saveJson = saveJson;
+        numberUnlocked = 1;
+        while(true) {
+            if(numberUnlocked >= saveJson.get("levels").size ||
+                    !saveJson.get("levels").get(numberUnlocked).get("unlocked").asBoolean())
+                return;
+            numberUnlocked++;
+        }
+    }
 
     @Override
     public void show() {
@@ -233,7 +241,6 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
         for (int i = 0; i < posVec.length; i++) {
             if ((Math.pow(screenX-posVec[i].x,2) / (w*w)) + (Math.pow(screenY-posVec[i].y,2) / (h*h)) <= 1) {
-                //TODO: temporary disable of levels 6-10
                 if(i < numberUnlocked) {
                     pressState = 1;
                     levelSelected = i;
