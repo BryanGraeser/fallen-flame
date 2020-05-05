@@ -45,8 +45,8 @@ public class ControlMode implements Screen, InputProcessor {
     public ControlMode(GameCanvas canvas)
     {
         this.canvas = canvas;
-        controlStates = new int[InputBindings.Control.values().length + 1];
-        controlRects = new Rectangle[InputBindings.Control.values().length + 1][2];
+        controlStates = new int[InputBindings.Control.values().length + 2];
+        controlRects = new Rectangle[InputBindings.Control.values().length + 2][2];
         backHover = false;
         resetHover = false;
         Arrays.fill(controlStates, 0);
@@ -67,37 +67,34 @@ public class ControlMode implements Screen, InputProcessor {
         displayFont.getData().setScale(1);
         canvas.drawTextFromCenter("Controls", displayFont, screenWidth / 2, screenHeight - 50);
         displayFont.getData().setScale(0.4f);
-        int totalControls = InputBindings.Control.values().length;
-        int ind = 0;
+        InputBindings.Control[] cvalues = InputBindings.Control.values();
+        int totalControls = cvalues.length;
         boolean bindingInProgress = Arrays.stream(controlStates).anyMatch(i -> i == 2);
-        for (InputBindings.Control i : InputBindings.Control.values()) {
-            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 200) + 60);
-            displayFont.setColor(controlStates[ind] == 1 ? Color.CYAN :
+        for (int ind = 0, j = totalControls + 2; ind < j; ind++) {
+            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 240) + 55);
+            displayFont.setColor(controlStates[ind] == 1 && ind < totalControls ? Color.CYAN :
                     (controlStates[ind] == 2 ? Color.YELLOW :
                             (bindingInProgress ? new Color(1, 1, 1, .4f) : Color.WHITE)));
-            String str2 = InputBindings.controlToString(i);
+            String str2 = null;
+            String str = null;
+            if (ind < totalControls) {
+                str2 = InputBindings.controlToString(cvalues[ind]);
+                str = InputBindings.keyToString(InputBindings.getBindingOf(cvalues[ind]));
+            } else {
+                switch (ind - totalControls) {
+                    case 1:
+                        str2 = "Change light radius (primary)";
+                        str = "Mouse wheel";
+                        break;
+                    case 0:
+                        str2 = "Flare";
+                        str = "Move mouse to aim, left click to shoot";
+                        break;
+                }
+            }
             GlyphLayout box2 = new GlyphLayout(displayFont, str2);
             canvas.drawText(str2, displayFont,
                     20, ry);
-            String str = InputBindings.keyToString(InputBindings.getBindingOf(i));
-            GlyphLayout box = new GlyphLayout(displayFont, str);
-            float rx = screenWidth - 20 - box.width;
-            controlRects[ind] = new Rectangle[]{
-                    new Rectangle(20, screenHeight - ry, box2.width, box2.height + 10),
-                    new Rectangle(rx, screenHeight - ry, box.width, box.height + 10)
-            };
-            canvas.drawText(str, displayFont,
-                    rx, ry);
-            ind++;
-        }
-        {
-            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 200) + 60);
-            displayFont.setColor(bindingInProgress ? new Color(1, 1, 1, .4f) : Color.WHITE);
-            String str2 = "Flare";
-            GlyphLayout box2 = new GlyphLayout(displayFont, str2);
-            canvas.drawText(str2, displayFont,
-                    20, ry);
-            String str = "Move mouse to aim, left click to shoot";
             GlyphLayout box = new GlyphLayout(displayFont, str);
             float rx = screenWidth - 20 - box.width;
             controlRects[ind] = new Rectangle[]{
@@ -112,8 +109,11 @@ public class ControlMode implements Screen, InputProcessor {
         if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) {
             canvas.drawTextFromCenter("Input new key. Press ESC or click anywhere to cancel.", displayFont,
                     screenWidth / 2, 30);
-        } else if (controlStates[controlStates.length - 1] > 0) {
+        } else if (controlStates[controlStates.length - 2] > 0) {
             canvas.drawTextFromCenter("Control for flare cannot be modified.", displayFont,
+                    screenWidth / 2, 30);
+        } else if (controlStates[controlStates.length - 1] > 0) {
+            canvas.drawTextFromCenter("Primary light radius control cannot be modified.", displayFont,
                     screenWidth / 2, 30);
         } else {
             canvas.drawTextFromCenter("Click on a key to change it.", displayFont,
@@ -183,7 +183,7 @@ public class ControlMode implements Screen, InputProcessor {
         } else {
             for (int i = 0, j = controlRects.length; i < j; i++) {
                 for (Rectangle rec: controlRects[i]) {
-                    if (rec.contains(screenX, screenY) && i < j - 1) {
+                    if (rec.contains(screenX, screenY) && i < j - 2) {
                         controlStates[i] = 2;
                         return true;
                     } else {
