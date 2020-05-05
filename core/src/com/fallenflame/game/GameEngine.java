@@ -15,9 +15,6 @@ import com.fallenflame.game.util.InputBindings;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
 
-import javax.swing.*;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -150,7 +147,19 @@ public class GameEngine implements Screen, InputProcessor {
 
         jsonReader = new JsonReader();
         assetJson = jsonReader.parse(Gdx.files.internal("jsons/assets.json"));
-        saveJson = jsonReader.parse(Gdx.files.local("jsons/save.json"));
+        if(Gdx.files.local("jsons/save.json").exists()){
+            System.out.println("exist!");
+            saveJson = jsonReader.parse(Gdx.files.local("jsons/save.json"));
+        }
+        else {
+            System.out.println("doesn't exist!");
+            // If local save file doesn't exist (like when jar is first opened), create it from internal template
+            saveJson = jsonReader.parse(Gdx.files.internal("jsons/save.json"));
+            FileHandle file = Gdx.files.local(SAVE_PATH);
+            JsonValue.PrettyPrintSettings settings = new JsonValue.PrettyPrintSettings();
+            settings.outputType = JsonWriter.OutputType.json;
+            file.writeString(json.prettyPrint(saveJson, settings), false);
+        }
         // Read save data from local save JSON file
         levelSaves = json.readValue(LevelSave[].class, saveJson);
         globalJson = jsonReader.parse(Gdx.files.internal("jsons/global.json"));
