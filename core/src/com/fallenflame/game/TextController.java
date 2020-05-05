@@ -5,10 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.JsonAssetManager;
-import org.w3c.dom.css.Rect;
 
 import java.util.*;
 
@@ -17,19 +15,20 @@ public class TextController {
     private String nextMessage = null;
     private BitmapFont displayFont;
     private int screenWidth;
-    private int screenHeight;
+//    private int screenHeight;
 
     public void initialize(JsonValue jsonValue) {
         if (jsonValue == null) return;
         texts = new HashMap<>();
         for (JsonValue textJson : jsonValue) {
-            float[] i = textJson.get("rect").asFloatArray();
-            Rectangle r = new Rectangle(i[0] - i[2] / 2 , i[1] - i[3] / 2, i[2], i[3]);
+            float[] pos = textJson.get("pos").asFloatArray();
+            float[] size = textJson.get("size").asFloatArray();
+            Rectangle r = new Rectangle(pos[0] - size[0] / 2 , pos[1] - size[1] / 2, size[0], size[1]);
             texts.put(r, textJson.get("text").asString());
         }
         displayFont = JsonAssetManager.getInstance().getEntry("display", BitmapFont.class);
         screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
+//        screenHeight = Gdx.graphics.getHeight();
     }
 
     public void dispose() {
