@@ -218,6 +218,9 @@ public class GameEngine implements Screen, InputProcessor {
     /** Set the new GameCanvas*/
     public void setCanvas(GameCanvas canvas){this.canvas = canvas;}
 
+    /** Get saveJson */
+    public JsonValue getSaveJson() { return saveJson; }
+
     /**
      * Creates a new game world
      *

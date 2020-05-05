@@ -1,5 +1,6 @@
 package com.fallenflame.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.BGMController;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
@@ -20,6 +22,9 @@ public class LevelSelectMode implements Screen, InputProcessor {
     private static final String LEVEL_LOCKED_FILE = "textures/ls_locked_level.png";
     private Texture levelButton = new Texture(LEVEL_BTN_FILE);
     private Texture lockedLevelButton = new Texture(LEVEL_LOCKED_FILE);
+
+    /** Save Json contains data on unlocked levels */
+    private JsonValue saveJson;
 
     /** Position vectors for all the level select buttons */
     private Vector2[] posVecRel = {new Vector2(1f/4f,2f/3f),new Vector2(3f/8f,2f/3f),new Vector2(1f/2f,2f/3f),new Vector2(5f/8f,2f/3f),new Vector2(3f/4f,2f/3f),new Vector2(1f/4f,1f/3f),new Vector2(3f/8f,1f/3f),new Vector2(1f/2f,1f/3f),new Vector2(5f/8f,1f/3f),new Vector2(3f/4f,1f/3f)};
@@ -80,6 +85,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
         }
         hoverState[posVecRel.length] = 0;
     }
+
+    /**
+     * Initializes saveJson (to be called by GDXRoot after GameEngine has finished preloading content)
+     * @param saveJson
+     */
+    public void initialize(JsonValue saveJson) { this.saveJson = saveJson; }
 
     @Override
     public void show() {
