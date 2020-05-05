@@ -1,8 +1,6 @@
 package com.fallenflame.game;
 
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,6 +9,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.fallenflame.game.util.BGMController;
 import com.fallenflame.game.util.JsonAssetManager;
 import com.fallenflame.game.util.ScreenListener;
+
+import java.util.logging.Level;
 
 public class LevelSelectMode implements Screen, InputProcessor {
 
@@ -23,7 +23,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
     private Texture lockedLevelButton = new Texture(LEVEL_LOCKED_FILE);
 
     /** Save Json contains data on unlocked levels */
-    private JsonValue saveJson;
+    private LevelSave[] levelSaves;
 
     /** Position vectors for all the level select buttons */
     private Vector2[] posVecRel = {new Vector2(1f/4f,2f/3f),new Vector2(3f/8f,2f/3f),new Vector2(1f/2f,2f/3f),new Vector2(5f/8f,2f/3f),new Vector2(3f/4f,2f/3f),new Vector2(1f/4f,1f/3f),new Vector2(3f/8f,1f/3f),new Vector2(1f/2f,1f/3f),new Vector2(5f/8f,1f/3f),new Vector2(3f/4f,1f/3f)};
@@ -85,16 +85,19 @@ public class LevelSelectMode implements Screen, InputProcessor {
     }
 
     /**
-     * Initializes saveJson (to be called by GDXRoot after GameEngine has finished preloading content)
+     * Initializes levelSaves which track level unlock status
      * and number level unlocked (assumes sequential unlocking)
-     * @param saveJson
+     * @param levelSaves
      */
-    public void initialize(JsonValue saveJson) {
-        this.saveJson = saveJson;
+    public void initialize(LevelSave[] levelSaves) {
+        this.levelSaves = levelSaves;
+        resetNumberUnlocked();
+    }
+
+    public void resetNumberUnlocked() {
         numberUnlocked = 1;
         while(true) {
-            if(numberUnlocked >= saveJson.get("levels").size ||
-                    !saveJson.get("levels").get(numberUnlocked).get("unlocked").asBoolean())
+            if(numberUnlocked >= levelSaves.length || !levelSaves[numberUnlocked].unlocked)
                 return;
             numberUnlocked++;
         }
@@ -108,7 +111,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        canvas.begin();
+        canvas.beginWithoutCamera();
         canvas.draw(background, 0, 0);
         displayFont.setColor(Color.BLACK);
         displayFont.getData().setScale(.5f);
