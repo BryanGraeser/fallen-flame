@@ -32,6 +32,7 @@ public class TextController {
     }
 
     public void dispose() {
+        if (texts == null) return;
         texts.clear();
         texts = null;
     }
