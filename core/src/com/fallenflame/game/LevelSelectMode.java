@@ -108,7 +108,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        canvas.beginWithoutCamera();
+        canvas.begin();
         canvas.draw(background, 0, 0);
         displayFont.setColor(Color.BLACK);
         displayFont.getData().setScale(.5f);

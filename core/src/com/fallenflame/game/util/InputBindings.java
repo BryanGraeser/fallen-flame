@@ -74,6 +74,7 @@ public class InputBindings {
             case Input.Keys.LEFT:
             case Input.Keys.DOWN:
             case Input.Keys.RIGHT:
+            case Input.Keys.SPACE:
                 return true;
             default:
                 return false;
@@ -241,8 +242,8 @@ public class InputBindings {
             case RESET_LEVEL: return "Reset level";
             case SNEAKING: return "Sneaking";
             case SPRINTING: return "Sprinting";
-            case INCREASE_LIGHT: return "Increase light radius (alternative)";
-            case DECREASE_LIGHT: return "Decrease light radius (alternative)";
+            case INCREASE_LIGHT: return "Increase light radius (secondary)";
+            case DECREASE_LIGHT: return "Decrease light radius (secondary)";
         }
         return null;
     }
