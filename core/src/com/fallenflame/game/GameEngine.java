@@ -47,7 +47,7 @@ public class GameEngine implements Screen, InputProcessor {
      * Note: MUST BE FALSE WHEN MAKING A JAR! */
     private static final boolean ALLOW_DEBUG = false;
 
-    private static final String SAVE_PATH = "jsons/save.json";
+    private static final String SAVE_PATH = "savedata/save.json";
     private LevelSave[] levelSaves;
     private LevelSelectMode levelSelect;
 
@@ -147,8 +147,8 @@ public class GameEngine implements Screen, InputProcessor {
 
         jsonReader = new JsonReader();
         assetJson = jsonReader.parse(Gdx.files.internal("jsons/assets.json"));
-        if(Gdx.files.local("jsons/save.json").exists()){
-            saveJson = jsonReader.parse(Gdx.files.local("jsons/save.json"));
+        if(Gdx.files.local("savedata/save.json").exists()){
+            saveJson = jsonReader.parse(Gdx.files.local("savedata/save.json"));
             levelSaves = json.readValue(LevelSave[].class, saveJson);
         }
         else {
