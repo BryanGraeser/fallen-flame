@@ -13,6 +13,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
     private static final String BACKGROUND_FILE = "textures/ls_background.png";
     private Texture background = new Texture(BACKGROUND_FILE);
 
+    private static final String PAGE_NEXT_FILE = "textures/ls_forward.png";
+    private Texture pageNext = new Texture(PAGE_NEXT_FILE);
+
+    private static final String PAGE_PREV_FILE = "textures/ls_back.png";
+    private Texture pagePrev = new Texture(PAGE_PREV_FILE);
+
     private static final String LEVEL_BTN_FILE = "textures/ls_unlocked_level.png";
     private static final String LEVEL_LOCKED_FILE = "textures/ls_locked_level.png";
     private Texture levelButton = new Texture(LEVEL_BTN_FILE);
@@ -21,6 +27,10 @@ public class LevelSelectMode implements Screen, InputProcessor {
     /** Position vectors for all the level select buttons */
     private Vector2[] posVecRel = {new Vector2(1f/4f,2f/3f),new Vector2(3f/8f,2f/3f),new Vector2(1f/2f,2f/3f),new Vector2(5f/8f,2f/3f),new Vector2(3f/4f,2f/3f),new Vector2(1f/4f,1f/3f),new Vector2(3f/8f,1f/3f),new Vector2(1f/2f,1f/3f),new Vector2(5f/8f,1f/3f),new Vector2(3f/4f,1f/3f)};
     private Vector2[] posVec;
+
+    /** Position vectors for the next page and prev page buttons */
+    private Vector2[] nextPrevRel = {new Vector2(1f/8f,1f/2f),new Vector2(7f/8f,1f/2f)};
+    private Vector2[] nextPrev;
 
     /** Amount to scale the play button */
     private static float BUTTON_SCALE  = 0.75f;
@@ -48,6 +58,9 @@ public class LevelSelectMode implements Screen, InputProcessor {
     /** Scaling factor for when the student changes the resolution. */
     private float scale;
 
+    /** Page the user is on **/
+    private int page;
+
     /** The current state of whether a level button has been pressed */
     private int   pressState;
 
@@ -65,10 +78,14 @@ public class LevelSelectMode implements Screen, InputProcessor {
         pressState = 0;
         numberUnlocked = 8;
         posVec = new Vector2[posVecRel.length];
+        nextPrev = new Vector2[nextPrevRel.length];
         hoverState = new int[posVecRel.length];
         for (int i = 0; i < posVecRel.length; i++) {
             posVec[i] = new Vector2(0f,0f);
             hoverState[i] = 0;
+        }
+        for (int i = 0; i < nextPrevRel.length; i++) {
+            nextPrev[i] = new Vector2(0f,0f);
         }
     }
 
@@ -85,7 +102,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
         displayFont.setColor(Color.BLACK);
         displayFont.getData().setScale(.5f);
         for (int i = 0; i < posVec.length; i++) {
-            if(i > numberUnlocked-1){
+            if(i + (page*10) > numberUnlocked-1){
                 canvas.draw(lockedLevelButton, Color.WHITE, levelButton.getWidth() / 2, levelButton.getHeight() / 2,
                         posVec[i].x, posVec[i].y, 0, 1, 1);
             }
@@ -96,8 +113,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
                 canvas.draw(levelButton, Color.valueOf("98F3FF"), levelButton.getWidth() / 2, levelButton.getHeight() / 2,
                         posVec[i].x, posVec[i].y, 0, 1, 1);
             }
-            canvas.drawTextFromCenter("" + (i + 1), displayFont, posVec[i].x, posVec[i].y - levelButton.getHeight()/5);
+            canvas.drawTextFromCenter("" + ((i + 1) + (page * 10)), displayFont, posVec[i].x, posVec[i].y - levelButton.getHeight()/5);
         }
+        canvas.draw(pagePrev, Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight() / 2,
+                nextPrev[0].x, nextPrev[0].y, 0, 1, 1);
+        canvas.draw(pageNext, Color.WHITE, pageNext.getWidth() / 2, pageNext.getHeight() / 2,
+                nextPrev[1].x, nextPrev[1].y, 0, 1, 1);
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1f);
         canvas.end();
@@ -127,6 +148,9 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
         for (int i = 0; i < posVecRel.length; i++) {
             posVec[i] = new Vector2(posVecRel[i].x * widthX,posVecRel[i].y * heightY);
+        }
+        for (int i = 0; i < nextPrevRel.length; i++) {
+            nextPrev[i] = new Vector2(nextPrevRel[i].x * widthX,nextPrevRel[i].y * heightY);
         }
     }
 
@@ -202,9 +226,24 @@ public class LevelSelectMode implements Screen, InputProcessor {
         for (int i = 0; i < posVec.length; i++) {
             if ((Math.pow(screenX-posVec[i].x,2) / (w*w)) + (Math.pow(screenY-posVec[i].y,2) / (h*h)) <= 1) {
                 //TODO: temporary disable of levels 6-10
-                if(i < numberUnlocked) {
+                if(i + (page*10) < numberUnlocked) {
                     pressState = 1;
-                    levelSelected = i;
+                    levelSelected = i + (page*10);
+                }
+            }
+        }
+
+        w = scale*pageNext.getWidth()/2.0f;
+        h = scale*pageNext.getHeight()/2.0f;
+
+        for (int i = 0; i < nextPrev.length; i++) {
+            if ((Math.pow(screenX-nextPrev[i].x,2) / (w*w)) + (Math.pow(screenY-nextPrev[i].y,2) / (h*h)) <= 1) {
+                if (i == 0) {
+                    if (page > 0) {
+                        page--;
+                    }
+                } else {
+                    page++;
                 }
             }
         }
