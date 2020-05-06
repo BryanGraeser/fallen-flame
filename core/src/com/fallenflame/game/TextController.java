@@ -1,7 +1,6 @@
 package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -23,7 +22,7 @@ public class TextController {
     private BitmapFont displayFont;
     private int screenWidth;
 //    private int screenHeight;
-    private static List<String> controlIDs =
+    private static final List<String> controlIDs =
         Arrays.stream(InputBindings.Control.values()).map(InputBindings::controlToID).collect(Collectors.toList());
 
     public void initialize(JsonValue jsonValue) {
