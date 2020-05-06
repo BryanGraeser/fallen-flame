@@ -1,12 +1,15 @@
 package com.fallenflame.game;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.fallenflame.game.util.*;
-
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
+import com.fallenflame.game.util.BGMController;
 import com.fallenflame.game.util.JsonAssetManager;
+import com.fallenflame.game.util.ScreenListener;
 
 public class LevelSelectMode implements Screen, InputProcessor {
 
@@ -67,6 +70,11 @@ public class LevelSelectMode implements Screen, InputProcessor {
     /** The current state of whether any level buttons are being hovered over */
     private int[] hoverState;
 
+    private static final int BACK_BTN_WIDTH = 60;
+    private static final int BACK_BTN_HEIGHT = 30;
+    private static final int BACK_BTN_X = 10;
+    private static final int BACK_BTN_Y = 10;
+
     /** Level selected by the player */
     private int levelSelected;
 
@@ -79,13 +87,16 @@ public class LevelSelectMode implements Screen, InputProcessor {
         numberUnlocked = 8;
         posVec = new Vector2[posVecRel.length];
         nextPrev = new Vector2[nextPrevRel.length];
-        hoverState = new int[posVecRel.length];
+        hoverState = new int[posVecRel.length + 3]; // Plus three for back button, next and prev page
         for (int i = 0; i < posVecRel.length; i++) {
             posVec[i] = new Vector2(0f,0f);
             hoverState[i] = 0;
         }
         for (int i = 0; i < nextPrevRel.length; i++) {
             nextPrev[i] = new Vector2(0f,0f);
+        }
+        for (int i = posVecRel.length; i < posVecRel.length + 3; i++) {
+            hoverState[i] = 0;
         }
     }
 
@@ -97,7 +108,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-        canvas.begin();
+        canvas.beginWithoutCamera();
         canvas.draw(background, 0, 0);
         displayFont.setColor(Color.BLACK);
         displayFont.getData().setScale(.5f);
@@ -115,10 +126,12 @@ public class LevelSelectMode implements Screen, InputProcessor {
             }
             canvas.drawTextFromCenter("" + ((i + 1) + (page * 10)), displayFont, posVec[i].x, posVec[i].y - levelButton.getHeight()/5);
         }
-        canvas.draw(pagePrev, Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight() / 2,
+        canvas.draw(pagePrev, hoverState[posVec.length + 1] == 1 ? Color.CYAN : Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight() / 2,
                 nextPrev[0].x, nextPrev[0].y, 0, 1, 1);
-        canvas.draw(pageNext, Color.WHITE, pageNext.getWidth() / 2, pageNext.getHeight() / 2,
+        canvas.draw(pageNext, hoverState[posVec.length + 2] == 1 ? Color.CYAN : Color.WHITE, pageNext.getWidth() / 2, pageNext.getHeight() / 2,
                 nextPrev[1].x, nextPrev[1].y, 0, 1, 1);
+        displayFont.setColor(hoverState[posVec.length] == 1 ? Color.CYAN : Color.WHITE);
+        canvas.drawText("Back", displayFont,BACK_BTN_X, heightY - BACK_BTN_Y);
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1f);
         canvas.end();
@@ -168,12 +181,16 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public void hide() {
-        BGMController.stopBGMIfPlaying("menu-music");
+        if (levelSelected >= 0) BGMController.stopBGMIfPlaying("menu-music");
+        this.pressState = 0;
+        for (int i = 0, j = hoverState.length; i < j; i++ ) {
+            hoverState[i] = 0;
+        }
     }
 
     @Override
     public void dispose() {
-        BGMController.stopBGMIfPlaying("menu-music");
+        if (levelSelected >= 0) BGMController.stopBGMIfPlaying("menu-music");
     }
 
     /**
@@ -198,6 +215,11 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Input.Keys.ESCAPE) {
+            pressState = 1;
+            levelSelected = -1;
+            return true;
+        }
         return false;
     }
 
@@ -217,6 +239,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
             return true;
         }
 
+        int origScreenY = screenY;
         // Flip to match graphics coordinates
         screenY = heightY-screenY;
 
@@ -247,6 +270,11 @@ public class LevelSelectMode implements Screen, InputProcessor {
                 }
             }
         }
+        if (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
+                origScreenY >= BACK_BTN_Y && origScreenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) {
+            pressState = 1;
+            levelSelected = -1;
+        }
         return false;
 
 
@@ -259,6 +287,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        int origScreenY = screenY;
         // Flip to match graphics coordinates
         screenY = heightY-screenY;
 
@@ -272,6 +301,20 @@ public class LevelSelectMode implements Screen, InputProcessor {
                 hoverState[i] = 0;
             }
         }
+        hoverState[posVec.length + 1] = 0;
+        hoverState[posVec.length + 2] = 0;
+        for (int i = 0; i < nextPrev.length; i++) {
+            if ((Math.pow(screenX-nextPrev[i].x,2) / (w*w)) + (Math.pow(screenY-nextPrev[i].y,2) / (h*h)) <= 1) {
+                if (i == 0) {
+                    hoverState[posVec.length + 1] = 1;
+                } else {
+                    hoverState[posVec.length + 2] = 1;
+                }
+            }
+        }
+        hoverState[posVec.length] =
+                (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
+                        origScreenY >= BACK_BTN_Y && origScreenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) ? 1 : 0;
         return false;
     }
 
