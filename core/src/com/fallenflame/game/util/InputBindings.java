@@ -228,7 +228,7 @@ public class InputBindings {
             case "reset": return Control.RESET_LEVEL;
             case "sneak": return Control.SNEAKING;
             case "sprint": return Control.SPRINTING;
-            case "incLightrad": return Control.INCREASE_LIGHT;
+            case "incLightRad": return Control.INCREASE_LIGHT;
             case "decLightRad": return Control.DECREASE_LIGHT;
         }
         return null;

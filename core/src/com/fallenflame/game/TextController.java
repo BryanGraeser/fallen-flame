@@ -1,6 +1,7 @@
 package com.fallenflame.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -101,8 +102,10 @@ public class TextController {
         String ns = s;
         for (String c : controlIDs) {
             String toBeReplaced = "{" + c + "}";
-            ns = s.replace(toBeReplaced,
-                    InputBindings.keyToString(InputBindings.getBindingOf(InputBindings.idToControl(c))));
+            InputBindings.Control n1 = InputBindings.idToControl(c);
+            int n2 = InputBindings.getBindingOf(n1);
+            String n3 = InputBindings.keyToString(n2);
+            ns = ns.replace(toBeReplaced, n3);
         }
         return ns;
     }
@@ -122,11 +125,9 @@ public class TextController {
         int start = 0;
         int end = 0;
         int all = texts.length;
-        displayFont.getData().setScale(.5f);
         while (true) {
             end++;
             if (end > all) {
-                displayFont.getData().setScale(1);
                 return result;
             }
             String[] currentLine = Arrays.copyOfRange(texts, start, end);
