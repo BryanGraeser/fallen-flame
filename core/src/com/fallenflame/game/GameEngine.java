@@ -148,20 +148,19 @@ public class GameEngine implements Screen, InputProcessor {
         jsonReader = new JsonReader();
         assetJson = jsonReader.parse(Gdx.files.internal("jsons/assets.json"));
         if(Gdx.files.local("jsons/save.json").exists()){
-            System.out.println("exist!");
             saveJson = jsonReader.parse(Gdx.files.local("jsons/save.json"));
+            levelSaves = json.readValue(LevelSave[].class, saveJson);
         }
         else {
-            System.out.println("doesn't exist!");
             // If local save file doesn't exist (like when jar is first opened), create it from internal template
             saveJson = jsonReader.parse(Gdx.files.internal("jsons/save.json"));
             FileHandle file = Gdx.files.local(SAVE_PATH);
             JsonValue.PrettyPrintSettings settings = new JsonValue.PrettyPrintSettings();
             settings.outputType = JsonWriter.OutputType.json;
-            file.writeString(json.prettyPrint(saveJson, settings), false);
+            levelSaves = json.readValue(LevelSave[].class, saveJson);
+            file.writeString(json.prettyPrint(levelSaves, settings), false);
         }
         // Read save data from local save JSON file
-        levelSaves = json.readValue(LevelSave[].class, saveJson);
         globalJson = jsonReader.parse(Gdx.files.internal("jsons/global.json"));
         fogTemplate = new ParticleEffect();
         fogTemplate.load(Gdx.files.internal("effects/fog2.p"), Gdx.files.internal("textures"));

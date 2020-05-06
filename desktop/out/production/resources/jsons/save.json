@@ -2,49 +2,49 @@
   {
     "name": "easyLevel",
     "unlocked": true,
-    "completed": true,
+    "completed": false,
     "path": "levels/easyLevel.json"
   },
   {
     "name": "mediumLevel",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/mediumLevel.json"
   },
   {
     "name": "hardLevel",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/hardLevel.json"
   },
   {
     "name": "level4",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/enemySurroundingPlayer.json"
   },
   {
     "name": "level5",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/shooterAndPatrol.json"
   },
   {
     "name": "level6",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/onlypatrol.json"
   },
   {
     "name": "easyTest",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/easy.json"
   },
   {
     "name": "mediumTest",
-    "unlocked": true,
-    "completed": true,
+    "unlocked": false,
+    "completed": false,
     "path": "levels/medium.json"
   }
 ]
