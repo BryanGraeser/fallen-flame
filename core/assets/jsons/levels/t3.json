@@ -1,0 +1,217 @@
+{
+  "name": "t3",
+  "physicsSize": [
+    28.16,
+    21.76
+  ],
+  "fpsRange": [
+    20,
+    60
+  ],
+  "playerpos": [
+    3.78,
+    11.44
+  ],
+  "exitpos": [
+    26.2,
+    10.75
+  ],
+  "background": {
+    "texture": "floor-tile"
+  },
+  "enemies": [
+    {
+      "enemypos": [
+        14.84,
+        11.06
+      ],
+      "enemytype": "typeA"
+    }
+  ],
+  "items": [],
+  "texts": [
+    {
+      "pos": [
+        2.96,
+        11.26
+      ],
+      "size": [
+        3.32,
+        11.24
+      ],
+      "text": "All enemies target the last place they saw you"
+    },
+    {
+      "pos": [
+        7.48,
+        11.44
+      ],
+      "size": [
+        5.24,
+        8.76
+      ],
+      "text": "Quickly increase/decrease your light, then move to distract the enemy"
+    },
+    {
+      "pos": [
+        13.36,
+        11
+      ],
+      "size": [
+        6.36,
+        8
+      ],
+      "text": "Once it's distracted, hold CTRL to sneak around it"
+    },
+    {
+      "pos": [
+        20.42,
+        11.24
+      ],
+      "size": [
+        7.84,
+        12.12
+      ],
+      "text": "Beware, if that sneak bar reaches zero, you've run out of sneak and the ghost will come for you"
+    }
+  ],
+  "lighting": {
+    "color": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "gamma": true,
+    "diffuse": true,
+    "blur": 1
+  },
+  "walls": [
+    {
+      "pos": [
+        14.08,
+        21.12
+      ],
+      "size": [
+        28.16,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        0.64,
+        10.88
+      ],
+      "size": [
+        1.28,
+        21.76
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        27.52,
+        10.88
+      ],
+      "size": [
+        1.28,
+        21.76
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        14.08,
+        0.64
+      ],
+      "size": [
+        28.16,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        13.44,
+        19.2
+      ],
+      "size": [
+        26.88,
+        2.56
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        13.44,
+        16
+      ],
+      "size": [
+        16.64,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        14.08,
+        3.2
+      ],
+      "size": [
+        25.6,
+        3.84
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        13.44,
+        14.72
+      ],
+      "size": [
+        12.8,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        13.44,
+        5.76
+      ],
+      "size": [
+        16.64,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        13.44,
+        7.04
+      ],
+      "size": [
+        12.8,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        14.08,
+        17.28
+      ],
+      "size": [
+        21.76,
+        1.28
+      ],
+      "texture": "wall-side"
+    }
+  ],
+  "startFlareCount": 1,
+  "graphicSize": [
+    800,
+    600
+  ]
+}

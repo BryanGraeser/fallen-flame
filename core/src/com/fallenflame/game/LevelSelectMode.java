@@ -71,7 +71,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
     {
         this.canvas  = canvas;
         pressState = 0;
-        numberUnlocked = 8;
+        numberUnlocked = 10;
         posVec = new Vector2[posVecRel.length];
         hoverState = new int[posVecRel.length + 1]; // Plus one for back button
         for (int i = 0; i < posVecRel.length; i++) {
