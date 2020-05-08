@@ -22,8 +22,8 @@ public class TextController {
     private BitmapFont displayFont;
     private int screenWidth;
 //    private int screenHeight;
-    private static final List<String> controlIDs =
-        Arrays.stream(InputBindings.Control.values()).map(InputBindings::controlToID).collect(Collectors.toList());
+    private static final List<String[]> controlIDs =
+        Arrays.stream(InputBindings.Control.values()).map(InputBindings::controlToIDs).collect(Collectors.toList());
 
     public void initialize(JsonValue jsonValue) {
         if (jsonValue == null) return;
@@ -99,12 +99,14 @@ public class TextController {
 
     private String replaceBindings(String s) {
         String ns = s;
-        for (String c : controlIDs) {
-            String toBeReplaced = "{" + c + "}";
-            InputBindings.Control n1 = InputBindings.idToControl(c);
-            int n2 = InputBindings.getBindingOf(n1);
-            String n3 = InputBindings.keyToString(n2);
-            ns = ns.replace(toBeReplaced, n3);
+        for (String[] c2 : controlIDs) {
+            for (String c : c2) {
+                String toBeReplaced = "{" + c + "}";
+                InputBindings.Control n1 = InputBindings.idToControl(c);
+                int n2 = InputBindings.getBindingOf(n1);
+                String n3 = InputBindings.keyToString(n2);
+                ns = ns.replace(toBeReplaced, n3);
+            }
         }
         return ns;
     }
