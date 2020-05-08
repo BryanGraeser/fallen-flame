@@ -1,26 +1,5 @@
 {
   "name": "t1",
-  "physicsSize": [
-    21.76,
-    21.76
-  ],
-  "fpsRange": [
-    20,
-    60
-  ],
-  "playerpos": [
-    4.42,
-    13.32
-  ],
-  "exitpos": [
-    17.98,
-    3.53
-  ],
-  "background": {
-    "texture": "floor-tile"
-  },
-  "enemies": [],
-  "items": [],
   "texts": [
     {
       "pos": [
@@ -56,6 +35,27 @@
       "text": "Walk to the exit"
     }
   ],
+  "physicsSize": [
+    21.76,
+    21.76
+  ],
+  "fpsRange": [
+    20,
+    60
+  ],
+  "playerpos": [
+    4.42,
+    13.32
+  ],
+  "exitpos": [
+    17.98,
+    3.53
+  ],
+  "background": {
+    "texture": "floor-tile"
+  },
+  "enemies": [],
+  "items": [],
   "lighting": {
     "color": [
       0,
@@ -126,11 +126,22 @@
     {
       "pos": [
         10.88,
-        17.92
+        19.2
       ],
       "size": [
         19.2,
-        5.12
+        3.84
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        10.88,
+        16.64
+      ],
+      "size": [
+        19.2,
+        1.28
       ],
       "texture": "wall-side"
     }
