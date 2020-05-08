@@ -146,21 +146,26 @@ public class ControlMode implements Screen, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        OptionalInt ind = IntStream.range(0, controlStates.length)
-                .filter(i -> controlStates[i] == 2)
-                .findFirst();
-        if (!ind.isPresent()) {
-            if (keycode == Input.Keys.ESCAPE) {
-                listener.exitScreen(this, 0);
-                return true;
+        try {
+            OptionalInt ind = IntStream.range(0, controlStates.length)
+                    .filter(i -> controlStates[i] == 2)
+                    .findFirst();
+            if (!ind.isPresent()) {
+                if (keycode == Input.Keys.ESCAPE) {
+                    listener.exitScreen(this, 0);
+                    return true;
+                }
+                return false;
             }
+            InputBindings.setBindingOf(InputBindings.Control.values()[ind.getAsInt()], keycode);
+            for (int i = 0, j = controlRects.length; i < j; i++) {
+                if (controlRects[i] == null) continue;
+                controlStates[i] = 0;
+            }
+            return true;
+        } catch (NullPointerException ignored) {
             return false;
         }
-        InputBindings.setBindingOf(InputBindings.Control.values()[ind.getAsInt()], keycode);
-        for (int i = 0, j = controlRects.length; i < j; i++) {
-            controlStates[i] = 0;
-        }
-        return true;
     }
 
     @Override
@@ -175,32 +180,37 @@ public class ControlMode implements Screen, InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) {
-            for (int i = 0, j = controlRects.length; i < j; i++) {
-                controlStates[i] = 0;
-            }
-            return false;
-        } else {
-            for (int i = 0, j = controlRects.length; i < j; i++) {
-                for (Rectangle rec: controlRects[i]) {
-                    if (rec.contains(screenX, screenY) && i < j - 2) {
-                        controlStates[i] = 2;
-                        return true;
-                    } else {
-                        controlStates[i] = 0;
+        try {
+            if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) {
+                for (int i = 0, j = controlStates.length; i < j; i++) {
+                    controlStates[i] = 0;
+                }
+                return false;
+            } else {
+                for (int i = 0, j = controlRects.length; i < j; i++) {
+                    for (Rectangle rec: controlRects[i]) {
+                        if (rec == null) continue;
+                        if (rec.contains(screenX, screenY) && i < j - 2) {
+                            controlStates[i] = 2;
+                            return true;
+                        } else {
+                            controlStates[i] = 0;
+                        }
                     }
                 }
+                if (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
+                        screenY >= BACK_BTN_Y && screenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) {
+                    listener.exitScreen(this, 0);
+                }
+                if (screenX >= screenWidth - RESET_BTN_RIGHT - RESET_BTN_WIDTH &&
+                        screenX <= screenWidth - RESET_BTN_RIGHT &&
+                        screenY >= RESET_BTN_Y && screenY <= RESET_BTN_Y + RESET_BTN_HEIGHT) {
+                    InputBindings.reset();
+                }
+                return true;
             }
-            if (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
-                    screenY >= BACK_BTN_Y && screenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) {
-                listener.exitScreen(this, 0);
-            }
-            if (screenX >= screenWidth - RESET_BTN_RIGHT - RESET_BTN_WIDTH &&
-                    screenX <= screenWidth - RESET_BTN_RIGHT &&
-                    screenY >= RESET_BTN_Y && screenY <= RESET_BTN_Y + RESET_BTN_HEIGHT) {
-                InputBindings.reset();
-            }
-            return true;
+        } catch (NullPointerException ignored) {
+            return false;
         }
     }
 
@@ -211,23 +221,28 @@ public class ControlMode implements Screen, InputProcessor {
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) return false;
-        for (int i = 0, j = controlRects.length; i < j; i++) {
-            for (Rectangle rec: controlRects[i]) {
-                if (rec.contains(screenX, screenY)) {
-                    controlStates[i] = 1;
-                    return true;
-                } else {
-                    controlStates[i] = 0;
+        try {
+            if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) return false;
+            for (int i = 0, j = controlRects.length; i < j; i++) {
+                for (Rectangle rec : controlRects[i]) {
+                    if (rec == null) continue;
+                    if (rec.contains(screenX, screenY)) {
+                        controlStates[i] = 1;
+                        return true;
+                    } else {
+                        controlStates[i] = 0;
+                    }
                 }
             }
+            backHover = (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
+                    screenY >= BACK_BTN_Y && screenY <= BACK_BTN_Y + BACK_BTN_HEIGHT);
+            resetHover = (screenX >= screenWidth - RESET_BTN_RIGHT - RESET_BTN_WIDTH &&
+                    screenX <= screenWidth - RESET_BTN_RIGHT &&
+                    screenY >= RESET_BTN_Y && screenY <= RESET_BTN_Y + RESET_BTN_HEIGHT);
+            return true;
+        } catch (NullPointerException ignored) {
+            return false;
         }
-        backHover = (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
-                screenY >= BACK_BTN_Y && screenY <= BACK_BTN_Y + BACK_BTN_HEIGHT);
-        resetHover = (screenX >= screenWidth - RESET_BTN_RIGHT - RESET_BTN_WIDTH &&
-                screenX <= screenWidth - RESET_BTN_RIGHT &&
-                screenY >= RESET_BTN_Y && screenY <= RESET_BTN_Y + RESET_BTN_HEIGHT);
-        return true;
     }
 
     @Override
