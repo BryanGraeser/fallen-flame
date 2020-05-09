@@ -7,25 +7,25 @@
   },
   {
     "name":       "tutorial 2",
-    "unlocked":   true,
+    "unlocked":   false,
     "completed":  false,
     "path":       "levels/t2.json"
   },
   {
     "name":       "tutorial 3",
-    "unlocked":   true,
+    "unlocked":   false,
     "completed":  false,
     "path":       "levels/t3.json"
   },
   {
     "name":       "tutorial 4",
-    "unlocked":   true,
+    "unlocked":   false,
     "completed":  false,
     "path":       "levels/t4.json"
   },
   {
     "name": "easyLevel",
-    "unlocked": true,
+    "unlocked": false,
     "completed": false,
     "path": "levels/easyLevel.json"
   },
