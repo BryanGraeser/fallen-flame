@@ -247,6 +247,10 @@
 		"ghost-active-icon": {
 			"file": "textures/ghost_icon_right.png",
 			"wrap": false
+		},
+		"border": {
+			"file": "textures/s_popup_border.png",
+			"wrap": false
 		}
 	},
 	"fonts": {
