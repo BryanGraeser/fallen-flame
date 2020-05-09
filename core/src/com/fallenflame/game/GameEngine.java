@@ -367,11 +367,22 @@ public class GameEngine implements Screen, InputProcessor {
             listener.exitScreen(this, 0);
             return false;
         }
+        if(isFailed && countdown > 0){
+            countdown--;
+        }
       else if (countdown == 0) {
-            if(isSuccess && lastLevelPlayed < saveJson.size)
+            System.out.println(isSuccess);
+            System.out.println(lastLevelPlayed);
+            System.out.println("saveJson size is:" + saveJson.size);
+            if(isSuccess && lastLevelPlayed +1 < saveJson.size)
                 reset(lastLevelPlayed+1);
-            else
+            else if(isFailed){
                 reset(lastLevelPlayed);
+            }
+            else{
+                System.out.println("here!");
+                listener.exitScreen(this, 1);
+            }
         }
 
         return true;
@@ -467,9 +478,8 @@ public class GameEngine implements Screen, InputProcessor {
             displayFont.setColor(hoverStates[0] == 1 ? Color.CYAN : Color.WHITE);
             canvas.drawTextCentered("Continue?", displayFont, -border.getRegionHeight()/4);
             gl.setText(displayFont, "Continue?");
-            System.out.println(hoverRects);
             hoverRects[0] = new Rectangle(
-                    (canvas.getWidth() - gl.width) / 2, (canvas.getHeight() - gl.height) / 2,
+                    (canvas.getWidth() - gl.width) / 2, (canvas.getHeight() - gl.height) / 2 -border.getRegionHeight()/4,
                     gl.width, gl.height);
             canvas.end();
         } else if (isFailed) {
@@ -697,7 +707,7 @@ public class GameEngine implements Screen, InputProcessor {
         } else {
             for (int i = 0, j = hoverRects.length; i < j; i++) {
                 if (hoverRects[i] == null) continue;
-                if (hoverRects[i].contains(x, y)) {
+                if (hoverRects[i].contains(x, (canvas.getHeight() - y))) {
                     countdown = 0;
                 }
             }
@@ -721,7 +731,7 @@ public class GameEngine implements Screen, InputProcessor {
         if(!isSuccess && !isFailed){return false;}
         for (int i = 0, j = hoverRects.length; i < j; i++) {
             if (hoverRects[i] == null) continue;
-            hoverStates[i] = (hoverRects[i].contains(x, canvas.getHeight() - y)) ? 1 : 0;
+            hoverStates[i] = (hoverRects[i].contains(x, (canvas.getHeight()-y))) ? 1 : 0;
         }
         return true;
     }
