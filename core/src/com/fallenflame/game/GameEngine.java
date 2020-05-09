@@ -482,11 +482,13 @@ public class GameEngine implements Screen, InputProcessor {
                     (canvas.getWidth() - gl.width) / 2, (canvas.getHeight() - gl.height) / 2 -border.getRegionHeight()/4,
                     gl.width, gl.height);
             canvas.end();
+            level.stopAllSounds();
         } else if (isFailed) {
             displayFont.setColor(Color.RED);
             canvas.beginWithoutCamera(); // DO NOT SCALE
             canvas.drawTextCentered("YOU DIED!", displayFont, 0.0f);
             canvas.end();
+            level.stopAllSounds();
         }
 
     }
