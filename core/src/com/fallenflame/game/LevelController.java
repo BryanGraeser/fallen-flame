@@ -37,11 +37,16 @@ public class LevelController implements ContactListener {
     /** Pitch for enemy movement sounds */
     public static final float ENEMY_MOV_PITCH = 1f;
     /** Base volume for enemy constant sounds */
-    public static final float ENEMY_CONS_BASE_VOL = 1.7f;
+    public static final float ENEMY_CONS_BASE_VOL = .45f;
     /** Volume scaling for enemy constant sounds.
      * Must be >0. Lower numbers will lead to faster volume drop-off.
      * Value of 1 means drop-off rate is exactly equivalent to 1/distance */
-    public static final float ENEMY_CONS_VOL_SCL = 1f;
+    public static final float ENEMY_CONS_VOL_SCL = 4f;
+
+    /** Threshold value that enemy constant sound gets subtracted by. Filters out
+     * quiet noises so every movement noise isn't constantly playing.
+     */
+    public static final float ENEMY_CONS_VOL_THR = .1f;
     /** Pitch for enemy constant sounds */
     public static final float ENEMY_CONS_PITCH = 1f;
     /** Volume scaling for panning
@@ -653,7 +658,7 @@ public class LevelController implements ContactListener {
                     //modify sound
                     enemy.getActiveSound().setPan(enemy.getActiveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
                 }
-                enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)));
+                enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, (ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL))) - ENEMY_CONS_VOL_THR);
                 assert inBounds(enemy);
             }
 
