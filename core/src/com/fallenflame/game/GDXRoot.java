@@ -183,7 +183,6 @@ public class GDXRoot extends Game implements ScreenListener {
 			}
 		} else if (screen == engine) {
 			if(exitCode == 1){
-				System.out.println("made it to ls");
 				Gdx.input.setInputProcessor(levelSelect);
 				levelSelect.setScreenListener(this);
 				setScreen(levelSelect);
