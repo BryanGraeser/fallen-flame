@@ -101,26 +101,26 @@ public class LevelController implements ContactListener {
     protected TextureRegion background;
 
     // Sneak Bar
-    /** The texture used for the sneakbar background*/
-    protected TextureRegion sneakBarLeft;
-    /** The texture used for the sneakbar background*/
-    protected TextureRegion sneakBarMiddle;
-    /** The texture used for the sneakbar background*/
-    protected TextureRegion sneakBarRight;
-    /** The texture used for the sneakbar foreground*/
-    protected TextureRegion sneakBarForeground;
-    /** The texture used for the sneakbar ghost active indicator*/
-    protected TextureRegion sneakBarActive;
-    /** The texture used for the sneakbar ghost inactive indicator */
-    protected TextureRegion sneakBarInactive;
-    /** The maximum sneak value allowed in the game */
-    protected float globalMaxSneakValue;
-    /** The offset of the sneakbar ghost from the player*/
-    protected Vector2 sneakBarOffset;
-    /** The offset of the sneakbar background from the ghost*/
-    protected Vector2 sneakBarBackgroundOffset;
-    /** The offset of the sneakbar foreground from the background */
-    protected Vector2 sneakBarForegroundOffset;
+    /** The texture used for the powerbar background*/
+    protected TextureRegion powerBarLeft;
+    /** The texture used for the powerbar background*/
+    protected TextureRegion powerBarMiddle;
+    /** The texture used for the powerbar background*/
+    protected TextureRegion powerBarRight;
+    /** The texture used for the powerbar foreground*/
+    protected TextureRegion powerBarForeground;
+    /** The texture used for the powerbar ghost active indicator*/
+    protected TextureRegion powerBarActive;
+    /** The texture used for the powerbar ghost inactive indicator */
+    protected TextureRegion powerBarInactive;
+    /** The maximum power value allowed in the game */
+    protected float globalMaxPowerValue;
+    /** The offset of the powerbar ghost from the player*/
+    protected Vector2 powerBarOffset;
+    /** The offset of the powerbar background from the ghost*/
+    protected Vector2 powerBarBackgroundOffset;
+    /** The offset of the powerbar foreground from the background */
+    protected Vector2 powerBarForegroundOffset;
 
     //flare counter
     /** The texture used for the flarecount when you have available flares */
@@ -377,27 +377,27 @@ public class LevelController implements ContactListener {
         background = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
 
 
-        JsonValue sneakBarJSON = globalJson.get("sneakbar");
-        globalMaxSneakValue = sneakBarJSON.get("maxsneak").asFloat();
-        key = sneakBarJSON.get("texture").get("meterleft").asString();
-        sneakBarLeft = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        key = sneakBarJSON.get("texture").get("metermiddle").asString();
-        sneakBarMiddle = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        key = sneakBarJSON.get("texture").get("meterright").asString();
-        sneakBarRight = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        key = sneakBarJSON.get("texture").get("meterforeground").asString();
-        sneakBarForeground = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        key = sneakBarJSON.get("texture").get("active").asString();
-        sneakBarActive = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        key = sneakBarJSON.get("texture").get("inactive").asString();
-        sneakBarInactive = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        JsonValue powerBarJSON = globalJson.get("powerbar");
+        globalMaxPowerValue = powerBarJSON.get("maxsneak").asFloat();
+        key = powerBarJSON.get("texture").get("meterleft").asString();
+        powerBarLeft = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        key = powerBarJSON.get("texture").get("metermiddle").asString();
+        powerBarMiddle = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        key = powerBarJSON.get("texture").get("meterright").asString();
+        powerBarRight = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        key = powerBarJSON.get("texture").get("meterforeground").asString();
+        powerBarForeground = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        key = powerBarJSON.get("texture").get("active").asString();
+        powerBarActive = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        key = powerBarJSON.get("texture").get("inactive").asString();
+        powerBarInactive = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
 
-        JsonValue textureOffsets = sneakBarJSON.get("textureoffsets");
-        sneakBarOffset = new Vector2 (textureOffsets.get("ghostfromplayer").get("x").asFloat(),
+        JsonValue textureOffsets = powerBarJSON.get("textureoffsets");
+        powerBarOffset = new Vector2 (textureOffsets.get("ghostfromplayer").get("x").asFloat(),
                                          textureOffsets.get("ghostfromplayer").get("y").asFloat());
-        sneakBarBackgroundOffset =   new Vector2 (textureOffsets.get("backgroundfromghost").get("x").asFloat(),
+        powerBarBackgroundOffset =   new Vector2 (textureOffsets.get("backgroundfromghost").get("x").asFloat(),
                                                     textureOffsets.get("backgroundfromghost").get("y").asFloat());
-        sneakBarForegroundOffset =  new Vector2 (textureOffsets.get("foregroundfrombackground").get("x").asFloat(),
+        powerBarForegroundOffset =  new Vector2 (textureOffsets.get("foregroundfrombackground").get("x").asFloat(),
                                                     textureOffsets.get("foregroundfrombackground").get("y").asFloat());
 
         JsonValue flareCountJSON = globalJson.get("flarecount");
@@ -604,13 +604,13 @@ public class LevelController implements ContactListener {
 
             textController.update(player);
 
-            // Decrement sneak value if player is sneaking
-            if(player.isSneaking()){
-                if(player.getSneakVal() > 0){
-                    player.decSneakVal();
+            // Decrement power value if player is sneaking or sprinting
+            if(player.isSneaking() || player.isSprinting()){
+                if(player.getPowerVal() > 0){
+                    player.decPowerVal();
                 }
-                // Add ghost enemy if player has used all their sneak
-                else if(player.getSneakVal() == 0 && ghostAdded == false) {
+                // Add ghost enemy if player has used all their power
+                else if(player.getPowerVal() == 0 && ghostAdded == false) {
                     addGhost();
                     ghostAdded = true;
                 }
@@ -703,7 +703,7 @@ public class LevelController implements ContactListener {
             }
 
             // Update background music
-            if (player.getSneakVal() > 0 || !ghostJSON.has("bgm") || ghostJSON.get("bgm").asString().equals("")) {
+            if (player.getPowerVal() > 0 || !ghostJSON.has("bgm") || ghostJSON.get("bgm").asString().equals("")) {
                 if (bgm != null && !bgm.equals("")) {
                     BGMController.startBGM(bgm);
                 } else {
@@ -896,7 +896,7 @@ public class LevelController implements ContactListener {
         lightController.draw();
         fogController.updateFogAndDraw(canvas, scale, delta);
 
-        drawSneakMeter(canvas);
+        drawPowerMeter(canvas);
         drawFlares(canvas);
         textController.draw(canvas);
 
@@ -969,51 +969,51 @@ public class LevelController implements ContactListener {
     }
 
     /**
-     * Draws sneak meter, a helper method for LevelController.draw()
+     * Draws power meter, a helper method for LevelController.draw()
      *
      * PlayerModel player and Vector2 scale must not be null
      *
      * @param canvas the drawing context
      */
-    private void drawSneakMeter(GameCanvas canvas){
+    private void drawPowerMeter(GameCanvas canvas){
         canvas.begin();
 
-        if(sneakBarLeft == null && sneakBarRight == null && sneakBarMiddle == null
-                && sneakBarActive == null && sneakBarInactive == null && sneakBarForeground == null){
+        if(powerBarLeft == null && powerBarRight == null && powerBarMiddle == null
+                && powerBarActive == null && powerBarInactive == null && powerBarForeground == null){
             canvas.end();
             return;
         }
 
-        float ox = scale.x * (player.getX() + sneakBarOffset.x);
-        float oy = scale.y * (player.getY() + sneakBarOffset.y);
+        float ox = scale.x * (player.getX() + powerBarOffset.x);
+        float oy = scale.y * (player.getY() + powerBarOffset.y);
 
-        float oxLeft = ox + sneakBarBackgroundOffset.x * scale.x;
-        float oyLeft = oy + sneakBarBackgroundOffset.y * scale.y;
-        canvas.draw(sneakBarLeft, oxLeft, oyLeft);
+        float oxLeft = ox + powerBarBackgroundOffset.x * scale.x;
+        float oyLeft = oy + powerBarBackgroundOffset.y * scale.y;
+        canvas.draw(powerBarLeft, oxLeft, oyLeft);
 
-        float oxMiddle = oxLeft + sneakBarLeft.getRegionWidth();
+        float oxMiddle = oxLeft + powerBarLeft.getRegionWidth();
         float oyMiddle = oyLeft;
-        float middleWidth = sneakBarMiddle.getRegionWidth() * (player.getMaxSneakVal() / globalMaxSneakValue);
-        canvas.draw(sneakBarMiddle, Color.WHITE, oxMiddle, oyMiddle, middleWidth, sneakBarMiddle.getRegionHeight());
+        float middleWidth = powerBarMiddle.getRegionWidth() * (player.getMaxPowerVal() / globalMaxPowerValue);
+        canvas.draw(powerBarMiddle, Color.WHITE, oxMiddle, oyMiddle, middleWidth, powerBarMiddle.getRegionHeight());
 
         float oxRight = oxMiddle + middleWidth;
         float oyRight = oyMiddle;
-        canvas.draw(sneakBarRight, oxRight, oyRight);
+        canvas.draw(powerBarRight, oxRight, oyRight);
 
-        if(player.getSneakVal() > 0) {
-            canvas.draw(sneakBarInactive, ox, oy);
+        if(player.getPowerVal() > 0) {
+            canvas.draw(powerBarInactive, ox, oy);
 
-            float oxFront = oxMiddle + sneakBarForegroundOffset.x * scale.x;
-            float oyFront = oyMiddle + sneakBarForegroundOffset.y * scale.y;
-            float percentFilled = player.getSneakVal() / globalMaxSneakValue;
-            float barLength = percentFilled * sneakBarMiddle.getRegionWidth();
-            float barHeight = sneakBarForeground.getRegionHeight();
+            float oxFront = oxMiddle + powerBarForegroundOffset.x * scale.x;
+            float oyFront = oyMiddle + powerBarForegroundOffset.y * scale.y;
+            float percentFilled = player.getPowerVal() / globalMaxPowerValue;
+            float barLength = percentFilled * powerBarMiddle.getRegionWidth();
+            float barHeight = powerBarForeground.getRegionHeight();
 
             //white chosen as dummy color (no tint)
-            canvas.draw(sneakBarForeground, Color.WHITE, oxFront, oyFront, barLength, barHeight);
+            canvas.draw(powerBarForeground, Color.WHITE, oxFront, oyFront, barLength, barHeight);
 
         } else {
-            canvas.draw(sneakBarActive, ox, oy);
+            canvas.draw(powerBarActive, ox, oy);
         }
 
         canvas.end();

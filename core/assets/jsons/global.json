@@ -207,7 +207,7 @@
   "background": {
     "texture":      "floor-tile"
   },
-  "sneakbar": {
+  "powerbar": {
     "texture": {
       "meterleft": "sneak-meter-background-left",
       "meterright": "sneak-meter-background-right",
