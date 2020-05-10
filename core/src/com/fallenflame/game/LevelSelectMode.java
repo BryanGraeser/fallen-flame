@@ -147,10 +147,14 @@ public class LevelSelectMode implements Screen, InputProcessor {
             }
             canvas.drawTextFromCenter("" + ((i + 1) + (page * 10)), displayFont, posVec[i].x, posVec[i].y - levelButton.getHeight()/5);
         }
-        canvas.draw(pagePrev, hoverState[posVec.length + 1] == 1 ? Color.CYAN : Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight() / 2,
-                nextPrev[0].x, nextPrev[0].y, 0, 1, 1);
-        canvas.draw(pageNext, hoverState[posVec.length + 2] == 1 ? Color.CYAN : Color.WHITE, pageNext.getWidth() / 2, pageNext.getHeight() / 2,
-                nextPrev[1].x, nextPrev[1].y, 0, 1, 1);
+        if (page != 0) {
+            canvas.draw(pagePrev, hoverState[posVec.length + 1] == 1 ? Color.CYAN : Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight() / 2,
+                    nextPrev[0].x, nextPrev[0].y, 0, 1, 1);
+        }
+        if ((page + 1) * 10 < levelSaves.length) {
+            canvas.draw(pageNext, hoverState[posVec.length + 2] == 1 ? Color.CYAN : Color.WHITE, pageNext.getWidth() / 2, pageNext.getHeight() / 2,
+                    nextPrev[1].x, nextPrev[1].y, 0, 1, 1);
+        }
         displayFont.setColor(hoverState[posVec.length] == 1 ? Color.CYAN : Color.WHITE);
         canvas.drawText("Back", displayFont,BACK_BTN_X, heightY - BACK_BTN_Y);
         displayFont.setColor(Color.WHITE);
@@ -286,7 +290,6 @@ public class LevelSelectMode implements Screen, InputProcessor {
                         page--;
                     }
                 } else {
-                    System.out.println(levelSaves.length);
                     if ((page + 1) * 10 < levelSaves.length) {
                         page++;
                     }
