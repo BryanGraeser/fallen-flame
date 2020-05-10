@@ -81,7 +81,7 @@
     },
     "typeB":  {
       "cooldown": 20,
-      "radius": 0.4,
+      "radius": 1.2,
       "bodytype": "dynamic",
       "density": 1.0,
       "friction": 0.0,
@@ -105,7 +105,7 @@
       },
       "textureoffset" : {
         "x": 0.1,
-        "y": -0.2
+        "y": -0.9
       },
       "tintOpacity": 192
     },
@@ -178,7 +178,7 @@
     "density":        1.0,
     "friction":       0.0,
     "restitution":    0.0,
-    "texture":        "fireball",
+    "texture":        "slime",
     "initialforce":   17.0,
     "damping": 		 0.0,
     "tint": [1.0, 1.0, 1.0, 1.0],
@@ -238,7 +238,7 @@
       "inactive": "inactiveflarecounter"
     },
     "textureoffset": {
-      "x": 9
+      "x": 9,
       "y": 5.875
     },
     "flare-split": 0.15

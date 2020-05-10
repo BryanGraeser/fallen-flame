@@ -216,8 +216,8 @@
 			"file": "textures/floor-tile.png",
 			"wrap": true
 		},
-		"fireball": {
-			"file": "textures/fireball.png",
+		"slime": {
+			"file": "textures/slime.png",
 			"wrap": false
 		},
 		"flare": {
