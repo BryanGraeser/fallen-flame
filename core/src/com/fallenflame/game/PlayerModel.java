@@ -63,6 +63,9 @@ public class PlayerModel extends CharacterModel {
     /** Origin of drawing for fire buddy when player is in sneak mode */
     protected Vector2 fireBuddySneak;
 
+    /** Whether or not the fire buddy is throwing a flare */
+    protected boolean throwing;
+
     /** Filmstrip of player death */
     private FilmStrip deathFilmstripRight;
     private FilmStrip deathFilmstripLeft;
@@ -96,6 +99,8 @@ public class PlayerModel extends CharacterModel {
         walkSound = JsonAssetManager.getInstance().getEntry(walkSoundKey, Sound.class);
 
         life = LifeState.ALIVE;
+
+        throwing = false;
     }
 
     @Override
@@ -155,6 +160,14 @@ public class PlayerModel extends CharacterModel {
             fireBuddyUp = (FilmStrip) texture;
         } catch (Exception e) {
             fireBuddyUp = null;
+        }
+
+        key = textureJson.get("throw").asString();
+        texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        try {
+            fireBuddyThrow = (FilmStrip) texture;
+        } catch (Exception e) {
+            fireBuddyThrow = null;
         }
 
         //pick default direction
@@ -306,6 +319,11 @@ public class PlayerModel extends CharacterModel {
     public void setLightRadiusSneak() { lightRadius = lightRadiusSneak; }
 
     /**
+     * Make the firebuddy begin the flare throwing animation.
+     */
+    public void throwFlare() { throwing = true; }
+
+    /**
      * Sets the player's life state to dying. Once the dying animation
      * concludes the player is then set as dead.
      */
@@ -416,7 +434,7 @@ public class PlayerModel extends CharacterModel {
      * @param angle100 the angle which the player is facing rounded down to the nearest int
      */
     protected void animateFireBuddy(int angle100){
-        if(true) { //temporary placeholder for whether the fire buddy is throwing or not
+        if(!throwing) {
             if (angle100 == 0) {
                 fireBuddyFilmstrip = fireBuddyUp;
             } else if (angle100 > 0 && angle100 < 314) {
@@ -428,7 +446,7 @@ public class PlayerModel extends CharacterModel {
             }
 
             // Animate if necessary
-            // Do not change values of walkCool and animate, to be done in parent.
+            // Do not change values of walkCool and animate, to be done in PlayerModel.update();
             if (animate && walkCool == 0 && fireBuddyFilmstrip != null) {
                 int next = (fireBuddyFilmstrip.getFrame() + 1) % fireBuddyFilmstrip.getSize();
                 fireBuddyFilmstrip.setFrame(next);
@@ -436,7 +454,16 @@ public class PlayerModel extends CharacterModel {
                 fireBuddyFilmstrip.setFrame(startFrame);
             }
         } else {
+            fireBuddyFilmstrip = fireBuddyThrow;
 
+            int frame = fireBuddyFilmstrip.getFrame();
+            if (walkCool == 0 && frame < fireBuddyFilmstrip.getSize() - 1) {
+                walkCool = walkLimit;
+                fireBuddyFilmstrip.setFrame(frame + 1);
+            } else if (frame == fireBuddyFilmstrip.getSize() - 1){
+                throwing = false;
+                fireBuddyFilmstrip.setFrame(0);
+            }
         }
     }
 
