@@ -22,7 +22,7 @@ public class AITypeBController extends AIController {
     }
 
     // Constants
-    private static final int SUSTAINED_FIRE_TIME = 50;
+    private static final int SUSTAINED_FIRE_TIME = 35;
 
     // Instance Attributes
     /** The enemy's current state*/
