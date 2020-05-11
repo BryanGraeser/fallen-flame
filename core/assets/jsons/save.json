@@ -1,5 +1,11 @@
 [
   {
+    "name": "level7",
+    "unlocked": false,
+    "completed": false,
+    "path": "levels/ronnie-level.json"
+  },
+  {
     "name":       "tutorial 1",
     "unlocked":   true,
     "completed":  false,
