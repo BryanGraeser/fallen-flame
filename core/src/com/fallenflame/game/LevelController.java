@@ -597,138 +597,141 @@ public class LevelController implements ContactListener {
      * @param dt the time passed since the last frame
      */
     public void update(float dt) {
-        if(fixedStep(dt)){
-            // Update player and exit
-            player.update(dt);
-            if(player.isDying()){ //stop all CharacterModels from moving if player is dying
-                player.deactivatePhysics(world);
-                for(EnemyModel enemy : enemies){
-                    enemy.deactivatePhysics(world);
-                }
-                return;
-            }
-            if(player.isDead()){
-                setLevelState(LevelState.LOSS);
-            }
-            assert inBounds(player);
+        // If the player is alive, update the Box2D world.
+        // If updating fails for whatever reason (which it should never)
+        // just give up already.
+        if(player.isAlive() && !fixedStep(dt)) return;
 
-            textController.update(player);
+        // Update player. This is always necessary even if dying cos it
+        // updates the texture.
+        player.update(dt);
 
-            // Decrement power value if player is sneaking or sprinting
-            if((player.isSneaking() || player.isSprinting()) && player.isAlive()){
-                if(player.getPowerVal() > 0){
-                    player.decPowerVal();
-                }
-                // Add ghost enemy if player has used all their power
-                else if(player.getPowerVal() == 0 && ghostAdded == false) {
-                    addGhost();
-                    ghostAdded = true;
-                }
-            }
+        // Update text controller (even if dead), this allows the text to finish the animation.
+        textController.update(player);
 
-            // Get Enemy Actions
-            Iterator<AIController> ctrlI = AIControllers.iterator();
-            LinkedList<Integer> ctrlCodes = new LinkedList();
-            while(ctrlI.hasNext()){
-                AIController ctrl = ctrlI.next();
-                ctrlCodes.add(ctrl.getAction());
-            }
-            // Execute Enemy Actions
-            Iterator<EnemyModel> enemyI = enemies.iterator();
-            Iterator<Integer> actionI = ctrlCodes.iterator();
-            while(enemyI.hasNext()){
-                EnemyModel enemy = enemyI.next();
-                int action = actionI.next();
-                enemy.executeMovementAction(action);
-                // Check if enemy is firing, for now only supports EnemyTypeBModel. TODO: Will need to rework if more firing enemies
-                boolean firing = (action & EnemyModel.CONTROL_FIRE) != 0;
-                if (enemy.getClass() == EnemyTypeBModel.class) {
-                    if(firing && ((EnemyTypeBModel) enemy).canFire()) {
-                        fireWeapon((EnemyTypeBModel) enemy);
-                    } else {
-                        ((EnemyTypeBModel) enemy).coolDown(true);
-                    }
-                }
-                enemy.update(dt);
-                // Play enemy sounds
-                float pan = (enemy.getX() - player.getX()) * PAN_SCL;
-                if (enemy.isActivated() && (enemy.getActiveSoundID() == -1)) {
-                    //start sound
-                    enemy.setActiveSoundID(enemy.getActiveSound().loop(ENEMY_MOV_BASE_VOL, ENEMY_MOV_PITCH, pan));
-                } else if (!enemy.isActivated()) {
-                    //end sound
-                    enemy.getActiveSound().stop();
-                    enemy.setActiveSoundID(-1);
-                } else {
-                    //modify sound
-                    enemy.getActiveSound().setPan(enemy.getActiveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
-                }
-                enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)));
-                assert inBounds(enemy);
-            }
+        // If dead, mark dead.
+        if (player.isDead()) setLevelState(LevelState.LOSS);
 
-            // Update flares
-            Iterator<FlareModel> i = flares.iterator();
-            while(i.hasNext()){
-                FlareModel flare = i.next();
-                if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
-                    flare.deactivatePhysics(world);
-                    flare.dispose();
-                    i.remove();
-                }
-                else {
-                    flare.update(dt);
-                }
-            }
-            // Remove old fireballs
-            Iterator<FireballModel> ii = fireballs.iterator();
-            while(ii.hasNext()){
-                FireballModel f = ii.next();
-                if(!f.isActive()){
-                    f.deactivatePhysics(world);
-                    f.dispose();
-                    ii.remove();
-                }
-            }
+        // If dying or dead, that's it. Don't update anything else.
+        // (such as light, fog, enemies, etc)
+        if (player.isDead() || player.isDying()) return;
 
-            // Check for contact items' usability
-            Iterator<ItemModel> i3 = itemContacts.iterator();
-            while(i3.hasNext()){
-                ItemModel item = i3.next();
-                // If item is a flare try to increment flare count (will return false if player is at max)
-                if(item.isFlare() && player.incFlareCount()) {
-                    item.deactivate();
-                    i3.remove();
-                }
-            }
-            // Remove old items
-            Iterator<ItemModel> iii = items.iterator();
-            while(iii.hasNext()){
-                ItemModel it = iii.next();
-                if(!it.isActive()){
-                    it.deactivatePhysics(world);
-                    it.dispose();
-                    iii.remove();
-                }
-            }
+        assert inBounds(player);
 
-            // Update background music
-            if (player.getPowerVal() > 0 || !ghostJSON.has("bgm") || ghostJSON.get("bgm").asString().equals("")) {
-                if (bgm != null && !bgm.equals("")) {
-                    BGMController.startBGM(bgm);
-                } else {
-                    BGMController.stopBGM();
-                }
-            } else {
-                BGMController.startBGM(ghostJSON.get("bgm").asString());
+        // Decrement power value if player is sneaking or sprinting
+        if((player.isSneaking() || player.isSprinting()) && player.isAlive()){
+            if(player.getPowerVal() > 0){
+                player.decPowerVal();
             }
-
-            // Update level model.
-            levelModel.update(player, enemies);
-
-            // Update lights
-            lightController.updateLights(flares, enemies, fireballs, items);
+            // Add ghost enemy if player has used all their power
+            else if(player.getPowerVal() == 0 && ghostAdded == false) {
+                addGhost();
+                ghostAdded = true;
+            }
         }
+
+        // Get Enemy Actions
+        Iterator<AIController> ctrlI = AIControllers.iterator();
+        LinkedList<Integer> ctrlCodes = new LinkedList();
+        while(ctrlI.hasNext()){
+            AIController ctrl = ctrlI.next();
+            ctrlCodes.add(ctrl.getAction());
+        }
+        // Execute Enemy Actions
+        Iterator<EnemyModel> enemyI = enemies.iterator();
+        Iterator<Integer> actionI = ctrlCodes.iterator();
+        while(enemyI.hasNext()){
+            EnemyModel enemy = enemyI.next();
+            int action = actionI.next();
+            enemy.executeMovementAction(action);
+            // Check if enemy is firing, for now only supports EnemyTypeBModel. TODO: Will need to rework if more firing enemies
+            boolean firing = (action & EnemyModel.CONTROL_FIRE) != 0;
+            if (enemy.getClass() == EnemyTypeBModel.class) {
+                if(firing && ((EnemyTypeBModel) enemy).canFire()) {
+                    fireWeapon((EnemyTypeBModel) enemy);
+                } else {
+                    ((EnemyTypeBModel) enemy).coolDown(true);
+                }
+            }
+            enemy.update(dt);
+            // Play enemy sounds
+            float pan = (enemy.getX() - player.getX()) * PAN_SCL;
+            if (enemy.isActivated() && (enemy.getActiveSoundID() == -1)) {
+                //start sound
+                enemy.setActiveSoundID(enemy.getActiveSound().loop(ENEMY_MOV_BASE_VOL, ENEMY_MOV_PITCH, pan));
+            } else if (!enemy.isActivated()) {
+                //end sound
+                enemy.getActiveSound().stop();
+                enemy.setActiveSoundID(-1);
+            } else {
+                //modify sound
+                enemy.getActiveSound().setPan(enemy.getActiveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
+            }
+            enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)));
+            assert inBounds(enemy);
+        }
+
+        // Update flares
+        Iterator<FlareModel> i = flares.iterator();
+        while(i.hasNext()){
+            FlareModel flare = i.next();
+            if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
+                flare.deactivatePhysics(world);
+                flare.dispose();
+                i.remove();
+            }
+            else {
+                flare.update(dt);
+            }
+        }
+        // Remove old fireballs
+        Iterator<FireballModel> ii = fireballs.iterator();
+        while(ii.hasNext()){
+            FireballModel f = ii.next();
+            if(!f.isActive()){
+                f.deactivatePhysics(world);
+                f.dispose();
+                ii.remove();
+            }
+        }
+
+        // Check for contact items' usability
+        Iterator<ItemModel> i3 = itemContacts.iterator();
+        while(i3.hasNext()){
+            ItemModel item = i3.next();
+            // If item is a flare try to increment flare count (will return false if player is at max)
+            if(item.isFlare() && player.incFlareCount()) {
+                item.deactivate();
+                i3.remove();
+            }
+        }
+        // Remove old items
+        Iterator<ItemModel> iii = items.iterator();
+        while(iii.hasNext()){
+            ItemModel it = iii.next();
+            if(!it.isActive()){
+                it.deactivatePhysics(world);
+                it.dispose();
+                iii.remove();
+            }
+        }
+
+        // Update background music
+        if (player.getPowerVal() > 0 || !ghostJSON.has("bgm") || ghostJSON.get("bgm").asString().equals("")) {
+            if (bgm != null && !bgm.equals("")) {
+                BGMController.startBGM(bgm);
+            } else {
+                BGMController.stopBGM();
+            }
+        } else {
+            BGMController.startBGM(ghostJSON.get("bgm").asString());
+        }
+
+        // Update level model.
+        levelModel.update(player, enemies);
+
+        // Update lights
+        lightController.updateLights(flares, enemies, fireballs, items);
     }
 
 
