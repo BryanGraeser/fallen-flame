@@ -29,11 +29,11 @@ public class LevelController implements ContactListener {
 
     // Sound constants
     /** Base volume for enemy movement sounds */
-    public static final float ENEMY_MOV_BASE_VOL = .4f;
+    public static final float ENEMY_MOV_BASE_VOL = .2f;
     /** Volume scaling for enemy movement sounds.
      * Must be >0. Lower numbers will lead to faster volume drop-off.
      * Value of 1 means drop-off rate is exactly equivalent to 1/distance */
-    public static final float ENEMY_MOVE_VOL_SCL = 3f;
+    public static final float ENEMY_MOVE_VOL_SCL = 2f;
     /** Pitch for enemy movement sounds */
     public static final float ENEMY_MOV_PITCH = 1f;
     /** Base volume for enemy constant sounds */
@@ -53,6 +53,8 @@ public class LevelController implements ContactListener {
      * Must be in range [0,1]. 1 is maximum panning, 0 is no panning. */
     public static final float PAN_SCL = .4f;
 
+    /** Volume for player flare sounds */
+    public static final float PLAYER_FLARE_VOL = .4f;
 
     /** Whether or not the level has been populated */
     private boolean populated;
@@ -793,7 +795,7 @@ public class LevelController implements ContactListener {
             float angleRad = posDif.angleRad(new Vector2(1, 0));
             Vector2 force = (new Vector2(flare.getInitialForce(), 0)).rotateRad(angleRad);
             flare.applyInitialForce(angleRad, force);
-            flare.getShotSound().play();
+            flare.getShotSound().play(PLAYER_FLARE_VOL);
             flares.add(flare);
             assert inBounds(flare);
             player.decFlareCount();
