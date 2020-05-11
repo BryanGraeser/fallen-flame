@@ -600,6 +600,9 @@ public class LevelController implements ContactListener {
         if(fixedStep(dt)){
             // Update player and exit
             player.update(dt);
+            if(player.isDead()){
+                setLevelState(LevelState.LOSS);
+            }
             assert inBounds(player);
 
             textController.update(player);
@@ -1050,7 +1053,7 @@ public class LevelController implements ContactListener {
             // Check for loss condition 1 (player runs into enemy)
             if((bd1 == player && bd2 instanceof EnemyModel)
                     || (bd1 instanceof  EnemyModel && bd2 == player)){
-                setLevelState(LevelState.LOSS);
+                player.die();
                 return;
             }
             // Check if flare collides with wall and if so stop it
@@ -1064,7 +1067,7 @@ public class LevelController implements ContactListener {
             // Check for loss condition 2 (fireball hits player)
             if((bd1 instanceof FireballModel && bd2 instanceof PlayerModel
                     || bd1 instanceof  PlayerModel && bd2 instanceof FireballModel)) {
-                setLevelState(LevelState.LOSS);
+                player.die();
                 return;
             }
             // Check for fireball-wall collision and if so remove fireball

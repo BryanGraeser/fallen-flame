@@ -19,7 +19,9 @@
       "left": "player-left",
       "right": "player-right",
       "up": "player-up",
-      "down": "player-down"
+      "down": "player-down",
+      "death-left": "player-death-left",
+      "death-right": "player-death-right"
     },
     "walksound":    "new-walk",
     "firebuddy": {

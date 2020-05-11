@@ -406,7 +406,9 @@ public class GameEngine implements Screen, InputProcessor {
             // If player just stopped sneaking
             level.makeWalk();
         }
-        level.getPlayer().move(moveAngle);
+        if(level.getPlayer().isAlive()) {
+            level.getPlayer().move(moveAngle);
+        }
         level.update(delta);
         // Get new victory state
         isSuccess = level.getLevelState() == LevelController.LevelState.WIN || prevSuccess;
