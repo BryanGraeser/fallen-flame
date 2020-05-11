@@ -15,36 +15,25 @@
     },
     {
       "pos": [
-        7.36,
-        11.26
+        10.7,
+        11.22
       ],
       "size": [
-        5.24,
+        11.84,
         8.76
       ],
-      "text": "Hold {sprint} to increase your light, then move to distract the enemy"
+      "text": "Hold {sprint} to increase your light, then move to distract the enemy. Once it's distracted, hold {sneak} to sneak past it"
     },
     {
       "pos": [
-        13.36,
-        11
-      ],
-      "size": [
-        6.36,
-        8
-      ],
-      "text": "Once it's distracted, hold CTRL to sneak around it"
-    },
-    {
-      "pos": [
-        21.16,
-        11.22
+        21.18,
+        11.2
       ],
       "size": [
         8.8,
         12.12
       ],
-      "text": "Beware, if that bar reaches zero, you've used too much sneak or sprint, and the ghost will come for you"
+      "text": "Beware, if the bar on the top of your screen hits zero, you've used too much sneak/sprint, and the ghost will come for you"
     }
   ],
   "physicsSize": [

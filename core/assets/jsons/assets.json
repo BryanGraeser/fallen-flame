@@ -232,8 +232,16 @@
 			"file": "textures/r_inactive_flare.png",
 			"wrap": false
 		},
-		"sneak-meter-background": {
-			"file": "textures/r_sneak_meter.png",
+		"sneak-meter-background-left": {
+			"file": "textures/r_sneak_meter_left.png",
+			"wrap": false
+		},
+		"sneak-meter-background-middle": {
+			"file": "textures/r_sneak_meter_middle.png",
+			"wrap": false
+		},
+		"sneak-meter-background-right": {
+			"file": "textures/r_sneak_meter_right.png",
 			"wrap": false
 		},
 		"sneak-meter-foreground": {
@@ -247,17 +255,25 @@
 		"ghost-active-icon": {
 			"file": "textures/ghost_icon_right.png",
 			"wrap": false
+		},
+		"border": {
+			"file": "textures/s_popup_border.png",
+			"wrap": false
+		},
+		"winborder": {
+			"file": "textures/s_win_game_border.png",
+			"wrap": false
 		}
 	},
 	"fonts": {
 		"display": {
 			"file": "fonts/chp-fire.ttf",
-			"size": 64
+			"size": 52
 		},
 		"debug": {
 			"file": "fonts/RetroGame.ttf",
 			"size": 20
-		}
+		},
 	},
 	"sounds": {
 		"flareout": {

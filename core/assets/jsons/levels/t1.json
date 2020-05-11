@@ -3,33 +3,22 @@
   "texts": [
     {
       "pos": [
-        4.52,
-        11.66
+        6.58,
+        11.76
       ],
       "size": [
-        6.44,
+        10.92,
         5
       ],
       "text": "Move with the {up}{left}{down}{right} keys"
     },
     {
       "pos": [
-        10.84,
-        11.6
+        16.36,
+        9.82
       ],
       "size": [
-        5.88,
-        5
-      ],
-      "text": "Use the scroll wheel or {incLightrad} and {decLightrad} to change your light radius"
-    },
-    {
-      "pos": [
-        17.12,
-        8.86
-      ],
-      "size": [
-        6.04,
+        8.96,
         8.6
       ],
       "text": "Walk to the exit"
