@@ -191,7 +191,7 @@
 			}
 		},
 		"exclamationpoint": {
-			"file": "textures/exclamationpoint.png",
+			"file": "textures/exclamationpoint2.png",
 			"wrap": false
 		},
 		"goal": {
