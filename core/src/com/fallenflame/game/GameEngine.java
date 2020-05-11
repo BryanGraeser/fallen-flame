@@ -375,8 +375,11 @@ public class GameEngine implements Screen, InputProcessor {
      */
     public void update(float delta) {
         // If the player won or lost, don't update
-        if(prevSuccess || prevFailed)
+        if(prevSuccess || prevFailed) return;
+        if(level.getPlayer().isDying()){
+            level.update(delta);
             return;
+        }
 
         if (flarePressed && !flarePrevious) {
             level.createFlare(getMousePosition(), getScreenDimensions());
@@ -406,11 +409,7 @@ public class GameEngine implements Screen, InputProcessor {
             // If player just stopped sneaking
             level.makeWalk();
         }
-        if(level.getPlayer().isAlive()){
-            level.getPlayer().move(moveAngle);
-        } else {
-            level.getPlayer().move(new Vector2(0.0f, 0.0f));
-        }
+        level.getPlayer().move(moveAngle);
         level.update(delta);
         // Get new victory state
         isSuccess = level.getLevelState() == LevelController.LevelState.WIN || prevSuccess;

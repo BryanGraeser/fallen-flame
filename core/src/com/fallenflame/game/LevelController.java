@@ -600,6 +600,13 @@ public class LevelController implements ContactListener {
         if(fixedStep(dt)){
             // Update player and exit
             player.update(dt);
+            if(player.isDying()){ //stop all CharacterModels from moving if player is dying
+                player.deactivatePhysics(world);
+                for(EnemyModel enemy : enemies){
+                    enemy.deactivatePhysics(world);
+                }
+                return;
+            }
             if(player.isDead()){
                 setLevelState(LevelState.LOSS);
             }
@@ -608,7 +615,7 @@ public class LevelController implements ContactListener {
             textController.update(player);
 
             // Decrement power value if player is sneaking or sprinting
-            if(player.isSneaking() || player.isSprinting()){
+            if((player.isSneaking() || player.isSprinting()) && player.isAlive()){
                 if(player.getPowerVal() > 0){
                     player.decPowerVal();
                 }
@@ -723,6 +730,7 @@ public class LevelController implements ContactListener {
             lightController.updateLights(flares, enemies, fireballs, items);
         }
     }
+
 
     public void stopAllSounds(){
         player.getWalkSound().stop();
