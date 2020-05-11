@@ -388,9 +388,9 @@ public class PlayerModel extends CharacterModel {
         animateFireBuddy(angle100);
 
         if(isDying()) {
-            if (angle100 < 314 && deathFilmstripLeft != null) {
+            if (angle100 > 0 && angle100 < 314 && deathFilmstripLeft != null) {
                 filmstrip = deathFilmstripLeft;
-            } else if (angle100 >= 314 && deathFilmstripRight != null) {
+            } else if (deathFilmstripRight != null) { //angle between pi and 2pi/0 (inclusive)
                 filmstrip = deathFilmstripRight;
             }
 

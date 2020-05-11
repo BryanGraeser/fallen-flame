@@ -61,7 +61,7 @@
 			}
 		},
 		"player-death-left": {
-			"file": "textures/player-death.png",
+			"file": "textures/player-death-left.png",
 			"wrap": false,
 			"strip": {
 				"size":12,
@@ -71,7 +71,7 @@
 			}
 		},
 		"player-death-right": {
-			"file": "textures/player-death.png",
+			"file": "textures/player-death-right.png",
 			"wrap": false,
 			"strip": {
 				"size":12,

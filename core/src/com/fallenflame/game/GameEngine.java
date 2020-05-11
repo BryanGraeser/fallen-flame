@@ -48,7 +48,7 @@ public class GameEngine implements Screen, InputProcessor {
 
     /**Boolean to determine if debug keys do anything.
      * Note: MUST BE FALSE WHEN MAKING A JAR! */
-    private static final boolean ALLOW_DEBUG = true;
+    private static final boolean ALLOW_DEBUG = false;
 
     private static final String SAVE_PATH = "savedata/save.json";
     private LevelSave[] levelSaves;
@@ -406,9 +406,7 @@ public class GameEngine implements Screen, InputProcessor {
             // If player just stopped sneaking
             level.makeWalk();
         }
-        if(level.getPlayer().isAlive()) {
-            level.getPlayer().move(moveAngle);
-        }
+        level.getPlayer().move(moveAngle);
         level.update(delta);
         // Get new victory state
         isSuccess = level.getLevelState() == LevelController.LevelState.WIN || prevSuccess;
