@@ -46,5 +46,11 @@
     "unlocked": false,
     "completed": false,
     "path": "levels/medium.json"
+  },
+  {
+    "name": "forcesneak",
+    "unlocked": false,
+    "completed": false,
+    "path": "levels/forceSneak.json"
   }
 ]
