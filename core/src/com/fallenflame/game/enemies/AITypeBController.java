@@ -19,6 +19,8 @@ public class AITypeBController extends AIController {
         DIRECT_FIRE,
         /** The enemy is firing at the player's last known position */
         SUSTAINED_FIRE,
+        /** Pause for a brief moment after seeing enemy */
+        PAUSE,
     }
 
     // Constants
@@ -81,11 +83,22 @@ public class AITypeBController extends AIController {
                 if(withinPlayerLight()) {
                     firingAtFlare = false;
                     enemy.setFiringTarget(player.getX(), player.getY());
-                    state = FSMState.DIRECT_FIRE;
+                    state = FSMState.PAUSE;
+                    enemy.resetPause();
                     break;
                 }
                 break;
+            case PAUSE:
+                enemy.makePause();
+                if(withinPlayerLight()) {
+                    enemy.setFiringTarget(player.getX(), player.getY()); // update in case we loose player
+                }
+                if(enemy.isFinishedPausing()){
+                    state = FSMState.DIRECT_FIRE;
+                }
+                System.out.println("STATE PAUSE");
             case DIRECT_FIRE:
+                System.out.println("STATE DIRECT FIRE");
                 enemy.makeAggressive();
                 if(firingAtFlare){
                     enemy.setFiringTarget(targetFlare.getX(), targetFlare.getY());
@@ -102,15 +115,17 @@ public class AITypeBController extends AIController {
                     }
                 }
                 else{
-                    enemy.setFiringTarget(player.getX(), player.getY());
                     // If player now out of range, switch to sustained fire at last known position
                     if(!withinPlayerLight()) {
                         state = FSMState.SUSTAINED_FIRE;
                         firingTime = 0;
-                        break;
+                        return;
                     }
+                    enemy.setFiringTarget(player.getX(), player.getY());
+                    break;
                 }
             case SUSTAINED_FIRE:
+                System.out.println("STATE sustained FIRE");
                 enemy.makeAlert();
                 // Check for flare targets -- FIRST because flares are prioritized
                 for(FlareModel f : flares) {
