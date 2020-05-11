@@ -456,6 +456,7 @@ public class PlayerModel extends CharacterModel {
         } else {
             fireBuddyFilmstrip = fireBuddyThrow;
 
+            // Do not change values of walkCool and animate, to be done in PlayerModel.update();
             int frame = fireBuddyFilmstrip.getFrame();
             if (walkCool == 0 && frame < fireBuddyFilmstrip.getSize() - 1) {
                 walkCool = walkLimit;
