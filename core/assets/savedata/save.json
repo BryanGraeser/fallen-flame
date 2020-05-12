@@ -1,10 +1,5 @@
 [
 {
-	"name": "level7",
-	"completed": true,
-	"path": "levels/ronnie-level.json"
-},
-{
 	"name": "tutorial 1",
 	"unlocked": true,
 	"completed": true,
@@ -76,6 +71,18 @@
 	"completed": true,
 	"path": "levels/medium.json"
 },
+{
+	"name": "forcesneak",
+	"unlocked": true,
+	"completed": true,
+	"path": "levels/forceSneak.json"
+},
+	{
+		"name": "level7",
+		"completed": true,
+		"unlocked": true,
+		"path": "levels/ronnie-level.json"
+	},
 	{
 		"name": "level7",
 		"unlocked": true,
