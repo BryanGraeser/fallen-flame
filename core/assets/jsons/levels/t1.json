@@ -1,34 +1,50 @@
 {
-  "name": "exEasyLevel",
-  "texts": [],
+  "name": "t1",
+  "startFlareCount": 0,
+  "texts": [
+    {
+      "pos": [
+        6.58,
+        11.76
+      ],
+      "size": [
+        10.92,
+        5
+      ],
+      "text": "Move with the {up}{left}{down}{right} keys"
+    },
+    {
+      "pos": [
+        16.36,
+        9.82
+      ],
+      "size": [
+        8.96,
+        8.6
+      ],
+      "text": "Walk to the exit"
+    }
+  ],
   "physicsSize": [
-    16.64,
-    12.8
+    21.76,
+    21.76
   ],
   "fpsRange": [
     20,
     60
   ],
   "playerpos": [
-    2.78,
-    3.38
+    4.42,
+    13.32
   ],
   "exitpos": [
-    14.3,
-    10.19
+    17.98,
+    3.53
   ],
   "background": {
     "texture": "floor-tile"
   },
-  "enemies": [
-    {
-      "enemypos": [
-        8.84,
-        7.88
-      ],
-      "enemytype": "typeA"
-    }
-  ],
+  "enemies": [],
   "items": [],
   "lighting": {
     "color": [
@@ -44,11 +60,11 @@
   "walls": [
     {
       "pos": [
-        11.52,
-        12.16
+        10.88,
+        21.12
       ],
       "size": [
-        7.68,
+        21.76,
         1.28
       ],
       "texture": "wall-side"
@@ -56,79 +72,68 @@
     {
       "pos": [
         0.64,
-        6.4
+        10.88
       ],
       "size": [
         1.28,
-        12.8
+        21.76
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        16,
-        6.4
+        21.12,
+        10.88
       ],
       "size": [
         1.28,
-        12.8
+        21.76
       ],
       "texture": "wall-top"
+    },
+    {
+      "pos": [
+        10.88,
+        0.64
+      ],
+      "size": [
+        21.76,
+        1.28
+      ],
+      "texture": "wall-side"
     },
     {
       "pos": [
         8.32,
-        0.64
+        6.4
       ],
       "size": [
-        16.64,
-        1.28
+        14.08,
+        10.24
       ],
-      "texture": "wall-side"
+      "texture": "wall-top"
     },
     {
       "pos": [
-        4.48,
-        12.16
+        10.88,
+        19.2
       ],
       "size": [
-        6.4,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        9.6,
+        19.2,
         3.84
       ],
-      "size": [
-        11.52,
-        5.12
-      ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        5.12,
-        7.68
+        10.88,
+        16.64
       ],
       "size": [
-        2.56,
-        2.56
+        19.2,
+        1.28
       ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        13.44,
-        7.68
-      ],
-      "size": [
-        3.84,
-        2.56
-      ],
-      "texture": "wall-top"
+      "texture": "wall-side"
     }
   ],
   "graphicSize": [

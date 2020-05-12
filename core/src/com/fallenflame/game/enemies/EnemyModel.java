@@ -99,9 +99,9 @@ public abstract class EnemyModel extends CharacterModel {
             stateTints.put(state, tint);
         }
 
-        // Get the exclamation mark texture (in an if statement because of an implicit promise that an enemy
+        // Get the pause time and exclamation mark texture (in an if statement because of an implicit promise that an enemy
         // will have this json field if it is to use PAUSE state and pauseTime)
-        if(json.has("exclamationTexture")){
+        if(json.has("totalPauseTime")){
             totalPauseTime = json.get("totalPauseTime").asInt();
             pauseTime = totalPauseTime;
             String key = json.get("exclamationTexture").asString();
