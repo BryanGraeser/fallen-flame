@@ -1,5 +1,6 @@
 {
   "name": "ronnie-level",
+  "startSneakVal": 200,
   "physicsSize": [
     24.32,
     28.16
