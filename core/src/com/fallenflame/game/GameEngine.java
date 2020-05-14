@@ -463,7 +463,7 @@ public class GameEngine implements Screen, InputProcessor {
             // Write save data to local save JSON file
             JsonValue.PrettyPrintSettings settings = new JsonValue.PrettyPrintSettings();
             settings.outputType = JsonWriter.OutputType.json;
-            FileHandle file = Gdx.files.local(SAVE_PATH);
+            FileHandle file = Gdx.files.external(SAVE_PATH);
             file.writeString(json.prettyPrint(levelSaves, settings), false);
             // Update level select
             levelSelect.resetNumberUnlocked();
