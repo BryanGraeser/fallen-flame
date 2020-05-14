@@ -1,7 +1,7 @@
 {
     "platform": "mac",
     "jdk": "openjdk-9.0.4_osx-x64_bin/jdk-9.0.4.jdk.zip",
-    "executable": "fallen-flame.app",
+    "executable": "fallen-flame",
     "classpath": [
         "fallen-flame.jar"
     ],
@@ -13,5 +13,5 @@
         "fallen-flame/core/assets"
     ],
     "minimizejre": "soft",
-    "output": "out-mac"
+    "output": "FallenFlame.app"
 }
