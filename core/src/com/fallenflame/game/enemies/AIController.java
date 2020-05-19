@@ -93,60 +93,60 @@ public abstract class AIController {
      * @return a movement direction that moves towards a goal tile or NO_ACTION.
      */
     protected int getMoveAlongPathToGoalTile() {
-        int startX = level.screenToTile(enemy.getX());
-        int startY = level.screenToTile(enemy.getY());
+        int startX = level.screenToTile(enemy.getX(), true);
+        int startY = level.screenToTile(enemy.getY(), true);
 
-        if(!level.isSafe(startX, startY))
-            System.out.println("start not safe");
+//        if(!level.isSafe(startX, startY))
+//            System.out.println("start not safe");
 
         // Initialize queue with movement options
         Queue<TileIndex> queue = new LinkedList<TileIndex>();
-        if(level.isSafe(startX+1, startY)){
+        if(level.isSafe(startX+1, startY, true)){
             queue.add(new TileIndex(startX+1, startY, EnemyModel.CONTROL_MOVE_RIGHT));}
-        if(level.isSafe(startX, startY+1))
+        if(level.isSafe(startX, startY+1, true))
             queue.add(new TileIndex(startX, startY+1, EnemyModel.CONTROL_MOVE_UP));
-        if(level.isSafe(startX-1, startY))
+        if(level.isSafe(startX-1, startY, true))
             queue.add(new TileIndex(startX-1, startY, EnemyModel.CONTROL_MOVE_LEFT));
-        if(level.isSafe(startX, startY-1))
+        if(level.isSafe(startX, startY-1, true))
             queue.add(new TileIndex(startX, startY-1, EnemyModel.CONTROL_MOVE_DOWN));
-        if(level.isSafe(startX-1, startY-1))
+        if(level.isSafe(startX-1, startY-1, true))
             queue.add(new TileIndex(startX-1, startY-1, EnemyModel.CONTROL_MOVE_DOWN_LEFT));
-        if(level.isSafe(startX+1, startY-1))
+        if(level.isSafe(startX+1, startY-1, true))
             queue.add(new TileIndex(startX+1, startY-1, EnemyModel.CONTROL_MOVE_DOWN_RIGHT));
-        if(level.isSafe(startX-1, startY+1))
+        if(level.isSafe(startX-1, startY+1, true))
             queue.add(new TileIndex(startX-1, startY+1, EnemyModel.CONTROL_MOVE_UP_LEFT));
-        if(level.isSafe(startX+1, startY+1))
+        if(level.isSafe(startX+1, startY+1, true))
             queue.add(new TileIndex(startX+1, startY+1, EnemyModel.CONTROL_MOVE_UP_RIGHT));
 
         while(queue.peek() != null){
             TileIndex curr = queue.poll();
             // Already visited
-            if(level.isVisited(curr.x, curr.y))
+            if(level.isVisited(curr.x, curr.y, true))
                 continue;
             // Set visited
-            level.setVisited(curr.x, curr.y);
+            level.setVisited(curr.x, curr.y, true);
             // Find goal
-            if(level.isGoal(curr.x, curr.y))
+            if(level.isGoal(curr.x, curr.y, true))
                 return curr.ctrlCode;
 
             // Push all valid movements to queue (with current action because that is the first move from start location
             // that has shortest path to this point)
-            if(level.isSafe(curr.x+1, curr.y))
+            if(level.isSafe(curr.x+1, curr.y, true))
                 queue.add(new TileIndex(curr.x+1, curr.y, curr.ctrlCode));
-            if(level.isSafe(curr.x, curr.y+1))
+            if(level.isSafe(curr.x, curr.y+1, true))
                 queue.add(new TileIndex(curr.x, curr.y+1, curr.ctrlCode));
-            if(level.isSafe(curr.x-1, curr.y))
+            if(level.isSafe(curr.x-1, curr.y, true))
                 queue.add(new TileIndex(curr.x-1, curr.y, curr.ctrlCode));
-            if(level.isSafe(curr.x, curr.y-1))
+            if(level.isSafe(curr.x, curr.y-1, true))
                 queue.add(new TileIndex(curr.x, curr.y-1, curr.ctrlCode));
 
-            if(level.isSafe(curr.x-1, curr.y-1))
+            if(level.isSafe(curr.x-1, curr.y-1, true))
                 queue.add(new TileIndex(curr.x-1, curr.y-1, curr.ctrlCode));
-            if(level.isSafe(curr.x+1, curr.y-1))
+            if(level.isSafe(curr.x+1, curr.y-1, true))
                 queue.add(new TileIndex(curr.x+1, curr.y-1, curr.ctrlCode));
-            if(level.isSafe(curr.x-1, curr.y+1))
+            if(level.isSafe(curr.x-1, curr.y+1, true))
                 queue.add(new TileIndex(curr.x-1, curr.y+1, curr.ctrlCode));
-            if(level.isSafe(curr.x+1, curr.y+1))
+            if(level.isSafe(curr.x+1, curr.y+1, true))
                 queue.add(new TileIndex(curr.x+1, curr.y+1, curr.ctrlCode));
         }
         //System.out.println("Goal not acquired");

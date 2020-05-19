@@ -207,8 +207,8 @@ public class AITypeAController extends AIController {
             case IDLE:
                 // If enemy is of subtype pathing
                 if(pathCoors != null){
-                    level.setGoal(level.screenToTile(enemy.getInvestigatePositionX()),
-                            level.screenToTile(enemy.getInvestigatePositionY()));
+                    level.setGoal(level.screenToTile(enemy.getInvestigatePositionX(), true),
+                            level.screenToTile(enemy.getInvestigatePositionY(), true));
                 }
                 break; // no goal tile
 
@@ -220,12 +220,12 @@ public class AITypeAController extends AIController {
                 break; // no goal tile
 
             case CHASE:
-                level.setGoal(level.screenToTile(player.getX()), level.screenToTile(player.getY()));
+                level.setGoal(level.screenToTile(player.getX(), true), level.screenToTile(player.getY(), true));
                 break;
 
             case INVESTIGATE:
-                level.setGoal(level.screenToTile(enemy.getInvestigatePositionX()),
-                        level.screenToTile(enemy.getInvestigatePositionY()));
+                level.setGoal(level.screenToTile(enemy.getInvestigatePositionX(), true),
+                        level.screenToTile(enemy.getInvestigatePositionY(), true));
                 break;
 
             default:
@@ -236,10 +236,10 @@ public class AITypeAController extends AIController {
 
     /** Determines whether the player has reached the coordinates they are investigating */
     private boolean investigateReached(){
-        double distance = cartesianDistance(level.screenToTile(enemy.getX()),
-                level.screenToTile(enemy.getInvestigatePositionX()),
-                level.screenToTile(enemy.getY()),
-                level.screenToTile(enemy.getInvestigatePositionY()));
+        double distance = cartesianDistance(level.screenToTile(enemy.getX(), true),
+                level.screenToTile(enemy.getInvestigatePositionX(), true),
+                level.screenToTile(enemy.getY(), true),
+                level.screenToTile(enemy.getInvestigatePositionY(), true));
         return distance <= REACHED_INVESTIGATE;
     }
 }
