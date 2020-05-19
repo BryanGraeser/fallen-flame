@@ -51,7 +51,7 @@ public class GameEngine implements Screen, InputProcessor {
 
     /**Boolean to determine if debug keys do anything.
      * Note: MUST BE FALSE WHEN MAKING A JAR! */
-    private static final boolean ALLOW_DEBUG = false;
+    private static final boolean ALLOW_DEBUG = true;
 
     private static final String SAVE_PATH = "savedata/save.json";
     private LevelSave[] levelSaves;
@@ -688,10 +688,10 @@ public class GameEngine implements Screen, InputProcessor {
         }
 
         //#region mouse wheel alternative
-        if(Gdx.input.isKeyPressed(InputBindings.getBindingOf(InputBindings.Control.INCREASE_LIGHT))){
+        if(Gdx.input.isKeyPressed(Input.Keys.PERIOD) && ALLOW_DEBUG){
             level.lightFromPlayer(0.5f);
         }
-        if(Gdx.input.isKeyPressed(InputBindings.getBindingOf(InputBindings.Control.DECREASE_LIGHT))){
+        if(Gdx.input.isKeyPressed(Input.Keys.COMMA) && ALLOW_DEBUG){
             level.lightFromPlayer(-0.5f);
         }
         //#endregion
