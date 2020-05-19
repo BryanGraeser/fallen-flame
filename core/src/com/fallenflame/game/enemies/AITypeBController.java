@@ -96,9 +96,8 @@ public class AITypeBController extends AIController {
                 if(enemy.isFinishedPausing()){
                     state = FSMState.DIRECT_FIRE;
                 }
-                System.out.println("STATE PAUSE");
+                break;
             case DIRECT_FIRE:
-                System.out.println("STATE DIRECT FIRE");
                 enemy.makeAggressive();
                 if(firingAtFlare){
                     enemy.setFiringTarget(targetFlare.getX(), targetFlare.getY());
@@ -110,7 +109,6 @@ public class AITypeBController extends AIController {
                             // if already fired at wall once, stop firing
                             targetFlare = null;
                             state = FSMState.IDLE;
-                            break;
                         }
                     }
                 }
@@ -119,13 +117,13 @@ public class AITypeBController extends AIController {
                     if(!withinPlayerLight()) {
                         state = FSMState.SUSTAINED_FIRE;
                         firingTime = 0;
-                        return;
                     }
-                    enemy.setFiringTarget(player.getX(), player.getY());
-                    break;
+                    else {
+                        enemy.setFiringTarget(player.getX(), player.getY());
+                    }
                 }
+                break;
             case SUSTAINED_FIRE:
-                System.out.println("STATE sustained FIRE");
                 enemy.makeAlert();
                 // Check for flare targets -- FIRST because flares are prioritized
                 for(FlareModel f : flares) {
@@ -144,11 +142,11 @@ public class AITypeBController extends AIController {
                     break;
                 }
                 // Check if sustained fire has ended
-                if(firingTime >= SUSTAINED_FIRE_TIME){
+                if(firingTime >= SUSTAINED_FIRE_TIME)
                     state = FSMState.IDLE;
-                    break;
-                }
-                firingTime++;
+                else
+                    firingTime++;
+                break;
         }
     }
 
