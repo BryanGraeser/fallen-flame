@@ -635,10 +635,13 @@ public class LevelController implements ContactListener {
         // Decrement power value if player is sneaking or sprinting
         if((player.isSneaking() || player.isSprinting()) && player.isAlive()){
             if(player.getPowerVal() > 0){
-                player.decPowerVal();
+                if(player.isSprinting())
+                    player.decPowerValSprint();
+                else
+                    player.decPowerValSneak();
             }
             // Add ghost enemy if player has used all their power
-            else if(player.getPowerVal() == 0 && ghostAdded == false) {
+            else if(player.getPowerVal() <= 0 && ghostAdded == false) {
                 addGhost();
                 ghostAdded = true;
             }
