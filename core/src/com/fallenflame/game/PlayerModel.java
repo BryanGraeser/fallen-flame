@@ -314,8 +314,15 @@ public class PlayerModel extends CharacterModel {
     /** Get maximum amount of sneak and spring updates left for player on this level*/
     public int getMaxPowerVal() { return maxPowerVal; }
 
-    /** Decrement sneak and spring value by 1 (for 1 update of sneaking) */
-    public void decPowerVal() { powerVal--; }
+    /** Decrement resource value by 2 for sprinting (for 1 update of sprinting) */
+    public void decPowerValSprint() {
+        powerVal -= 2;
+    }
+
+    /** Decrement resource value by 1 for sneaking */
+    public void decPowerValSneak() {
+        powerVal--;
+    }
 
     /**
      * Gets player color tint
