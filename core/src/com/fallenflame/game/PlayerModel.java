@@ -40,8 +40,8 @@ public class PlayerModel extends CharacterModel {
     /** Max sneak and spring player can have at a given level */
     protected float maxPowerVal;
     /** Static resource decrease rates */
-    private static final float SPRINT_DEC_RATE = 1.4f;
-    private static final float SNEAK_DEC_RATE = 0.7f;
+    private float sprintDecRate;
+    private float sneakDecRate;
 
     /**Tint of player light */
     protected Color tint;
@@ -94,6 +94,8 @@ public class PlayerModel extends CharacterModel {
         lightRadius = minLightRadius;
         float[] tintValues = globalJson.get("tint").asFloatArray();//RGBA
         tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
+        sneakDecRate = globalJson.get("sneakDecRate").asFloat();
+        sprintDecRate = globalJson.get("sprintDecRate").asFloat();
 
         // Level json data
         flareCount = levelJson.has("startFlareCount") ?
@@ -319,12 +321,12 @@ public class PlayerModel extends CharacterModel {
 
     /** Decrement resource value by 2 for sprinting (for 1 update of sprinting) */
     public void decPowerValSprint() {
-        powerVal -= SPRINT_DEC_RATE;
+        powerVal -= sprintDecRate;
     }
 
     /** Decrement resource value by 1 for sneaking */
     public void decPowerValSneak() {
-        powerVal -= SNEAK_DEC_RATE;
+        powerVal -= sneakDecRate;
     }
 
     /**
