@@ -132,7 +132,7 @@ public class AITypeBController extends AIController {
                 // Check for player target within range -- FIRST because player is prioritized
                 if(withinPlayerLight()) {
                     enemy.setFiringTarget(player.getX(), player.getY());
-                    state = FSMState.DIRECT_FIRE;
+                    state = FSMState.DIRECT_FIRE; // no pause bc already active
                     return;
                 }
                 // Check for flare targets -- SECOND because player is prioritized
