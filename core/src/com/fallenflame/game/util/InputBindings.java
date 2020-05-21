@@ -106,7 +106,7 @@ public class InputBindings {
         bindings.put(Control.GO_LEFT, Input.Keys.A);
         bindings.put(Control.GO_RIGHT, Input.Keys.D);
         bindings.put(Control.RESET_LEVEL, Input.Keys.R);
-        bindings.put(Control.PAUSE_LEVEL, Input.Keys.ESCAPE);
+        bindings.put(Control.PAUSE_LEVEL, Input.Keys.P);
         bindings.put(Control.SNEAKING, Input.Keys.CONTROL_LEFT);
         bindings.put(Control.SPRINTING, Input.Keys.SHIFT_LEFT);
         if (resetPrefs) {
