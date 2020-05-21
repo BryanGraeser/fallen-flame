@@ -21,6 +21,8 @@ import java.util.stream.IntStream;
 public class ControlMode implements Screen, InputProcessor {
     private static final String BACKGROUND_FILE = "textures/control_background.png";
     private final Texture background = new Texture(BACKGROUND_FILE);
+    private static final String BACK_BUTTON = "textures/ws_back.png";
+    private Texture back = new Texture(BACK_BUTTON);
     private static final String MODAL = "textures/modal.png";
     private final Texture modal = new Texture(MODAL);
     private TextureRegion screenshotTexture;
@@ -33,7 +35,7 @@ public class ControlMode implements Screen, InputProcessor {
     private ScreenListener listener;
     private boolean backHover;
     private boolean resetHover;
-    private static final int BACK_BTN_WIDTH = 60;
+    private static final int BACK_BTN_WIDTH = 100;
     private static final int BACK_BTN_HEIGHT = 30;
     private static final int BACK_BTN_X = 80;
     private static final int BACK_BTN_Y = 80;
@@ -109,9 +111,11 @@ public class ControlMode implements Screen, InputProcessor {
         }
         displayFont.setColor(backHover ? Color.CYAN : Color.WHITE);
         displayFont.getData().setScale(0.5f);
-        canvas.drawText("Back", displayFont,BACK_BTN_X, screenHeight - BACK_BTN_Y);
+        canvas.drawText("Back", displayFont, BACK_BTN_X + (back.getWidth()), screenHeight - BACK_BTN_Y);
+        canvas.draw(back, backHover ? Color.CYAN : Color.WHITE, back.getWidth() / 2, back.getHeight(),
+                BACK_BTN_X, screenHeight - BACK_BTN_Y, 0, .75f, .75f);
         String s = "Reset to Default";
-        displayFont.setColor(resetHover ? Color.CYAN : Color.WHITE);
+        displayFont.setColor(!resetHover ? Color.WHITE : Color.CYAN);
         canvas.drawText(s, displayFont,
                 screenWidth - new GlyphLayout(displayFont, s).width - RESET_BTN_RIGHT,
                 screenHeight - RESET_BTN_Y);
