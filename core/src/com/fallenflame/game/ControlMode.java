@@ -35,12 +35,12 @@ public class ControlMode implements Screen, InputProcessor {
     private boolean resetHover;
     private static final int BACK_BTN_WIDTH = 60;
     private static final int BACK_BTN_HEIGHT = 30;
-    private static final int BACK_BTN_X = 10;
-    private static final int BACK_BTN_Y = 10;
+    private static final int BACK_BTN_X = 80;
+    private static final int BACK_BTN_Y = 80;
     private static final int RESET_BTN_WIDTH = 190;
     private static final int RESET_BTN_HEIGHT = 30;
-    private static final int RESET_BTN_RIGHT = 10;
-    private static final int RESET_BTN_Y = 10;
+    private static final int RESET_BTN_RIGHT = 80;
+    private static final int RESET_BTN_Y = 80;
     private static final int MAIN_X_TEXT_OFFSET = 450;
     private static final int SECONDARY_X_TEXT_OFFSET = 300;
     private static final int Y_TEXT_SCALING = 350;
@@ -96,16 +96,16 @@ public class ControlMode implements Screen, InputProcessor {
         displayFont.setColor(Color.WHITE);
         if (Arrays.stream(controlStates).anyMatch(i -> i == 2)) {
             canvas.drawTextFromCenter("Input new key. Press ESC or click anywhere to cancel.", displayFont,
-                    screenWidth / 2, 30);
+                    screenWidth / 2, 60);
         } else if (controlStates[controlStates.length - 2] > 0) {
             canvas.drawTextFromCenter("Control for flare cannot be modified.", displayFont,
-                    screenWidth / 2, 30);
+                    screenWidth / 2, 60);
         } else if (controlStates[controlStates.length - 1] > 0) {
             canvas.drawTextFromCenter("Primary light radius control cannot be modified.", displayFont,
-                    screenWidth / 2, 30);
+                    screenWidth / 2, 60);
         } else {
             canvas.drawTextFromCenter("Click on a key to change it.", displayFont,
-                    screenWidth / 2, 30);
+                    screenWidth / 2, 60);
         }
         displayFont.setColor(backHover ? Color.CYAN : Color.WHITE);
         displayFont.getData().setScale(0.5f);

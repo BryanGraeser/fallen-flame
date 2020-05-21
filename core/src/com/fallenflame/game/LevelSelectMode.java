@@ -75,8 +75,8 @@ public class LevelSelectMode implements Screen, InputProcessor {
 
     private static final int BACK_BTN_WIDTH = 60;
     private static final int BACK_BTN_HEIGHT = 30;
-    private static final int BACK_BTN_X = 10;
-    private static final int BACK_BTN_Y = 10;
+    private static final int BACK_BTN_X = 80;
+    private static final int BACK_BTN_Y = 80;
 
     /** Level selected by the player */
     private int levelSelected;
