@@ -41,6 +41,9 @@ public class ControlMode implements Screen, InputProcessor {
     private static final int RESET_BTN_HEIGHT = 30;
     private static final int RESET_BTN_RIGHT = 10;
     private static final int RESET_BTN_Y = 10;
+    private static final int MAIN_X_TEXT_OFFSET = 450;
+    private static final int SECONDARY_X_TEXT_OFFSET = 300;
+    private static final int Y_TEXT_SCALING = 350;
 
     public ControlMode(GameCanvas canvas)
     {
@@ -65,30 +68,23 @@ public class ControlMode implements Screen, InputProcessor {
         }
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1);
-        canvas.drawTextFromCenter("Controls", displayFont, screenWidth / 2, screenHeight - 50);
         displayFont.getData().setScale(0.4f);
         InputBindings.Control[] cvalues = InputBindings.Control.values();
         int totalControls = cvalues.length;
         boolean bindingInProgress = Arrays.stream(controlStates).anyMatch(i -> i == 2);
-        for (int ind = 0, j = totalControls + 1; ind < j; ind++) {
-            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - 240) + 55);
+        for (int ind = 0, j = totalControls; ind < j; ind++) {
+            float offsetFromTop = (screenHeight - (screenHeight - Y_TEXT_SCALING))/2;
+            float ry = screenHeight - (((ind + 1) / (float) totalControls) * (screenHeight - Y_TEXT_SCALING) + offsetFromTop);
             displayFont.setColor(controlStates[ind] == 1 && ind < totalControls ? Color.CYAN :
                     (controlStates[ind] == 2 ? Color.YELLOW :
                             (bindingInProgress ? new Color(1, 1, 1, .4f) : Color.WHITE)));
-            String str2 = null;
-            String str = null;
-            if (ind < totalControls) {
-                str2 = InputBindings.controlToString(cvalues[ind]);
-                str = InputBindings.keyToString(InputBindings.getBindingOf(cvalues[ind]));
-            } else {
-                str2 = "Flare";
-                str = "Move mouse to aim, left click to shoot";
-            }
+            String str2 = InputBindings.controlToString(cvalues[ind]);
+            String str = InputBindings.keyToString(InputBindings.getBindingOf(cvalues[ind]));
             GlyphLayout box2 = new GlyphLayout(displayFont, str2);
             canvas.drawText(str2, displayFont,
-                    20, ry);
+                    MAIN_X_TEXT_OFFSET, ry);
             GlyphLayout box = new GlyphLayout(displayFont, str);
-            float rx = screenWidth - 20 - box.width;
+            float rx = SECONDARY_X_TEXT_OFFSET;
             controlRects[ind] = new Rectangle[]{
                     new Rectangle(20, screenHeight - ry, box2.width, box2.height + 10),
                     new Rectangle(rx, screenHeight - ry, box.width, box.height + 10)
