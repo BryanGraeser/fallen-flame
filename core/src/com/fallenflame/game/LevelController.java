@@ -73,6 +73,8 @@ public class LevelController implements ContactListener {
     private List<EnemyModel> enemies;
     /** Reference to all walls */
     private List<WallModel> walls;
+    /** Reference to all trees */
+    private List<TreeModel> trees;
     /** Reference to all flares */
     private List<FlareModel> flares;
     /** Reference to all fireballs */
@@ -251,6 +253,13 @@ public class LevelController implements ContactListener {
     public List<WallModel> getWalls() { return walls; }
 
     /**
+     * Returns a reference to the trees
+     *
+     * @return a reference to the trees
+     */
+    public List<TreeModel> getTrees() { return trees; }
+
+    /**
      * Returns a reference to the flares
      *
      * @return a reference to the flares
@@ -368,6 +377,7 @@ public class LevelController implements ContactListener {
         textController = new TextController();
         // Models
         walls = new LinkedList<>();
+        trees = new LinkedList<>();
         enemies = new LinkedList<>();
         flares = new LinkedList<>();
         fireballs = new LinkedList<>();
@@ -472,6 +482,17 @@ public class LevelController implements ContactListener {
             walls.add(wall);
             assert inBounds(wall);
         }
+        // Create walls.
+        if (levelJson.get("trees") != null) {
+            for(JsonValue treeJSON : levelJson.get("trees")) {
+                TreeModel tree = new TreeModel();
+                tree.initialize(globalJson.get("tree"), treeJSON);
+                tree.setDrawScale(scale);
+                tree.activatePhysics(world);
+                trees.add(tree);
+                assert inBounds(tree);
+            }
+        }
         // Create enemies
         int enemyID = 0;
         JsonValue globalEnemies = globalJson.get("enemies");
@@ -540,8 +561,8 @@ public class LevelController implements ContactListener {
         bgm = levelJson.has("bgm") ? levelJson.get("bgm").asString() : null;
 
         // Initialize levelModel, lightController, and fogController
-        pathLevelModel.initialize(bounds, walls, enemies, PATH_GRID_SIZE);
-        fogLevelModel.initialize(bounds, walls, enemies, FOG_GRID_SIZE);
+        pathLevelModel.initialize(bounds, walls, trees, enemies, PATH_GRID_SIZE);
+        fogLevelModel.initialize(bounds, walls, trees, enemies, FOG_GRID_SIZE);
         lightController.initialize(player, exit, levelJson.get("lighting"), world, bounds, scale);
         fogController.initialize(fogTemplate, fogLevelModel, player, flares, enemies);
 
@@ -570,6 +591,11 @@ public class LevelController implements ContactListener {
             wall.dispose();
         }
         walls.clear();
+        for(TreeModel tree : trees) {
+            tree.deactivatePhysics(world);
+            tree.dispose();
+        }
+        trees.clear();
         for(EnemyModel enemy : enemies) {
             enemy.getConstantSound().stop();
             enemy.getActiveSound().stop();
@@ -955,6 +981,7 @@ public class LevelController implements ContactListener {
         List<Obstacle> toBeDrawn = new LinkedList<>();
         toBeDrawn.add(exit);
         toBeDrawn.addAll(walls);
+        toBeDrawn.addAll(trees);
         toBeDrawn.addAll(enemies);
         toBeDrawn.addAll(flares);
         toBeDrawn.addAll(fireballs);
@@ -982,6 +1009,9 @@ public class LevelController implements ContactListener {
             exit.drawDebug(canvas);
             for(WallModel wall : walls) {
                 wall.drawDebug(canvas);
+            }
+            for(TreeModel tree : trees) {
+                tree.drawDebug(canvas);
             }
             for(FlareModel flare : flares) {
                 flare.drawDebug(canvas);
