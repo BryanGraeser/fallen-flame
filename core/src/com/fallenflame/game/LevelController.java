@@ -79,6 +79,8 @@ public class LevelController implements ContactListener {
     private List<FireballModel> fireballs;
     /** Reference to all items */
     private List<ItemModel> items;
+    /** Reference to all extras*/
+    private List<ExtraModel> extras;
     /** Reference to continuing player-item contacts */
     private HashSet<ItemModel> itemContacts;
     /** Level Model for AI Pathfinding */
@@ -526,6 +528,18 @@ public class LevelController implements ContactListener {
             }
         }
 
+        // Create cosmetic extras (if any exist)
+        if(levelJson.has("extras")){
+            JsonValue globalExtrasJson = globalJson.get("items");
+            for(JsonValue levelExtraJson : levelJson.get("extras")){
+                ExtraModel extra = new ExtraModel(levelExtraJson.get("extraPos").asFloatArray());
+                extra.initialize(globalExtrasJson, levelExtraJson.get("extraType").asString());
+                extra.setDrawScale(scale);
+                assert inBounds(extra);
+                extras.add(extra);
+            }
+        }
+
         textController.initialize(levelJson.has("texts") ? levelJson.get("texts") : null);
 
         // Set background music
@@ -584,6 +598,10 @@ public class LevelController implements ContactListener {
             item.dispose();
         }
         items.clear();
+        for(ExtraModel extra : extras) {
+            extra.dispose();
+        }
+        extras.clear();
         exit.deactivatePhysics(world);
         exit.dispose();
         player.getWalkSound().stop();
@@ -959,6 +977,9 @@ public class LevelController implements ContactListener {
         }
         for(ItemModel item : items) {
             item.draw(canvas);
+        }
+        for(ExtraModel extra : extras) {
+            extra.draw(canvas);
         }
         player.draw(canvas);
         canvas.end();
