@@ -160,6 +160,16 @@
 				"first": 0
 			}
 		},
+		"fire-buddy-win": {
+			"file": "textures/firebuddywin.png",
+			"wrap": false,
+			"strip": {
+				"size": 35,
+				"rows": 1,
+				"cols": 35,
+				"first": 0
+			}
+		},
 		"ghost-left": {
 			"file": "textures/ghost-left.png",
 			"wrap": false,
@@ -310,6 +320,18 @@
 		},
 		"volcano-patch": {
 			"file": "textures/volcano-patch.png",
+			"wrap": false
+		},
+		"wintext": {
+			"file": "textures/s_wingame_text.png",
+			"wrap": false
+		},
+		"losetext": {
+			"file": "textures/s_lose_text.png",
+			"wrap": false
+		},
+		"successtext": {
+			"file": "textures/s_success_text.png",
 			"wrap": false
 		}
 	},
