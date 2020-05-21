@@ -952,23 +952,19 @@ public class LevelController implements ContactListener {
         }
 
         // Draw all objects
-        exit.draw(canvas);
-        for(WallModel wall : walls) {
-            wall.draw(canvas);
+        List<Obstacle> toBeDrawn = new LinkedList<>();
+        toBeDrawn.add(exit);
+        toBeDrawn.addAll(walls);
+        toBeDrawn.addAll(enemies);
+        toBeDrawn.addAll(flares);
+        toBeDrawn.addAll(fireballs);
+        toBeDrawn.addAll(items);
+        toBeDrawn.add(player);
+        // Bigger Y = draw first.
+        toBeDrawn.sort((a, b) -> -Float.compare(a.getY(), b.getY()));
+        for (Obstacle o : toBeDrawn) {
+            o.draw(canvas);
         }
-        for(EnemyModel enemy : enemies) {
-            enemy.draw(canvas);
-        }
-        for(FlareModel flare : flares) {
-            flare.draw(canvas);
-        }
-        for(FireballModel fireball : fireballs){
-            fireball.draw(canvas);
-        }
-        for(ItemModel item : items) {
-            item.draw(canvas);
-        }
-        player.draw(canvas);
         canvas.end();
 
         lightController.setDebug(debug2);
