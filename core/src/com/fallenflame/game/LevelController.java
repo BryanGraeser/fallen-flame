@@ -41,6 +41,10 @@ public class LevelController implements ContactListener {
      * Must be >0. Lower numbers will lead to faster volume drop-off.
      * Value of 1 means drop-off rate is exactly equivalent to 1/distance */
     public static final float ENEMY_CONS_VOL_SCL = 6f;
+    /** Chance of an enemy starting its constant sound on any given frame when possible */
+    public static final int ENEMY_CONS_CHANCE = 250;
+    /** Frames enemy must wait before being able to make its constant sound again */
+    public static final int ENEMY_CONS_WAIT = 125;
 
     /** Threshold value that enemy constant sound gets subtracted by. Filters out
      * quiet noises so every movement noise isn't constantly playing.
@@ -484,7 +488,6 @@ public class LevelController implements ContactListener {
             enemy.setDrawScale(scale);
             enemy.initialize(globalEnemies.get(enemyType), enemyJSON.get("enemypos").asFloatArray());
             enemy.initializeTextures(globalEnemies.get(enemyType));
-            enemy.setConstantSoundID(enemy.getConstantSound().loop(0, ENEMY_CONS_PITCH, 0));
             enemy.activatePhysics(world);
             enemies.add(enemy);
             // Initialize AIController
@@ -695,7 +698,12 @@ public class LevelController implements ContactListener {
                 //modify sound
                 enemy.getActiveSound().setPan(enemy.getActiveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
             }
-            enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, (ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)))-ENEMY_CONS_VOL_THR);
+            enemy.decConstantSoundTimer();
+            if ((int)(Math.random() * ENEMY_CONS_CHANCE) == 1 && enemy.getConstantSoundTimer() <= 0) {
+                enemy.setConstantSoundTimer(ENEMY_CONS_WAIT);
+                enemy.setConstantSoundID(enemy.getConstantSound().play(0, ENEMY_CONS_PITCH, 0));
+                enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, (ENEMY_CONS_BASE_VOL * ((1 / enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL))) - ENEMY_CONS_VOL_THR);
+            }
             assert inBounds(enemy);
         }
 
