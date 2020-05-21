@@ -250,7 +250,7 @@
     "friction":       0.4,
     "restitution":    0.1,
     "texture":      "tree",
-    "radius":       0.7,
+    "size":          [1.28, 1.28],
     "debugcolor":   "yellow",
     "debugopacity":  200,
     "offset":        [0, 40]

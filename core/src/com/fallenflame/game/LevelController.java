@@ -1153,8 +1153,8 @@ public class LevelController implements ContactListener {
                 return;
             }
             // Check if flare collides with wall and if so stop it
-            if((bd1 instanceof FlareModel && bd2 instanceof WallModel
-                    || bd1 instanceof  WallModel && bd2 instanceof FlareModel)) {
+            if((bd1 instanceof FlareModel && bd2 instanceof IWallLike
+                    || bd1 instanceof  IWallLike && bd2 instanceof FlareModel)) {
                 if(bd1 instanceof FlareModel)
                     ((FlareModel) bd1).stopMovement();
                 else
@@ -1167,8 +1167,8 @@ public class LevelController implements ContactListener {
                 return;
             }
             // Check for fireball-wall collision and if so remove fireball
-            if((bd1 instanceof FireballModel && bd2 instanceof WallModel
-                    || bd1 instanceof  WallModel && bd2 instanceof FireballModel)) {
+            if((bd1 instanceof FireballModel && bd2 instanceof IWallLike
+                    || bd1 instanceof  IWallLike && bd2 instanceof FireballModel)) {
                 if(bd1 instanceof FireballModel){
                     ((FireballModel) bd1).deactivate();
                 }

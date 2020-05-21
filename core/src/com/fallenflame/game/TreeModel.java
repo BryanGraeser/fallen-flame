@@ -9,7 +9,7 @@ import com.fallenflame.game.physics.obstacle.BoxObstacle;
 import com.fallenflame.game.physics.obstacle.WheelObstacle;
 import com.fallenflame.game.util.JsonAssetManager;
 
-public class TreeModel extends WheelObstacle {
+public class TreeModel extends BoxObstacle implements IWallLike {
 
     private float offsetX, offsetY;
 
@@ -17,17 +17,18 @@ public class TreeModel extends WheelObstacle {
      * Constructor with default settings.
      */
     public TreeModel() {
-        super(1);
+        super(0, 0, 1, 1);
     }
 
     public void initialize(JsonValue globalJson, JsonValue levelJson) {
         setName(globalJson.name());
         float[] pos = levelJson.get("pos").asFloatArray();
-        float rad = globalJson.get("radius").asFloat();
+        float[] size = globalJson.get("size").asFloatArray();
 
+
+        setDimension(size[0], size[1]);
         setBodyType(globalJson.get("bodytype").asString().equals("static") ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody);
         setPosition(pos[0], pos[1]);
-        setRadius(rad);
 
         // Get default texture
         String key = globalJson.get("texture").asString();;

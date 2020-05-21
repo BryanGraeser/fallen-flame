@@ -69,7 +69,7 @@ public class LevelModel {
         }
 
         for(TreeModel t : trees) {
-            setWheelObstacleInGrid(t, true, TileOccupiedBy.TREE, false);
+            setBoxObstacleInGrid(t, true, TileOccupiedBy.TREE);
         }
     }
 
