@@ -295,6 +295,22 @@
 		"forest-patch": {
 			"file": "textures/forest-patch.png",
 			"wrap": false
+		},
+		"v-horizontal-extras": {
+			"file": "textures/v-horizontal-extras.png",
+			"wrap": false
+		},
+		"v-square-extras": {
+			"file": "textures/v-square-extras.png",
+			"wrap": false
+		},
+		"v-vertical-extras": {
+			"file": "textures/v-vertical-extras.png",
+			"wrap": false
+		},
+		"volcano-patch": {
+			"file": "textures/volcano-patch.png",
+			"wrap": false
 		}
 	},
 	"fonts": {

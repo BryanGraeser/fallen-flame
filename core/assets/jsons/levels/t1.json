@@ -46,15 +46,6 @@
   },
   "enemies": [],
   "items": [],
-  "extras": [
-    {
-      "extraPos": [
-        5.42,
-        13.32
-      ],
-      "extraType": "c-patch"
-    }
-  ],
   "lighting": {
     "color": [
       0,

@@ -14,7 +14,7 @@ public class ExtraModel extends BoxObstacle {
      * Create a new ExtraModel with degenerate settings
      */
     public ExtraModel(float[] pos) {
-        super(pos[0],pos[1], 0f, 0f);
+        super(pos[0],pos[1], 1, 1);
         setBodyType(BodyDef.BodyType.StaticBody);
     }
 

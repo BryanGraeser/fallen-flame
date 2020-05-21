@@ -529,8 +529,9 @@ public class LevelController implements ContactListener {
         }
 
         // Create cosmetic extras (if any exist)
+        extras = new LinkedList<>();
         if(levelJson.has("extras")){
-            JsonValue globalExtrasJson = globalJson.get("items");
+            JsonValue globalExtrasJson = globalJson.get("extras");
             for(JsonValue levelExtraJson : levelJson.get("extras")){
                 ExtraModel extra = new ExtraModel(levelExtraJson.get("extraPos").asFloatArray());
                 extra.initialize(globalExtrasJson, levelExtraJson.get("extraType").asString());
@@ -1011,6 +1012,9 @@ public class LevelController implements ContactListener {
             }
             for(ItemModel item : items) {
                 item.drawDebug(canvas);
+            }
+            for(ExtraModel extra : extras) {
+                extra.drawDebug(canvas);
             }
             canvas.endDebug();
             if(ticks % 10 == 0){
