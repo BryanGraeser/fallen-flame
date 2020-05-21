@@ -248,8 +248,8 @@ public class InputBindings {
             case GO_DOWN: return "Go down";
             case GO_LEFT: return "Go left";
             case GO_RIGHT: return "Go right";
-            case SNEAKING: return "Sneaking";
-            case SPRINTING: return "Sprinting";
+            case SNEAKING: return "Sneak";
+            case SPRINTING: return "Sprint";
             case RESET_LEVEL: return "Reset level";
             case PAUSE_LEVEL: return "Pause Level";
         }
