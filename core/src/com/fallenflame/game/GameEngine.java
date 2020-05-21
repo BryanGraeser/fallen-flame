@@ -669,7 +669,7 @@ public class GameEngine implements Screen, InputProcessor {
         resetPressed = (Gdx.input.isKeyPressed(InputBindings.getBindingOf(InputBindings.Control.RESET_LEVEL)));
         debugPressed = (Gdx.input.isKeyPressed(Input.Keys.G));
         debug2Pressed = (Gdx.input.isKeyPressed(Input.Keys.E));
-        exitPressed  = (Gdx.input.isKeyPressed(Input.Keys.ESCAPE));
+        exitPressed  = (Gdx.input.isKeyPressed(InputBindings.getBindingOf(InputBindings.Control.PAUSE_LEVEL)));
         flarePressed  = (Gdx.input.isButtonPressed(Input.Buttons.LEFT));
         sprintPressed = (Gdx.input.isKeyPressed(InputBindings.getBindingOf(InputBindings.Control.SPRINTING)));
         sneakPressed = (Gdx.input.isKeyPressed(InputBindings.getBindingOf(InputBindings.Control.SNEAKING)));
