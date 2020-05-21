@@ -240,6 +240,10 @@
 			"file": "textures/flare.png",
 			"wrap": false
 		},
+		"tree": {
+			"file": "textures/trees.png",
+			"wrap": false
+		},
 		"activeflarecounter": {
 			"file": "textures/r_active_flare.png",
 			"wrap": false
