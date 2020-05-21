@@ -457,8 +457,14 @@ public class LevelController implements ContactListener {
 
             if(wallJSON.get("texture").asString().equals("wall-side")) {
                 wall.initialize(globalJson.get("wall-side"), wallJSON);
-            } else {
+            } else if(wallJSON.get("texture").asString().equals("wall-top")) {
                 wall.initialize(globalJson.get("wall-top"), wallJSON);
+            } else if(wallJSON.get("texture").asString().equals("volcano-side")) {
+                wall.initialize(globalJson.get("wall-side-volcano"), wallJSON);
+            } else if(wallJSON.get("texture").asString().equals("volcano-top")) {
+                wall.initialize(globalJson.get("wall-top-volcano"), wallJSON);
+            } else {
+                Gdx.app.error("LevelController", "Unknown wall texture.");
             }
 
             wall.setDrawScale(scale);
