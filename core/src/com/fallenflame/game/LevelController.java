@@ -393,8 +393,6 @@ public class LevelController implements ContactListener {
         scale.x = scale.y = 50;
 
         String key = globalJson.get("background").get("texture").asString();
-        if (levelJson.get("background").has("texture"))
-            levelJson.get("background").get("texture").asString(); // Get specific texture if available
         background = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
 
 

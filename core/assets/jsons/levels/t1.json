@@ -42,7 +42,7 @@
     3.53
   ],
   "background": {
-    "texture": "grass-tile"
+    "texture": "floor-tile"
   },
   "enemies": [],
   "items": [],
@@ -67,7 +67,7 @@
         21.76,
         1.28
       ],
-      "texture": "volcano-side"
+      "texture": "wall-side"
     },
     {
       "pos": [
@@ -78,7 +78,7 @@
         1.28,
         21.76
       ],
-      "texture": "volcano-top"
+      "texture": "wall-top"
     },
     {
       "pos": [
@@ -89,7 +89,7 @@
         1.28,
         21.76
       ],
-      "texture": "volcano-top"
+      "texture": "wall-top"
     },
     {
       "pos": [
@@ -100,7 +100,7 @@
         21.76,
         1.28
       ],
-      "texture": "volcano-side"
+      "texture": "wall-side"
     },
     {
       "pos": [
@@ -111,7 +111,7 @@
         14.08,
         10.24
       ],
-      "texture": "volcano-top"
+      "texture": "wall-top"
     },
     {
       "pos": [
@@ -122,7 +122,7 @@
         19.2,
         3.84
       ],
-      "texture": "volcano-top"
+      "texture": "wall-top"
     },
     {
       "pos": [
@@ -133,7 +133,7 @@
         19.2,
         1.28
       ],
-      "texture": "volcano-side"
+      "texture": "wall-side"
     }
   ],
   "graphicSize": [

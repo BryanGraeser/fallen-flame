@@ -224,6 +224,26 @@
     "debugcolor":   "yellow",
     "debugopacity":  200
   },
+  "wall-side-volcano": {
+    "pad":       	[ 0.0f, 0.0f],
+    "bodytype":     "static",
+    "density":        0.0,
+    "friction":       0.4,
+    "restitution":    0.1,
+    "texture":      "wall-side-volcano",
+    "debugcolor":   "yellow",
+    "debugopacity":  200
+  },
+  "wall-top-volcano": {
+    "pad":       	[ 0.0f, 0.0f],
+    "bodytype":     "static",
+    "density":        0.0,
+    "friction":       0.4,
+    "restitution":    0.1,
+    "texture":      "wall-top-volcano",
+    "debugcolor":   "yellow",
+    "debugopacity":  200
+  },
   "background": {
     "texture":      "floor-tile"
   },
