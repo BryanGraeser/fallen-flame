@@ -355,6 +355,7 @@ public class LevelSelectMode implements Screen, InputProcessor {
                             page++;
                         }
                     }
+                    break;
                 }
             }
         }
