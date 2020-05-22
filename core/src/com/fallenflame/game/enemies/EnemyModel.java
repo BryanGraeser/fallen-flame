@@ -46,8 +46,6 @@ public abstract class EnemyModel extends CharacterModel {
     protected long activeSoundID;
     /**ID of enemy constant sound*/
     protected long constantSoundID;
-    /**Time until constant sound can play again (in frames)*/
-    protected int constantSoundTimer;
 
     // Active status
     protected ActivationStates state = ActivationStates.Calm;
@@ -229,12 +227,6 @@ public abstract class EnemyModel extends CharacterModel {
     public long getConstantSoundID() {return constantSoundID;}
 
     public void setConstantSoundID(long id) {constantSoundID = id;}
-
-    public int getConstantSoundTimer() {return constantSoundTimer;}
-
-    public void setConstantSoundTimer(int id) {constantSoundTimer = id;}
-
-    public void decConstantSoundTimer() {constantSoundTimer--;}
 
     /**
      * Executes enemy movement action
