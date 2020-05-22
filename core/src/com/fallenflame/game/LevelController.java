@@ -36,11 +36,11 @@ public class LevelController implements ContactListener {
     /** Pitch for enemy movement sounds */
     public static final float ENEMY_MOV_PITCH = 1f;
     /** Base volume for enemy constant sounds */
-    public static final float ENEMY_CONS_BASE_VOL = .45f;
+    public static final float ENEMY_CONS_BASE_VOL = .15f;
     /** Volume scaling for enemy constant sounds.
      * Must be >0. Lower numbers will lead to faster volume drop-off.
      * Value of 1 means drop-off rate is exactly equivalent to 1/distance */
-    public static final float ENEMY_CONS_VOL_SCL = 4f;
+    public static final float ENEMY_CONS_VOL_SCL = 6f;
 
     /** Threshold value that enemy constant sound gets subtracted by. Filters out
      * quiet noises so every movement noise isn't constantly playing.
@@ -434,8 +434,6 @@ public class LevelController implements ContactListener {
         JsonValue flareCountJSON = globalJson.get("flarecount");
         key = flareCountJSON.get("texture").get("active").asString();
         activeFlareCountTexture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
-        key = flareCountJSON.get("texture").get("inactive").asString();
-        inactiveFlareCountTexture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
         flareCountSplit = flareCountJSON.get("flare-split").asFloat();
         flareCountOffset = new Vector2 (flareCountJSON.get("textureoffset").get("x").asFloat(),
               flareCountJSON.get("textureoffset").get("y").asFloat());
@@ -671,9 +669,18 @@ public class LevelController implements ContactListener {
         // If dead, mark dead.
         if (player.isDead()) setLevelState(LevelState.LOSS);
 
+        // If victorious, mark victorious
+        if (player.hasWon()) setLevelState(LevelState.WIN);
+
         // If dying or dead, that's it. Don't update anything else.
         // (such as light, fog, enemies, etc)
-        if (player.isDead() || player.isDying()) return;
+        if (player.isDead() || player.isDying() || player.hasWon()) return;
+
+        if (player.isWinning()) {
+            player.setLightRadius(player.getLightRadiusSprint()); //increase light radius to see fire buddy
+            lightController.updateLights(flares, enemies, fireballs, items);
+            return;
+        }
 
         assert inBounds(player);
 
@@ -729,7 +736,7 @@ public class LevelController implements ContactListener {
                 //modify sound
                 enemy.getActiveSound().setPan(enemy.getActiveSoundID(), pan, ENEMY_MOV_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_MOVE_VOL_SCL)));
             }
-            enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)));
+            enemy.getConstantSound().setPan(enemy.getConstantSoundID(), pan, (ENEMY_CONS_BASE_VOL * ((1/enemy.getDistanceBetween(player) * ENEMY_CONS_VOL_SCL)))-ENEMY_CONS_VOL_THR);
             assert inBounds(enemy);
         }
 
@@ -737,7 +744,7 @@ public class LevelController implements ContactListener {
         Iterator<FlareModel> i = flares.iterator();
         while(i.hasNext()){
             FlareModel flare = i.next();
-            if(!(Float.compare(flare.timeToBurnout(), 0.0f) > 0)){
+            if(flare.timeToBurnout() == 0){
                 flare.deactivatePhysics(world);
                 flare.dispose();
                 i.remove();
@@ -1057,7 +1064,7 @@ public class LevelController implements ContactListener {
 
         float flareWidth = activeFlareCountTexture.getRegionWidth() + flareCountSplit * scale.x;
 
-        if (activeFlareCountTexture != null && inactiveFlareCountTexture != null) {
+        if (activeFlareCountTexture != null) {
             for(int i = 0; i < player.getFlareCount(); i++){
                 float activeFlareX = ox - i * flareWidth;
                 canvas.draw(activeFlareCountTexture, activeFlareX, oy);
@@ -1143,7 +1150,8 @@ public class LevelController implements ContactListener {
             // Check for win condition
             if ((bd1 == player && bd2 == exit  )
                     || (bd1 == exit && bd2 == player)) {
-            setLevelState(levelState.WIN);
+                stopAllSounds();
+                player.win();
                 return;
             }
             // Check for loss condition 1 (player runs into enemy)
