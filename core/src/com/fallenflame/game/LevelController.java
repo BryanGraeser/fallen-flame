@@ -81,6 +81,8 @@ public class LevelController implements ContactListener {
     private List<FireballModel> fireballs;
     /** Reference to all items */
     private List<ItemModel> items;
+    /** Reference to all extras*/
+    private List<ExtraModel> extras;
     /** Reference to continuing player-item contacts */
     private HashSet<ItemModel> itemContacts;
     /** Level Model for AI Pathfinding */
@@ -553,6 +555,19 @@ public class LevelController implements ContactListener {
             }
         }
 
+        // Create cosmetic extras (if any exist)
+        extras = new LinkedList<>();
+        if(levelJson.has("extras")){
+            JsonValue globalExtrasJson = globalJson.get("extras");
+            for(JsonValue levelExtraJson : levelJson.get("extras")){
+                ExtraModel extra = new ExtraModel(levelExtraJson.get("extraPos").asFloatArray());
+                extra.initialize(globalExtrasJson, levelExtraJson.get("extraType").asString());
+                extra.setDrawScale(scale);
+                assert inBounds(extra);
+                extras.add(extra);
+            }
+        }
+
         textController.initialize(levelJson.has("texts") ? levelJson.get("texts") : null);
 
         // Set background music
@@ -616,6 +631,10 @@ public class LevelController implements ContactListener {
             item.dispose();
         }
         items.clear();
+        for(ExtraModel extra : extras) {
+            extra.dispose();
+        }
+        extras.clear();
         exit.deactivatePhysics(world);
         exit.dispose();
         player.getWalkSound().stop();
@@ -984,15 +1003,22 @@ public class LevelController implements ContactListener {
                     bounds.width * scale.x, bounds.height * scale.y);
         }
 
-        // Draw all objects
+        // Things that should always be drawn in background
+        for(ExtraModel extra : extras){
+            extra.draw(canvas);
+        }
+        exit.draw(canvas);
+        for(ItemModel item : items){
+            item.draw(canvas);
+        }
+
+        // Draw all objects that are dynamically ordered
         List<Obstacle> toBeDrawn = new LinkedList<>();
-        toBeDrawn.add(exit);
         toBeDrawn.addAll(walls);
         toBeDrawn.addAll(trees);
         toBeDrawn.addAll(enemies);
         toBeDrawn.addAll(flares);
         toBeDrawn.addAll(fireballs);
-        toBeDrawn.addAll(items);
         toBeDrawn.add(player);
         // Bigger Y = draw first.
         toBeDrawn.sort((a, b) -> -Float.compare(a.getY(), b.getY()));
@@ -1031,6 +1057,9 @@ public class LevelController implements ContactListener {
             }
             for(ItemModel item : items) {
                 item.drawDebug(canvas);
+            }
+            for(ExtraModel extra : extras) {
+                extra.drawDebug(canvas);
             }
             canvas.endDebug();
             if(ticks % 10 == 0){
