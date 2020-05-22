@@ -1,5 +1,8 @@
 {
   "name": "bryanleveltwo",
+  "maxFlareCount": 1,
+  "startFlareCount": 1,
+  "texts": [],
   "physicsSize": [
     19.2,
     25.6
@@ -17,7 +20,7 @@
     9.89
   ],
   "background": {
-    "texture": "forest-tile"
+    "texture": "floor-tile"
   },
   "enemies": [
     {
@@ -131,121 +134,6 @@
       "itemType": "flare"
     }
   ],
-  "extras": [
-    {
-      "extraPos": [
-        5.54,
-        4.08
-      ],
-      "extraType": "f-horizontal"
-    },
-    {
-      "extraPos": [
-        15.9,
-        13.12
-      ],
-      "extraType": "f-square"
-    },
-    {
-      "extraPos": [
-        9.28,
-        4.9
-      ],
-      "extraType": "f-patch"
-    },
-    {
-      "extraPos": [
-        16,
-        7.04
-      ],
-      "extraType": "f-patch"
-    },
-    {
-      "extraPos": [
-        11.52,
-        12.8
-      ],
-      "extraType": "f-patch"
-    },
-    {
-      "extraPos": [
-        4.48,
-        9.6
-      ],
-      "extraType": "f-patch"
-    },
-    {
-      "extraPos": [
-        9.6,
-        20.48
-      ],
-      "extraType": "f-patch"
-    },
-    {
-      "extraPos": [
-        16,
-        19.2
-      ],
-      "extraType": "f-patch"
-    },
-    {
-      "extraPos": [
-        10.82,
-        8.48
-      ],
-      "extraType": "f-vertical"
-    },
-    {
-      "extraPos": [
-        15.24,
-        15.96
-      ],
-      "extraType": "f-horizontal"
-    },
-    {
-      "extraPos": [
-        16.8,
-        10.56
-      ],
-      "extraType": "f-square"
-    },
-    {
-      "extraPos": [
-        13.08,
-        20.98
-      ],
-      "extraType": "f-square"
-    },
-    {
-      "extraPos": [
-        2.62,
-        17.24
-      ],
-      "extraType": "f-vertical"
-    },
-    {
-      "extraPos": [
-        3.84,
-        8.32
-      ],
-      "extraType": "f-square"
-    },
-    {
-      "extraPos": [
-        6.52,
-        20.22
-      ],
-      "extraType": "f-vertical"
-    },
-    {
-      "extraPos": [
-        3.2,
-        12.16
-      ],
-      "extraType": "f-square"
-    }
-  ],
-  "texts": [],
   "trees": [
     {
       "pos": [
@@ -907,10 +795,122 @@
     "diffuse": true,
     "blur": 1
   },
+  "extras": [
+    {
+      "extraPos": [
+        5.54,
+        4.08
+      ],
+      "extraType": "c-horizontal"
+    },
+    {
+      "extraPos": [
+        15.9,
+        13.12
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        9.28,
+        4.9
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        16,
+        7.04
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        11.52,
+        12.8
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        4.48,
+        9.6
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        9.6,
+        20.48
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        16,
+        19.2
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        10.82,
+        8.48
+      ],
+      "extraType": "c-vertical"
+    },
+    {
+      "extraPos": [
+        15.24,
+        15.96
+      ],
+      "extraType": "c-horizontal"
+    },
+    {
+      "extraPos": [
+        16.8,
+        10.56
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        13.08,
+        20.98
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        2.62,
+        17.24
+      ],
+      "extraType": "c-vertical"
+    },
+    {
+      "extraPos": [
+        3.84,
+        8.32
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        6.52,
+        20.22
+      ],
+      "extraType": "c-vertical"
+    },
+    {
+      "extraPos": [
+        3.2,
+        12.16
+      ],
+      "extraType": "c-square"
+    }
+  ],
   "walls": [],
-  "startFlareCount": 1,
-  "maxFlareCount": 1,
-  "startSneakVal": 170,
+  "startSneakVal": 208,
   "graphicSize": [
     800,
     600
