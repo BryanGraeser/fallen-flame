@@ -19,7 +19,9 @@ public class PlayerModel extends CharacterModel {
     protected enum LifeState {
         ALIVE,
         DYING,
-        DEAD
+        DEAD,
+        WINNING,
+        WON
     }
     private LifeState life;
 
@@ -28,8 +30,7 @@ public class PlayerModel extends CharacterModel {
 
     /** Radius of player's light */
     protected float lightRadius;
-    protected float minLightRadius;
-    protected float lightRadiusSaved;
+    protected float lightRadiusWalk;
     protected float lightRadiusSprint;
     protected float lightRadiusSneak;
     /** Player sneak and spring left (once hits 0, a ghost is deployed on the map)
@@ -57,6 +58,13 @@ public class PlayerModel extends CharacterModel {
     private FilmStrip fireBuddyUp;
     private FilmStrip fireBuddyDown;
     private FilmStrip fireBuddyThrow;
+    private FilmStrip fireBuddyWin;
+
+    /** Number of frames until fire buddy animates the next frame*/
+    private float fireBuddyCool;
+
+    /** Max number of frames until fire buddy animates the next frame */
+    private float fireBuddyCoolLimit;
 
     /** Offset of firebuddy texture from center of player in meters */
     protected Vector2 fireBuddyTextureOffset;
@@ -77,6 +85,9 @@ public class PlayerModel extends CharacterModel {
     /** Frames until player finishes dying and is considered dead */
     private int deathDelay;
 
+    /** Frames until player finishes dying and is considered dead */
+    private int winDelay;
+
     /**
      * Initializes the character via the given JSON value
      *
@@ -88,8 +99,8 @@ public class PlayerModel extends CharacterModel {
         // Global json data
         lightRadiusSprint = globalJson.get("sprintlightrad").asInt();
         lightRadiusSneak = globalJson.get("sneaklightrad").asInt();
-        minLightRadius = globalJson.get("minlightradius").asInt();
-        lightRadius = minLightRadius;
+        lightRadiusWalk = globalJson.get("walklightrad").asInt();
+        lightRadius = lightRadiusWalk;
         float[] tintValues = globalJson.get("tint").asFloatArray();//RGBA
         tint = new Color(tintValues[0], tintValues[1], tintValues[2], tintValues[3]);
         sneakDecRate = globalJson.get("sneakDecRate").asFloat();
@@ -110,6 +121,11 @@ public class PlayerModel extends CharacterModel {
         throwing = false;
 
         deathDelay = globalJson.get("deathdelay").asInt();
+
+        winDelay = globalJson.get("windelay").asInt();
+
+        fireBuddyCoolLimit =  globalJson.get("firebuddylimit").asFloat();
+        fireBuddyCool = fireBuddyCoolLimit;
     }
 
     @Override
@@ -177,6 +193,15 @@ public class PlayerModel extends CharacterModel {
             fireBuddyThrow = (FilmStrip) texture;
         } catch (Exception e) {
             fireBuddyThrow = null;
+        }
+
+        key = textureJson.get("win").asString();
+        texture = JsonAssetManager.getInstance().getEntry(key, TextureRegion.class);
+        try {
+            fireBuddyWin = (FilmStrip) texture;
+            fireBuddyWin.setFrame(0); //reset filmstrips in cases where the player wins
+        } catch (Exception e) {
+            fireBuddyWin = null;
         }
 
         //pick default direction
@@ -264,13 +289,6 @@ public class PlayerModel extends CharacterModel {
     }
 
     /**
-     * Returns the minimum light radius the player can have
-     *
-     * @return minimum light radius
-     */
-    public float getMinLightRadius() { return minLightRadius; }
-
-    /**
      * Returns the number of flares the player has left
      *
      * @return the number of flares the player has left
@@ -322,17 +340,20 @@ public class PlayerModel extends CharacterModel {
     }
 
     /**
-     * Sets player light radius (does not include sneak speed)
-     * @param r light radius
-     */
-    public void setLightRadius(float r) {
-        lightRadius = Math.max(r, minLightRadius);
-    }
-
-    /**
      * Sets player to sneak light radius (not reachable by scrolling)
      */
     public void setLightRadiusSneak() { lightRadius = lightRadiusSneak; }
+
+    /**
+     * Sets player to sprint light radius
+     */
+    public void setLightRadiusSprint() { lightRadius = lightRadiusSprint; }
+
+
+    /**
+     * Sets player to walk light radius
+     */
+    public void setLightRadiusWalk() { lightRadius = lightRadiusWalk; }
 
     /**
      * Make the firebuddy begin the flare throwing animation.
@@ -346,22 +367,40 @@ public class PlayerModel extends CharacterModel {
     public void die() { life = LifeState.DYING; }
 
     /**
+     * Sets the player's life state to winning and increase the player light radius.
+     * Once the winning animation concludes the player is then set as won.
+     */
+    public void win() { life = LifeState.WINNING; }
+
+    /**
      * Returns whether the player is dead.
-     * @return true if the player is dead and false if player is alive or dying
+     * @return true if the player is dead and false if player is alive, dying, winning, or has won
      */
     public boolean isDead() { return life == LifeState.DEAD; }
 
     /**
      * Returns whether the player is dying
-     * @return true if the player is dying and false if player is alive or dead
+     * @return true if the player is dying and false if player is alive, dead, winning, or has won
      */
     public boolean isDying() { return life == LifeState.DYING; }
 
     /**
      * Returns whether the player is alive
-     * @return true if the player is alive and false if player is dead or dying
+     * @return true if the player is alive and false if player is dead, dying, winning, or has won
      */
-    public boolean isAlive() { return life == LifeState.ALIVE; }
+    public boolean isAlive() { return life == LifeState.ALIVE;}
+
+    /**
+     * Returns whether the player is winning
+     * @return true if the player is winning and false if player is alive, dead, dying, or has won
+     */
+    public boolean isWinning() { return life == LifeState.WINNING; }
+
+    /**
+     * Returns whether the player has won
+     * @return true if the player has won and false if the player is alive, dead, dying, or winning
+     */
+    public boolean hasWon() { return life == LifeState.WON; }
 
     /**
      * Returns the walk sound
@@ -371,36 +410,6 @@ public class PlayerModel extends CharacterModel {
     public Sound getWalkSound() {
         return walkSound;
     }
-
-    /**
-     * Gets player light radius when not sprinting or sneaking
-     * @return light radius
-     */
-    public float getLightRadiusSaved() {
-        return lightRadiusSaved;
-    }
-
-    /**
-     * Sets player light radius when not sprinting or sneaking
-     * @param r light radius
-     */
-    public void setLightRadiusSaved(float r) {
-        lightRadiusSaved = r;
-    }
-
-    /**
-     * Gets player light radius when sprinting
-     * @return light radius
-     */
-    public float getLightRadiusSprint() {
-        return lightRadiusSprint;
-    }
-
-    /**
-     * Increments light radius by i (can be positive or negative) ensuring lightRadius is never less than 0.
-     * @param i value to increment radius by
-     */
-    public void incrementLightRadius(float i) { setLightRadius(lightRadius + i); }
 
     public boolean isPlayingSound() {return playingSound;}
 
@@ -415,6 +424,7 @@ public class PlayerModel extends CharacterModel {
      */
     @Override
     public void update(float dt) {
+        float walkCoolDec = dt * 60;
         //getAngle has up as 0 radians, down as pi radians, pi/2 is left, -pi/2 is right.
         double angle = getAngle();
         if(angle < 0) angle = angle + 2 * Math.PI;
@@ -430,30 +440,44 @@ public class PlayerModel extends CharacterModel {
             setTexture(filmstrip, textureOffset.x, textureOffset.y);
 
             int frame = filmstrip.getFrame();
-            if (walkCool == 0 && frame < filmstrip.getSize() - 1) {
+            if (walkCool <= 0 && frame < filmstrip.getSize() - 1) {
                 walkCool = walkLimit;
                 filmstrip.setFrame(frame + 1);
-            } else if (walkCool > 0) {
-                walkCool--;
+            } else if (walkCool > 0f) {
+                walkCool -= walkCoolDec;
             } else if (deathDelay <= 0){
                 life = LifeState.DEAD;
             } else if (frame == filmstrip.getSize() - 1) {
-                deathDelay--;
+                deathDelay -= walkCoolDec;
             }
+        } else if (isAlive()) super.update(dt);
 
-        } else if (isAlive()) {
-            animateFireBuddy(angle100);
-            super.update(dt);
-        }
+        if (isAlive() || isWinning())  animateFireBuddy(angle100, dt);
     }
 
     /**
      * A helper method for drawing the fire buddy
      * @param angle100 the angle which the player is facing rounded down to the nearest int
+     * @param dt Number of seconds since last animation frame
      */
-    protected void animateFireBuddy(int angle100){
-        if(!throwing) {
-            if (angle100 == 0) {
+    protected void animateFireBuddy(int angle100, float dt){
+        float fireCoolDec = dt * 60;
+
+        if(isWinning()){
+            fireBuddyFilmstrip = fireBuddyWin;
+
+            int frame = fireBuddyFilmstrip.getFrame();
+            if(fireBuddyCool <= 0 && frame < fireBuddyFilmstrip.getSize() - 1) {
+                fireBuddyFilmstrip.setFrame(frame + 1);
+            } else if (winDelay <= 0){
+                life = LifeState.WON;
+            } else if (frame == fireBuddyFilmstrip.getSize() - 1){
+                winDelay -= fireCoolDec;
+            }
+        }
+
+        else if(!throwing) {
+            if (angle100 == 0 || angle100 == 628) {
                 fireBuddyFilmstrip = fireBuddyUp;
             } else if (angle100 > 0 && angle100 < 314) {
                 fireBuddyFilmstrip = fireBuddyLeft;
@@ -463,27 +487,26 @@ public class PlayerModel extends CharacterModel {
                 fireBuddyFilmstrip = fireBuddyRight;
             }
 
-            // Animate if necessary
-            // Do not change values of walkCool and animate, to be done in PlayerModel.update();
-            if (animate && walkCool == 0 && fireBuddyFilmstrip != null) {
+            if (fireBuddyCool <= 0 && fireBuddyFilmstrip != null) {
                 int next = (fireBuddyFilmstrip.getFrame() + 1) % fireBuddyFilmstrip.getSize();
                 fireBuddyFilmstrip.setFrame(next);
-            } else if (!animate && fireBuddyFilmstrip != null) {
-                fireBuddyFilmstrip.setFrame(startFrame);
             }
         } else {
             fireBuddyFilmstrip = fireBuddyThrow;
 
-            // Do not change values of walkCool and animate, to be done in PlayerModel.update();
             int frame = fireBuddyFilmstrip.getFrame();
-            if (walkCool == 0 && frame < fireBuddyFilmstrip.getSize() - 1) {
-                walkCool = walkLimit;
+            if (fireBuddyCool <= 0 && frame < fireBuddyFilmstrip.getSize() - 1) {
                 fireBuddyFilmstrip.setFrame(frame + 1);
             } else if (frame == fireBuddyFilmstrip.getSize() - 1){
                 throwing = false;
                 fireBuddyFilmstrip.setFrame(0);
             }
         }
+
+        if(fireBuddyCool > 0 && isWinning()) fireBuddyCool -= 2 * fireCoolDec;
+        else if (fireBuddyCool > 0) fireBuddyCool -= fireCoolDec;
+        else fireBuddyCool = fireBuddyCoolLimit;
+
     }
 
     public void draw(GameCanvas canvas) {

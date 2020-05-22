@@ -20,10 +20,11 @@ public class FogController {
     private int tileGridW;
     private int tileGridH;
     private final int NUM_FOG_ENEMIES = 12;
-    private final int NUM_FOG_SHOOTER = 3;
+    private final int NUM_FOG_SHOOTER = 4;
     private float tileSize;
     private final int NUM_FOG_NORMAL = 1;
     private final float NUM_FOG_AROUND_ENEMIES = 11.0f;
+    private final float NUM_FOG_AROUND_SHOOTERS = 13.0f;
     private static Logger log = Logger.getLogger("FogController");
 
     private final int[] DIRECTIONS = {1, -1};
@@ -75,7 +76,7 @@ public class FogController {
                     continue;
                 }
                 //To prevent drawing on tiles with the player or a wall as well as if its within the light radius
-                if (levelModel.hasWall(x, y)) continue;
+                if (levelModel.hasWall(x, y) || levelModel.hasTree(x, y)) continue;
 
                 //0.25 accounts for the aligning of the light to show the player's face instead of just the feet.
                 boolean withinLight = (Math.pow((Math.pow((x * tileSize) - (playerModel.getX()), 2) +
@@ -138,14 +139,18 @@ public class FogController {
                                     fogArr.removeValue(effect, true);
                                 }
                                 fog[x][y].enemies = null;
+                                ParticleEffectPool.PooledEffect effect = fogPool.obtain();
+                                effect.reset();
+                            effect.setPosition((levelModel.tileToScreen(x) * scale.x), levelModel.tileToScreen(y) * scale.y);
+                            fog[x][y].fogParticles.add(effect);
                             }
                             /*Only make a new fog particle if we do not have enough particles in the array for that tile*/
                             if (fogArr.size < NUM_FOG_NORMAL || levelModel.hasEnemy(x, y) && fogArr.size < ( levelModel.hasLessFog(x,y) ? NUM_FOG_SHOOTER : NUM_FOG_ENEMIES)) {
                                 for (int i = 0; i < ((levelModel.hasEnemy(x, y) ? levelModel.hasLessFog(x, y) ? NUM_FOG_SHOOTER : NUM_FOG_ENEMIES : NUM_FOG_NORMAL)); i++) {
                                     ParticleEffectPool.PooledEffect effect = fogPool.obtain();
                                     effect.reset();
-                                    float incX = levelModel.hasEnemy(x, y) ? (float) ((Math.random() - 0.5) * NUM_FOG_AROUND_ENEMIES) : 0;
-                                    float incY = levelModel.hasEnemy(x, y) ? (float) ((Math.random() - 0.5) * NUM_FOG_AROUND_ENEMIES) : 0;
+                                    float incX = levelModel.hasEnemy(x, y) ? (float) ((Math.random() - 0.5) * (levelModel.hasLessFog(x, y) ? NUM_FOG_AROUND_SHOOTERS : NUM_FOG_AROUND_ENEMIES)) : 0;
+                                    float incY = levelModel.hasEnemy(x, y) ? (float) ((Math.random() - 0.5) * (levelModel.hasLessFog(x, y) ? NUM_FOG_AROUND_SHOOTERS : NUM_FOG_AROUND_ENEMIES)) : 0;
                                     float randomVal = levelModel.hasEnemy(x, y) ? 6.0f : 1.0f;
                                     float randomX = levelModel.hasEnemy(x, y) ? (float) (((Math.random() - 0.5f)*randomVal))*tileSize : 0;
                                     float randomY = levelModel.hasEnemy(x, y) ? (float) (((Math.random() - 0.5f)*randomVal))*tileSize : 0;

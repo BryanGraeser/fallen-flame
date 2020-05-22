@@ -25,6 +25,9 @@ public class LevelSelectMode implements Screen, InputProcessor {
     private static final String VOLCANO_BACKGROUND_FILE = "textures/ls_volcano_background.png";
     private Texture volcanoBackground = new Texture(VOLCANO_BACKGROUND_FILE);
 
+    private static final String BACK_FILE = "textures/ws_back.png";
+    private Texture back = new Texture(BACK_FILE);
+
     private static final String PAGE_NEXT_FILE = "textures/ls_forward.png";
     private Texture pageNext = new Texture(PAGE_NEXT_FILE);
 
@@ -82,10 +85,10 @@ public class LevelSelectMode implements Screen, InputProcessor {
     /** The current state of whether any level buttons are being hovered over */
     private int[] hoverState;
 
-    private static final int BACK_BTN_WIDTH = 210;
+    private static final int BACK_BTN_WIDTH = 100;
     private static final int BACK_BTN_HEIGHT = 30;
-    private static final int BACK_BTN_X = 10;
-    private static final int BACK_BTN_Y = 10;
+    private static final int BACK_BTN_X = 80;
+    private static final int BACK_BTN_Y = 80;
 
     /** Level selected by the player */
     private int levelSelected;
@@ -199,10 +202,10 @@ public class LevelSelectMode implements Screen, InputProcessor {
             canvas.draw(pagePrev, hoverState[posVec.length + 1] == 1 ? Color.CYAN : Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight() / 2,
                     nextPrev[0].x, nextPrev[0].y, 0, 1, 1);
         }
-        canvas.draw(pagePrev, hoverState[posVec.length] == 1 ? Color.CYAN : Color.WHITE, pagePrev.getWidth() / 2, pagePrev.getHeight(),
+        canvas.draw(back, hoverState[posVec.length] == 1 ? Color.CYAN : Color.WHITE, back.getWidth() / 2, back.getHeight(),
                 BACK_BTN_X, heightY - BACK_BTN_Y, 0, .75f, .75f);
         displayFont.setColor(hoverState[posVec.length] == 1 ? Color.CYAN : Color.WHITE);
-        canvas.drawText("Back to World Select", displayFont,BACK_BTN_X + (pagePrev.getWidth()/2), heightY - BACK_BTN_Y);
+        canvas.drawText("Back", displayFont,BACK_BTN_X + (back.getWidth()), heightY - BACK_BTN_Y);
         displayFont.setColor(Color.WHITE);
         displayFont.getData().setScale(1f);
         canvas.end();
@@ -328,40 +331,43 @@ public class LevelSelectMode implements Screen, InputProcessor {
         for (int i = 0; i < levelSaves.length; i++) {
             //only draw if it's from the correct world
             if (levelSaves[i].world == worldSelected) {
-                if (numNotDrawn >= page * 10 && !stopDrawing) {
-                    if (levelSaves[i].unlocked) {
-                        //Do unlocked stuff
-                        if ((Math.pow(screenX-posVec[numDrawn].x,2) / (w*w)) + (Math.pow(screenY-posVec[numDrawn].y,2) / (h*h)) <= 1) {
+                if (!stopDrawing) {
+                    if (numNotDrawn >= page * 10) {
+                        if (levelSaves[i].unlocked) {
+                            //Do unlocked stuff
+                            if ((Math.pow(screenX - posVec[numDrawn].x, 2) / (w * w)) + (Math.pow(screenY - posVec[numDrawn].y, 2) / (h * h)) <= 1) {
                                 pressState = 1;
                                 levelSelected = i;
+                            }
                         }
-                    }
-                    numDrawn++;
-                    if (numDrawn == 10) {
-                        stopDrawing = true;
+                        numDrawn++;
+                        if (numDrawn == 10) {
+                            stopDrawing = true;
+                        }
+                    } else {
+                        numNotDrawn++;
                     }
                 } else {
-                    numNotDrawn++;
+                    w = scale*pageNext.getWidth()/2.0f;
+                    h = scale*pageNext.getHeight()/2.0f;
+                    if ((Math.pow(screenX-nextPrev[1].x,2) / (w*w)) + (Math.pow(screenY-nextPrev[1].y,2) / (h*h)) <= 1) {
+                        if ((page + 1) * 10 < levelSaves.length) {
+                            page++;
+                        }
+                    }
+                    break;
                 }
             }
         }
 
         w = scale*pageNext.getWidth()/2.0f;
         h = scale*pageNext.getHeight()/2.0f;
-
-        for (int i = 0; i < nextPrev.length; i++) {
-            if ((Math.pow(screenX-nextPrev[i].x,2) / (w*w)) + (Math.pow(screenY-nextPrev[i].y,2) / (h*h)) <= 1) {
-                if (i == 0) {
-                    if (page > 0) {
-                        page--;
-                    }
-                } else {
-                    if ((page + 1) * 10 < levelSaves.length) {
-                        page++;
-                    }
+            if ((Math.pow(screenX-nextPrev[0].x,2) / (w*w)) + (Math.pow(screenY-nextPrev[0].y,2) / (h*h)) <= 1) {
+                if (page > 0) {
+                    page--;
                 }
             }
-        }
+
         if (screenX >= BACK_BTN_X && screenX <= BACK_BTN_X + BACK_BTN_WIDTH &&
                 origScreenY >= BACK_BTN_Y && origScreenY <= BACK_BTN_Y + BACK_BTN_HEIGHT) {
             pressState = 1;
