@@ -2,7 +2,6 @@
   "name": "forceSneak",
   "maxFlareCount": 2,
   "startFlareCount": 0,
-  "startSneakVal": 167,
   "texts": [],
   "physicsSize": [
     23.04,
@@ -16,7 +15,6 @@
     10.8,
     2.26
   ],
-  "bgm": "the-doll-thrown-away-in-rain",
   "exitpos": [
     19.18,
     19.83
@@ -148,7 +146,6 @@
     "diffuse": true,
     "blur": 1
   },
-  "extras": [],
   "walls": [
     {
       "pos": [
@@ -250,6 +247,7 @@
       "texture": "wall-top"
     }
   ],
+  "startSneakVal": 167,
   "graphicSize": [
     800,
     600

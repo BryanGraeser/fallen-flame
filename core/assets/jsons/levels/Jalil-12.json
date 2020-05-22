@@ -1,22 +1,25 @@
 {
-  "name": "exHardLevel",
+  "name": "Jalil-12",
+  "maxFlareCount": 1,
+  "startFlareCount": 0,
+  "startSneakVal": 500,
   "texts": [],
   "physicsSize": [
-    33.28,
-    25.6
+    20.48,
+    16.64
   ],
   "fpsRange": [
     20,
     60
   ],
   "playerpos": [
-    3.3,
-    4.28
+    3.16,
+    4.06
   ],
   "bgm": "the-doll-thrown-away-in-rain",
   "exitpos": [
-    4.5,
-    20.47
+    8.28,
+    10.61
   ],
   "background": {
     "texture": "floor-tile"
@@ -24,120 +27,104 @@
   "enemies": [
     {
       "enemypos": [
-        13.94,
-        8.4
+        7.42,
+        5.44
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        9.18,
+        5.38
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        7.5,
+        2.24
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        9.32,
+        2.24
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        15.22,
+        9.84
       ],
       "enemytype": "typeA",
       "subtype": "pathing",
       "pathCoors": [
         [
-          16.34,
-          8.44
+          15.22,
+          4.82
         ],
         [
-          16.36,
-          16.46
+          18.06,
+          4.82
         ],
         [
-          2.94,
-          16.46
-        ],
-        [
-          2.9,
-          12.88
-        ],
-        [
-          11.18,
-          12.82
-        ],
-        [
-          11.24,
-          8.36
+          18.04,
+          9.84
         ]
       ]
     },
     {
       "enemypos": [
-        27.4,
-        19.52
+        18.04,
+        4.86
       ],
       "enemytype": "typeA",
       "subtype": "pathing",
       "pathCoors": [
         [
-          31.1,
-          19.52
+          18.08,
+          9.84
         ],
         [
-          31.1,
-          20.62
+          16.62,
+          9.84
         ],
         [
-          27.36,
-          20.62
+          15.22,
+          9.84
+        ],
+        [
+          15.2,
+          4.84
         ]
       ]
     },
     {
       "enemypos": [
-        21.74,
-        23.52
+        11.42,
+        13.3
       ],
-      "enemytype": "typeA",
-      "subtype": "pathing",
-      "pathCoors": [
-        [
-          19.56,
-          23.54
-        ],
-        [
-          19.48,
-          20.06
-        ],
-        [
-          21.72,
-          20.06
-        ]
-      ]
+      "enemytype": "typeA"
     },
     {
       "enemypos": [
-        7.04,
-        19.74
-      ],
-      "enemytype": "typeA",
-      "subtype": "pathing",
-      "pathCoors": [
-        [
-          11.04,
-          19.74
-        ],
-        [
-          11.06,
-          21.22
-        ],
-        [
-          7.04,
-          21.22
-        ]
-      ]
-    },
-    {
-      "enemypos": [
-        29.52,
-        7.1
-      ],
-      "enemytype": "typeB"
-    },
-    {
-      "enemypos": [
-        26.78,
-        6.02
+        13.14,
+        13.26
       ],
       "enemytype": "typeA"
     }
   ],
-  "items": [],
+  "items": [
+    {
+      "itemPos": [
+        16.6,
+        4.82
+      ],
+      "itemType": "flare"
+    }
+  ],
   "trees": [],
   "lighting": {
     "color": [
@@ -154,11 +141,11 @@
   "walls": [
     {
       "pos": [
-        21.12,
-        24.96
+        10.24,
+        16
       ],
       "size": [
-        21.76,
+        20.48,
         1.28
       ],
       "texture": "wall-side"
@@ -166,66 +153,11 @@
     {
       "pos": [
         0.64,
-        12.8
-      ],
-      "size": [
-        1.28,
-        25.6
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        32.64,
-        12.8
-      ],
-      "size": [
-        1.28,
-        25.6
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        16.64,
-        0.64
-      ],
-      "size": [
-        33.28,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        5.76,
         8.32
       ],
       "size": [
-        8.96,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        9.6,
-        18.56
-      ],
-      "size": [
-        16.64,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        21.76,
-        14.08
-      ],
-      "size": [
-        7.68,
-        10.24
+        1.28,
+        16.64
       ],
       "texture": "wall-top"
     },
@@ -235,65 +167,153 @@
         8.32
       ],
       "size": [
-        3.84,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        23.68,
-        7.04
-      ],
-      "size": [
-        3.84,
-        3.84
+        1.28,
+        16.64
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        23.68,
-        4.48
+        10.24,
+        0.64
       ],
       "size": [
+        20.48,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
         3.84,
+        5.76
+      ],
+      "size": [
+        5.12,
         1.28
       ],
       "texture": "wall-side"
     },
     {
       "pos": [
-        8.96,
-        22.4
+        3.84,
+        2.56
       ],
       "size": [
-        2.56,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        8.96,
-        24.32
-      ],
-      "size": [
-        2.56,
+        5.12,
         2.56
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        4.48,
-        24.96
+        14.72,
+        2.56
       ],
       "size": [
-        6.4,
+        8.96,
+        2.56
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        12.16,
+        5.76
+      ],
+      "size": [
+        3.84,
         1.28
       ],
       "texture": "wall-side"
+    },
+    {
+      "pos": [
+        12.16,
+        8.96
+      ],
+      "size": [
+        3.84,
+        5.12
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        3.84,
+        10.88
+      ],
+      "size": [
+        5.12,
+        11.52
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        8.32,
+        8.32
+      ],
+      "size": [
+        3.84,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        16.64,
+        7.68
+      ],
+      "size": [
+        1.28,
+        2.56
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        8.32,
+        13.44
+      ],
+      "size": [
+        3.84,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        16.64,
+        13.44
+      ],
+      "size": [
+        5.12,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        8.32,
+        15.36
+      ],
+      "size": [
+        3.84,
+        2.56
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        16.64,
+        15.36
+      ],
+      "size": [
+        5.12,
+        2.56
+      ],
+      "texture": "wall-top"
     }
   ],
   "graphicSize": [

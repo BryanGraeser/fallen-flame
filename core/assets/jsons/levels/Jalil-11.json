@@ -1,36 +1,24 @@
 {
-  "name": "sneak tutorial",
-  "maxFlareCount": 0,
-  "startFlareCount": 0,
-  "startSneakVal": 500,
-  "texts": [
-    {
-      "pos": [
-        6.92,
-        5.96
-      ],
-      "size": [
-        10.6,
-        1.76
-      ],
-      "text": "Fog means that there are enemies nearby. Move while holding {sneak} to sneak past them."
-    }
-  ],
+  "name": "Jalil-11",
+  "maxFlareCount": 1,
+  "startFlareCount": 1,
+  "texts": [],
   "physicsSize": [
-    16.64,
-    12.8
+    21.76,
+    16.64
   ],
   "fpsRange": [
     20,
     60
   ],
   "playerpos": [
-    1.9,
-    5.48
+    1.92,
+    1.52
   ],
+  "bgm": "the-doll-thrown-away-in-rain",
   "exitpos": [
-    14.64,
-    5.81
+    18.92,
+    11.31
   ],
   "background": {
     "texture": "floor-tile"
@@ -38,34 +26,73 @@
   "enemies": [
     {
       "enemypos": [
-        7.44,
-        3.46
+        4.9,
+        7.12
       ],
-      "enemytype": "typeA"
+      "enemytype": "typeA",
+      "subtype": "pathing",
+      "pathCoors": [
+        [
+          8.98,
+          7.1
+        ],
+        [
+          8.94,
+          3.86
+        ],
+        [
+          4.88,
+          3.82
+        ]
+      ]
     },
     {
       "enemypos": [
-        9.24,
-        3.48
+        6.88,
+        5.22
       ],
-      "enemytype": "typeA"
+      "enemytype": "typeB"
     },
     {
       "enemypos": [
-        7.46,
-        6.92
+        11.94,
+        10.1
       ],
-      "enemytype": "typeA"
+      "enemytype": "typeB"
     },
     {
       "enemypos": [
-        9.22,
-        6.96
+        9.98,
+        11.78
       ],
-      "enemytype": "typeA"
+      "enemytype": "typeA",
+      "subtype": "pathing",
+      "pathCoors": [
+        [
+          13.98,
+          11.78
+        ],
+        [
+          14.04,
+          8.9
+        ],
+        [
+          10.04,
+          8.92
+        ]
+      ]
     }
   ],
-  "items": [],
+  "items": [
+    {
+      "itemPos": [
+        15.84,
+        6.52
+      ],
+      "itemType": "flare"
+    }
+  ],
+  "trees": [],
   "lighting": {
     "color": [
       0,
@@ -77,14 +104,15 @@
     "diffuse": true,
     "blur": 1
   },
+  "extras": [],
   "walls": [
     {
       "pos": [
-        8.32,
-        12.16
+        10.88,
+        16
       ],
       "size": [
-        16.64,
+        21.76,
         1.28
       ],
       "texture": "wall-side"
@@ -92,95 +120,84 @@
     {
       "pos": [
         0.64,
-        6.4
+        8.32
       ],
       "size": [
         1.28,
-        12.8
+        16.64
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        16,
-        6.4
+        21.12,
+        8.32
       ],
       "size": [
         1.28,
-        12.8
+        16.64
       ],
       "texture": "wall-top"
     },
     {
       "pos": [
-        8.32,
+        10.88,
         0.64
       ],
       "size": [
-        16.64,
+        21.76,
         1.28
       ],
       "texture": "wall-side"
     },
     {
       "pos": [
-        8.32,
-        10.24
+        2.56,
+        4.48
       ],
       "size": [
-        16.64,
-        3.84
+        2.56,
+        1.28
       ],
-      "texture": "wall-top"
+      "texture": "wall-side"
     },
     {
       "pos": [
-        8.32,
-        1.92
-      ],
-      "size": [
-        16.64,
-        2.56
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        3.84,
+        2.56,
         7.04
       ],
       "size": [
-        5.12,
-        1.28
+        2.56,
+        5.12
       ],
-      "texture": "wall-side"
+      "texture": "wall-top"
     },
     {
       "pos": [
-        3.2,
-        3.84
+        15.36,
+        3.2
       ],
       "size": [
+        10.24,
+        3.84
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        4.48,
+        12.8
+      ],
+      "size": [
+        8.96,
+        6.4
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
         6.4,
-        2.56
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        12.8,
-        3.84
-      ],
-      "size": [
-        5.12,
-        2.56
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        12.8,
-        7.04
+        8.96
       ],
       "size": [
         5.12,
@@ -190,23 +207,23 @@
     },
     {
       "pos": [
-        3.84,
-        8.32
+        17.92,
+        8.96
       ],
       "size": [
         5.12,
         1.28
       ],
-      "texture": "wall-top"
+      "texture": "wall-side"
     },
     {
       "pos": [
-        12.8,
-        8.32
+        14.72,
+        14.72
       ],
       "size": [
-        5.12,
-        1.28
+        11.52,
+        2.56
       ],
       "texture": "wall-top"
     }

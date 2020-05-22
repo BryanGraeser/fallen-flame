@@ -1,22 +1,21 @@
 {
-  "name": "exEasyLevel",
+  "name": "level7",
   "texts": [],
   "physicsSize": [
-    16.64,
-    12.8
+    28.16,
+    15.36
   ],
   "fpsRange": [
     20,
     60
   ],
   "playerpos": [
-    2.78,
-    3.38
+    3,
+    3
   ],
-  "bgm": "the-doll-thrown-away-in-rain",
   "exitpos": [
-    14.3,
-    10.19
+    25.04,
+    12.29
   ],
   "background": {
     "texture": "floor-tile"
@@ -24,8 +23,47 @@
   "enemies": [
     {
       "enemypos": [
-        8.84,
-        7.88
+        18.44,
+        5.26
+      ],
+      "enemytype": "typeB"
+    },
+    {
+      "enemypos": [
+        11.2,
+        10.48
+      ],
+      "enemytype": "typeB"
+    },
+    {
+      "enemypos": [
+        22.9,
+        9.38
+      ],
+      "enemytype": "typeA",
+      "subtype": "pathing",
+      "pathCoors": [
+        [
+          26.16,
+          9.42
+        ],
+        [
+          24.24,
+          6.44
+        ]
+      ]
+    },
+    {
+      "enemypos": [
+        8.76,
+        9.5
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        14.28,
+        9.42
       ],
       "enemytype": "typeA"
     }
@@ -43,12 +81,55 @@
     "diffuse": true,
     "blur": 1
   },
-  "extras": [],
   "walls": [
     {
       "pos": [
+        14.08,
+        14.72
+      ],
+      "size": [
+        28.16,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        0.64,
+        3.2
+      ],
+      "size": [
+        1.28,
+        24.32
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        27.52,
+        3.2
+      ],
+      "size": [
+        1.28,
+        24.32
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        16,
+        0.64
+      ],
+      "size": [
+        32,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
         11.52,
-        12.16
+        5.76
       ],
       "size": [
         7.68,
@@ -58,33 +139,22 @@
     },
     {
       "pos": [
-        0.64,
-        6.4
+        18.56,
+        9.6
       ],
       "size": [
-        1.28,
-        12.8
+        6.4,
+        1.28
       ],
-      "texture": "wall-top"
+      "texture": "wall-side"
     },
     {
       "pos": [
-        16,
-        6.4
+        4.48,
+        9.6
       ],
       "size": [
-        1.28,
-        12.8
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        8.32,
-        0.64
-      ],
-      "size": [
-        16.64,
+        6.4,
         1.28
       ],
       "texture": "wall-side"
@@ -96,44 +166,14 @@
       ],
       "size": [
         6.4,
-        1.28
-      ],
-      "texture": "wall-side"
-    },
-    {
-      "pos": [
-        9.6,
-        3.84
-      ],
-      "size": [
-        11.52,
-        5.12
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        5.12,
-        7.68
-      ],
-      "size": [
-        2.56,
-        2.56
-      ],
-      "texture": "wall-top"
-    },
-    {
-      "pos": [
-        13.44,
-        7.68
-      ],
-      "size": [
-        3.84,
-        2.56
+        6.4
       ],
       "texture": "wall-top"
     }
   ],
+  "startFlareCount": 1,
+  "maxFlareCount": 1,
+  "startSneakVal": 126,
   "graphicSize": [
     800,
     600
