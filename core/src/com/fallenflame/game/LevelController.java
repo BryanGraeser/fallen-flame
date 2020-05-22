@@ -42,7 +42,7 @@ public class LevelController implements ContactListener {
      * Value of 1 means drop-off rate is exactly equivalent to 1/distance */
     public static final float ENEMY_CONS_VOL_SCL = 6f;
     /** Chance of an enemy starting its constant sound on any given frame when possible */
-    public static final int ENEMY_CONS_CHANCE = 250;
+    public static final int ENEMY_CONS_CHANCE = 200;
     /** Frames enemy must wait before being able to make its constant sound again */
     public static final int ENEMY_CONS_WAIT = 125;
 
