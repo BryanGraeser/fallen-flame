@@ -11,13 +11,13 @@
     60
   ],
   "playerpos": [
-    1.9,
+    2.38,
     2.32
   ],
   "bgm": "the-doll-thrown-away-in-rain",
   "exitpos": [
-    13.48,
-    10.47
+    14.12,
+    10.39
   ],
   "background": {
     "texture": "floor-tile"
@@ -51,7 +51,71 @@
     "diffuse": true,
     "blur": 1
   },
-  "extras": [],
+  "extras": [
+    {
+      "extraPos": [
+        2.56,
+        10.24
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        8.96,
+        5.12
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        10.24,
+        2.5
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        14.72,
+        8.32
+      ],
+      "extraType": "c-square"
+    },
+    {
+      "extraPos": [
+        6.4,
+        7.68
+      ],
+      "extraType": "c-vertical"
+    },
+    {
+      "extraPos": [
+        8.32,
+        10.24
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        14.08,
+        6.4
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        2.56,
+        2.56
+      ],
+      "extraType": "c-patch"
+    },
+    {
+      "extraPos": [
+        13.92,
+        5.34
+      ],
+      "extraType": "c-vertical"
+    }
+  ],
   "walls": [
     {
       "pos": [
