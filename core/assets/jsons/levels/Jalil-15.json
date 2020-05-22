@@ -1,0 +1,298 @@
+{
+  "name": "Jalil-15",
+  "physicsSize": [
+    20.48,
+    19.2
+  ],
+  "fpsRange": [
+    20,
+    60
+  ],
+  "playerpos": [
+    2.36,
+    2.86
+  ],
+  "exitpos": [
+    16.88,
+    14.13
+  ],
+  "background": {
+    "texture": "floor-tile"
+  },
+  "enemies": [
+    {
+      "enemypos": [
+        6.16,
+        4.3
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        7.84,
+        4.26
+      ],
+      "enemytype": "typeA"
+    },
+    {
+      "enemypos": [
+        10.5,
+        9.54
+      ],
+      "enemytype": "typeA",
+      "subtype": "pathing",
+      "pathCoors": [
+        [
+          14.96,
+          9.54
+        ],
+        [
+          15.12,
+          2.74
+        ],
+        [
+          10.5,
+          2.74
+        ]
+      ]
+    },
+    {
+      "enemypos": [
+        15.08,
+        2.78
+      ],
+      "enemytype": "typeA",
+      "subtype": "pathing",
+      "pathCoors": [
+        [
+          10.48,
+          2.7
+        ],
+        [
+          10.5,
+          9.54
+        ],
+        [
+          14.96,
+          9.54
+        ]
+      ]
+    },
+    {
+      "enemypos": [
+        2.32,
+        12.64
+      ],
+      "enemytype": "typeB"
+    },
+    {
+      "enemypos": [
+        8.7,
+        13.56
+      ],
+      "enemytype": "typeA"
+    }
+  ],
+  "items": [
+    {
+      "itemPos": [
+        4.1,
+        9.54
+      ],
+      "itemType": "flare"
+    },
+    {
+      "itemPos": [
+        5.46,
+        13.2
+      ],
+      "itemType": "flare"
+    }
+  ],
+  "texts": [],
+  "lighting": {
+    "color": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "gamma": true,
+    "diffuse": true,
+    "blur": 1
+  },
+  "walls": [
+    {
+      "pos": [
+        10.24,
+        18.56
+      ],
+      "size": [
+        20.48,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        0.64,
+        9.6
+      ],
+      "size": [
+        1.28,
+        19.2
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        19.84,
+        9.6
+      ],
+      "size": [
+        1.28,
+        19.2
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        10.24,
+        0.64
+      ],
+      "size": [
+        20.48,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        3.2,
+        4.48
+      ],
+      "size": [
+        3.84,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        5.12,
+        1.92
+      ],
+      "size": [
+        7.68,
+        1.28
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        3.2,
+        5.76
+      ],
+      "size": [
+        3.84,
+        1.28
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        5.12,
+        7.68
+      ],
+      "size": [
+        7.68,
+        2.56
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        12.8,
+        6.4
+      ],
+      "size": [
+        2.56,
+        5.12
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        12.8,
+        11.52
+      ],
+      "size": [
+        12.8,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        17.92,
+        6.4
+      ],
+      "size": [
+        2.56,
+        11.52
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        4.48,
+        17.92
+      ],
+      "size": [
+        6.4,
+        2.56
+      ],
+      "texture": "wall-top"
+    },
+    {
+      "pos": [
+        4.48,
+        16
+      ],
+      "size": [
+        6.4,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        15.36,
+        16
+      ],
+      "size": [
+        7.68,
+        1.28
+      ],
+      "texture": "wall-side"
+    },
+    {
+      "pos": [
+        15.36,
+        17.92
+      ],
+      "size": [
+        7.68,
+        2.56
+      ],
+      "texture": "wall-top"
+    }
+  ],
+  "startFlareCount": 0,
+  "maxFlareCount": 2,
+  "startSneakVal": 260,
+  "graphicSize": [
+    800,
+    600
+  ]
+}
